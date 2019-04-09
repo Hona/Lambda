@@ -30,7 +30,7 @@ namespace LambdaUI.Modules
         [Command("maplist")]
         public async Task GetMapList()
         {
-            await ReplyNewEmbed(string.Join(", ",(await TempusDataAccess.GetMapList()).ConvertAll(x=>x.Name)));
+            await ReplyNewEmbed(string.Join(", ",(await TempusDataAccess.GetMapListAsync()).ConvertAll(x=>x.Name)));
         }
 
         [Command("updateStatus")]

@@ -20,7 +20,7 @@ namespace LambdaUI.Data
             });
         }
 
-        internal async Task<List<TodoModel>> GetTodoItems()
+        internal async Task<List<TodoModel>> GetTodoItemsAsync()
         {
             var query =
                 @"select * from `todo`";
@@ -28,7 +28,7 @@ namespace LambdaUI.Data
             return await QueryAsync<TodoModel>(query);
 
         }
-        internal async Task<List<TodoModel>> GetTodoItems(string group)
+        internal async Task<List<TodoModel>> GetTodoItemsAsync(string group)
         {
 
             var query =
@@ -41,7 +41,7 @@ namespace LambdaUI.Data
 
             return await QueryAsync<TodoModel>(query, param);
         }
-        internal async Task CreateTodoItem(string group, string item)
+        internal async Task CreateTodoItemAsync(string group, string item)
         {
 
             var query =

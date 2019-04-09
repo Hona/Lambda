@@ -125,7 +125,7 @@ namespace LambdaUI
         }
         internal async void IntervalFunctions(object state)
         {
-            await _tempusDataAccess.UpdateMapList();
+            await _tempusDataAccess.UpdateMapListAsync();
             //await _tempusServerUpdater.UpdateServers();
             await _tempusActivityUpdater.UpdateActivity();
 

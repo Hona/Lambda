@@ -19,7 +19,7 @@ namespace LambdaUI.Data
                 config.AddMap(new ConfigMap());
             });
         }
-        internal async Task<List<ConfigModel>> GetAllConfig()
+        internal async Task<List<ConfigModel>> GetAllConfigAsync()
         {
             var query =
                 @"select * from `config`";
@@ -27,7 +27,7 @@ namespace LambdaUI.Data
             return await QueryAsync<ConfigModel>(query);
 
         }
-        internal async Task<List<ConfigModel>> GetConfig(string key)
+        internal async Task<List<ConfigModel>> GetConfigAsync(string key)
         {
             var query =
                 @"select * from `config` where `key`=@Key";
@@ -40,7 +40,7 @@ namespace LambdaUI.Data
             return await QueryAsync<ConfigModel>(query, param);
 
         }
-        internal async Task CreateNewConfigEntry(string key, string value)
+        internal async Task CreateNewConfigEntryAsync(string key, string value)
         {
 
             var query =

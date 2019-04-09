@@ -14,7 +14,7 @@ namespace LambdaUI.Data
     {
         public TempusDataAccess()
         {
-            UpdateMapList();
+            UpdateMapListAsync();
         }
         public List<string> MapList { get; set; }
 
@@ -32,7 +32,7 @@ namespace LambdaUI.Data
         }
 
 
-        private static async Task<T> GetResponse<T>(string request)
+        private static async Task<T> GetResponseAsync<T>(string request)
         {
             object stringValue;
             using (var response = (HttpWebResponse) await BuildWebRequest(request).GetResponseAsync())
@@ -59,25 +59,25 @@ namespace LambdaUI.Data
                 : JsonConvert.DeserializeObject<T>((string) stringValue);
         }
 
-        public async Task<MapFullOverviewModel> GetFullMapOverView(string map)
+        public async Task<MapFullOverviewModel> GetFullMapOverViewAsync(string map)
         {
-            var response = await GetResponse<MapFullOverviewModel>($"/maps/name/{ParseMapName(map)}/fullOverview");
+            var response = await GetResponseAsync<MapFullOverviewModel>($"/maps/name/{ParseMapName(map)}/fullOverview");
             return response;
         }
-        public async Task<RecentActivityModel> GetRecentActivity()
+        public async Task<RecentActivityModel> GetRecentActivityAsync()
         {
-            var response = await GetResponse<RecentActivityModel>($"/activity");
+            var response = await GetResponseAsync<RecentActivityModel>($"/activity");
             return response;
         }
-        public async Task<List<ServerStatusModel>> GetServerStatus()
+        public async Task<List<ServerStatusModel>> GetServerStatusAsync()
         {
-            var response = await GetResponse<List<ServerStatusModel>>($"/servers/statusList");
+            var response = await GetResponseAsync<List<ServerStatusModel>>($"/servers/statusList");
             return response;
         }
 
-        public async Task<List<ShortMapInfoModel>> GetMapList()
+        public async Task<List<ShortMapInfoModel>> GetMapListAsync()
         {
-            var response = await GetResponse<List<ShortMapInfoModel>>("/maps/list");
+            var response = await GetResponseAsync<List<ShortMapInfoModel>>("/maps/list");
             return response;
         }
 
@@ -96,9 +96,9 @@ namespace LambdaUI.Data
             throw new Exception("Map not found");
         }
 
-        public async Task UpdateMapList()
+        public async Task UpdateMapListAsync()
         {
-            var maps = await GetMapList();
+            var maps = await GetMapListAsync();
             MapList = maps.ConvertAll(x=>x.Name);
         }
     }

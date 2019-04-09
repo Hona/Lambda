@@ -35,11 +35,11 @@ namespace LambdaUI
 
         public async Task UpdateActivity()
         {
-            var updateChannel = (await _configDataAccess.GetConfig("tempusActivityChannel")).First().Value;
+            var updateChannel = (await _configDataAccess.GetConfigAsync("tempusActivityChannel")).First().Value;
             if (_client.GetChannel(Convert.ToUInt64(updateChannel)) is ITextChannel channel)
             {
                 await DeleteAllMessages(channel);
-                var activity = await _tempusDataAccess.GetRecentActivity();
+                var activity = await _tempusDataAccess.GetRecentActivityAsync();
                 await SendMapRecords(activity.MapRecords, channel);
             }
 

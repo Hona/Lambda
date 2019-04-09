@@ -16,15 +16,15 @@ namespace LambdaUI.Modules
         {
             if (group == "" && value == "")
             {
-                await ReplyNewEmbed((await TodoDataAccess.GetTodoItems()).Aggregate("", (currentString, nextItem) => currentString + $"'{nextItem.Group}' | '{nextItem.Item}' | {nextItem.Completeted}" + Environment.NewLine));
+                await ReplyNewEmbed((await TodoDataAccess.GetTodoItemsAsync()).Aggregate("", (currentString, nextItem) => currentString + $"'{nextItem.Group}' | '{nextItem.Item}' | {nextItem.Completeted}" + Environment.NewLine));
             }
             else if (group != "" && value == "")
             {
-                await ReplyNewEmbed((await TodoDataAccess.GetTodoItems(group)).Aggregate("", (currentString, nextItem) => currentString + $"'{nextItem.Group}' | '{nextItem.Item}' | {nextItem.Completeted}" + Environment.NewLine));
+                await ReplyNewEmbed((await TodoDataAccess.GetTodoItemsAsync(group)).Aggregate("", (currentString, nextItem) => currentString + $"'{nextItem.Group}' | '{nextItem.Item}' | {nextItem.Completeted}" + Environment.NewLine));
             }
             else
             {
-                await TodoDataAccess.CreateTodoItem(group, value);
+                await TodoDataAccess.CreateTodoItemAsync(group, value);
                 await ReplyNewEmbed("Done.");
             }
         }

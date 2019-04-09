@@ -33,11 +33,11 @@ namespace LambdaUI
 
         public async Task UpdateServers()
         {
-            var updateChannel = (await _configDataAccess.GetConfig("tempusUpdateChannel")).First().Value;
+            var updateChannel = (await _configDataAccess.GetConfigAsync("tempusUpdateChannel")).First().Value;
             if (_client.GetChannel(Convert.ToUInt64(updateChannel)) is ITextChannel channel)
             {
                 await DeleteAllMessages(channel);
-                var serverInfo = await _tempusDataAccess.GetServerStatus();
+                var serverInfo = await _tempusDataAccess.GetServerStatusAsync();
                 for (var i = 0; i < serverInfo.Count; i++)
                 {
                     var server = serverInfo[i];

@@ -20,40 +20,40 @@ namespace LambdaUI.Data
         {
             _connectionString = connectionString;
         }
-        private async Task OpenConnection()
+        private async Task OpenConnectionAsync()
         {
             if (_connection == null) _connection = new MySqlConnection(_connectionString);
             await _connection.OpenAsync();
         }
-        protected async Task CheckConnection()
+        protected async Task CheckConnectionAsync()
         {
             if (_connection == null || _connection.State == ConnectionState.Closed || _connection.State == ConnectionState.Broken)
-                await OpenConnection();
+                await OpenConnectionAsync();
         }
-        internal async Task Close()
+        internal async void CloseAsync()
         {
             if (_connection != null) await _connection.CloseAsync();
         }
 
         protected async Task<List<T>> QueryAsync<T>(string query)
         {
-            await CheckConnection();
+            await CheckConnectionAsync();
             var result = (await _connection.QueryAsync<T>(query)).ToList();
-            Close();
+            CloseAsync();
             return result;
         }
         protected async Task<List<T>> QueryAsync<T>(string query, object param)
         {
-            await CheckConnection();
+            await CheckConnectionAsync();
             var result = (await _connection.QueryAsync<T>(query, param)).ToList();
-            Close();
+            CloseAsync();
             return result;
         }
         protected async Task ExecuteAsync(string query, object param)
         {
-            await CheckConnection();
+            await CheckConnectionAsync();
             var result = (await _connection.ExecuteAsync(query, param));
-            Close();
+            CloseAsync();
         }
     }
 

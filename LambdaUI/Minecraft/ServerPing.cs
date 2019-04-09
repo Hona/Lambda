@@ -38,7 +38,7 @@ namespace LambdaUI.Minecraft
             SendStatusRequest();
 
             var buffer = new byte[32768];
-            _stream.Read(buffer, 0, buffer.Length);
+            await _stream.ReadAsync(buffer, 0, buffer.Length);
 
             try
             {

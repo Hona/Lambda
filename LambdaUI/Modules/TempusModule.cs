@@ -13,19 +13,19 @@ namespace LambdaUI.Modules
         [Command("activity")]
         public async Task GetActivity()
         {
-            var result = await TempusDataAccess.GetRecentActivity();
+            var result = await TempusDataAccess.GetRecentActivityAsync();
             await ReplyNewEmbed(JsonConvert.SerializeObject(result));
         }
         [Command("status")]
         public async Task GetStatus()
         {
-            var result = await TempusDataAccess.GetServerStatus();
+            var result = await TempusDataAccess.GetServerStatusAsync();
             await ReplyNewEmbed(JsonConvert.SerializeObject(result));
         }
         [Command("dwr")]
         public async Task GetDemoRecord(string map)
         {
-            var result = await TempusDataAccess.GetFullMapOverView(map);
+            var result = await TempusDataAccess.GetFullMapOverViewAsync(map);
             var demoRecord = result.DemomanRuns.OrderBy(x => x.Duration).First();
             await ReplyNewEmbed(
                 $"**Demo WR** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}");
@@ -34,7 +34,7 @@ namespace LambdaUI.Modules
         [Command("dtime")]
         public async Task GetDemoTime(string map, int place)
         {
-            var result = await TempusDataAccess.GetFullMapOverView(map);
+            var result = await TempusDataAccess.GetFullMapOverViewAsync(map);
             var demoRecord = result.DemomanRuns.OrderBy(x => x.Duration).Skip(place - 1).First();
             if (demoRecord != null)
                 await ReplyNewEmbed(
@@ -46,7 +46,7 @@ namespace LambdaUI.Modules
         [Command("swr")]
         public async Task GetSoldierRecord(string map)
         {
-            var result = await TempusDataAccess.GetFullMapOverView(map);
+            var result = await TempusDataAccess.GetFullMapOverViewAsync(map);
             var demoRecord = result.SoldierRuns.OrderBy(x => x.Duration).First();
             await ReplyNewEmbed(
                 $"**Solly WR** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}");
@@ -55,7 +55,7 @@ namespace LambdaUI.Modules
         [Command("stime")]
         public async Task GetSoldierTime(string map, int place)
         {
-            var result = await TempusDataAccess.GetFullMapOverView(map);
+            var result = await TempusDataAccess.GetFullMapOverViewAsync(map);
             var demoRecord = result.SoldierRuns.OrderBy(x => x.Duration).Skip(place - 1).First();
             if (demoRecord != null)
                 await ReplyNewEmbed(
