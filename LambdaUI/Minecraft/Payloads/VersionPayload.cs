@@ -7,6 +7,7 @@ namespace LambdaUI.Minecraft.Payloads
         [JsonProperty(PropertyName = "protocol")]
         public int Protocol { get; set; }
 
-        [JsonProperty(PropertyName = "name")] public string Name { get; set; }
+        [JsonProperty(PropertyName = "name")]
+        public string Name { get; set; }
     }
 }

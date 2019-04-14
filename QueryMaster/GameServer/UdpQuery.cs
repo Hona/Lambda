@@ -41,7 +41,7 @@ namespace QueryMaster.GameServer
     {
         private const int SinglePacket = -1;
         private const int MultiPacket = -2;
-        private EngineType Type;
+        private EngineType _type;
 
         internal UdpQuery(ConnectionInfo conInfo)
             : base(conInfo, ProtocolType.Udp)
@@ -50,12 +50,11 @@ namespace QueryMaster.GameServer
 
         internal byte[] GetResponse(byte[] msg, EngineType type, bool isMultiPacket = false)
         {
-            int header;
-            byte[] recvData = null, parsedData = null;
-            Type = type;
+            byte[] parsedData;
+            _type = type;
 
             SendData(msg);
-            recvData = ReceiveData();
+            var recvData = ReceiveData();
             if (isMultiPacket)
             {
                 var data = new List<byte>();
@@ -81,7 +80,7 @@ namespace QueryMaster.GameServer
 
             try
             {
-                header = BitConverter.ToInt32(recvData, 0);
+                var header = BitConverter.ToInt32(recvData, 0);
                 switch (header)
                 {
                     case SinglePacket:
@@ -95,7 +94,7 @@ namespace QueryMaster.GameServer
             }
             catch (Exception e)
             {
-                e.Data.Add("ReceivedData", recvData == null ? new byte[1] : recvData);
+                e.Data.Add("ReceivedData", recvData ?? new byte[1]);
                 Dispose();
                 throw;
             }
@@ -103,15 +102,15 @@ namespace QueryMaster.GameServer
             return parsedData;
         }
 
-        private byte[] ParseSinglePkt(byte[] data)
+        private static byte[] ParseSinglePkt(IEnumerable<byte> data)
         {
             return data.Skip(4).ToArray();
         }
 
         private byte[] ParseMultiPkt(byte[] data)
         {
-            byte[] parsedData = null;
-            switch (Type)
+            byte[] parsedData;
+            switch (_type)
             {
                 case EngineType.Source:
                     parsedData = SourcePackets(data);
@@ -127,23 +126,19 @@ namespace QueryMaster.GameServer
 
         private byte[] GoldSourcePackets(byte[] data)
         {
-            byte[] recvData = null;
-            List<byte> byteList = null;
-
             var pktCount = data[8] & 0x0F;
 
-            var pktList = new List<KeyValuePair<int, byte[]>>(pktCount);
-            pktList.Add(new KeyValuePair<int, byte[]>(data[8] >> 4, data));
+            var pktList =
+                new List<KeyValuePair<int, byte[]>>(pktCount) {new KeyValuePair<int, byte[]>(data[8] >> 4, data)};
 
             for (var i = 1; i < pktCount; i++)
             {
-                recvData = new byte[BufferSize];
-                recvData = ReceiveData();
+                var recvData = ReceiveData();
                 pktList.Add(new KeyValuePair<int, byte[]>(recvData[8] >> 4, recvData));
             }
 
             pktList.Sort((x, y) => x.Key.CompareTo(y.Key));
-            byteList = new List<byte>();
+            var byteList = new List<byte>();
             byteList.AddRange(pktList[0].Value.Skip(13));
 
             for (var i = 1; i < pktList.Count; i++) byteList.AddRange(pktList[i].Value.Skip(9));
@@ -155,14 +150,12 @@ namespace QueryMaster.GameServer
         {
             var isCompressed = false;
             var checksum = 0;
-            byte[] recvData = null;
-            List<byte> recvList = null;
-            Parser parser = null;
+            byte[] recvData;
 
             var pktCount = data[8];
 
-            var pktList = new List<KeyValuePair<byte, byte[]>>(pktCount);
-            pktList.Add(new KeyValuePair<byte, byte[]>(data[9], data));
+            var pktList =
+                new List<KeyValuePair<byte, byte[]>>(pktCount) {new KeyValuePair<byte, byte[]>(data[9], data)};
 
             for (var i = 1; i < pktCount; i++)
             {
@@ -171,13 +164,13 @@ namespace QueryMaster.GameServer
             }
 
             pktList.Sort((x, y) => x.Key.CompareTo(y.Key));
-            recvList = new List<byte>();
-            parser = new Parser(pktList[0].Value);
+            var recvList = new List<byte>();
+            var parser = new Parser(pktList[0].Value);
             parser.SkipBytes(4); //header
             if (parser.ReadInt() < 0) //ID
                 isCompressed = true;
             parser.ReadByte(); //total
-            int pktId = parser.ReadByte(); // packet id
+            parser.ReadByte();
             parser.ReadUShort(); //size
             if (isCompressed)
             {
@@ -195,18 +188,16 @@ namespace QueryMaster.GameServer
             }
 
             recvData = recvList.ToArray<byte>();
-            if (isCompressed)
-            {
-                recvData = Decompress(recvData);
-                if (!IsValid(recvData, checksum))
-                    throw new InvalidPacketException(
-                        "packet's checksum value does not match with the calculated checksum");
-            }
+            if (!isCompressed) return recvData.Skip(4).ToArray();
+            recvData = Decompress(recvData);
+            if (!IsValid(recvData, checksum))
+                throw new InvalidPacketException(
+                    "packet's checksum value does not match with the calculated checksum");
 
             return recvData.Skip(4).ToArray();
         }
 
-        private byte[] Decompress(byte[] data)
+        private static byte[] Decompress(byte[] data)
         {
             using (var input = new MemoryStream(data))
             using (var output = new MemoryStream())
@@ -226,12 +217,12 @@ namespace QueryMaster.GameServer
             }
         }
 
-        private bool IsValid(byte[] data, int Checksum)
+        private static bool IsValid(byte[] data, int checksum)
         {
             bool isValid;
-            using (var Input = new MemoryStream(data))
+            using (var input = new MemoryStream(data))
             {
-                isValid = Checksum == new CRC32().GetCrc32(Input);
+                isValid = checksum == new CRC32().GetCrc32(input);
             }
 
             return isValid;

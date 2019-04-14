@@ -30,8 +30,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Net;
 using Newtonsoft.Json;
+using QueryMaster.JsonConverters;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.DataObjects.ISteamApps
 {
     /// <summary>
     ///     Contains response of GetServersAtAddress method.
@@ -76,7 +77,7 @@ namespace QueryMaster.Steam
         ///     gmsindex.
         /// </summary>
         [JsonProperty("gmsindex")]
-        public int GMSIndex { get; internal set; }
+        public int GmsIndex { get; internal set; }
 
         /// <summary>
         ///     Application Id of the game.

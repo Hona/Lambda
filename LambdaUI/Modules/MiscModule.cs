@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using LambdaUI.Constants;
+using LambdaUI.Utilities;
 
 namespace LambdaUI.Modules
 {
@@ -39,7 +41,7 @@ namespace LambdaUI.Modules
         {
             if (moduleParam == "")
             {
-                var title = $"Help commands: ({Constants.CommandPrefix}help [module])";
+                var title = $"Help commands: ({DiscordConstants.CommandPrefix}help [module])";
                 var text = CommandService.Modules.Where(x => !x.Name.Contains("ModuleBase")).Aggregate("",
                     (current, module) =>
                         current +
@@ -53,7 +55,7 @@ namespace LambdaUI.Modules
                 var text = module.Commands.Aggregate("",
                     (current, command) =>
                         current +
-                        $"**__{Constants.CommandPrefix + command.Name}__**{Environment.NewLine}**{command.Summary}**. Parameters: {command.Parameters.Aggregate("", (currentString, nextParameter) => currentString + $"{nextParameter.Name} {GetSummaryString(nextParameter.Summary)}, ").TrimEnd(' ', ',')}{Environment.NewLine}");
+                        $"**__{DiscordConstants.CommandPrefix + command.Name}__**{Environment.NewLine}**{command.Summary}**. Parameters: {command.Parameters.Aggregate("", (currentString, nextParameter) => currentString + $"{nextParameter.Name} {GetSummaryString(nextParameter.Summary)}, ").TrimEnd(' ', ',')}{Environment.NewLine}");
                 await ReplyEmbed(EmbedHelper.CreateEmbed(title, text));
             }
         }

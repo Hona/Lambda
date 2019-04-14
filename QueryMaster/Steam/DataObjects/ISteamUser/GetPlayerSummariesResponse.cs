@@ -31,8 +31,9 @@ using System;
 using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using QueryMaster.JsonConverters;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.DataObjects.ISteamUser
 {
     /// <summary>
     ///     Contains response of GetPlayerSummaries method.

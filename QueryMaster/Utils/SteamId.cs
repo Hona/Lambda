@@ -117,8 +117,8 @@ namespace QueryMaster.Utils
                     steamId.Universe = Universe.Invalid;
                 if (steamId.Universe == Universe.Invalid)
                     steamId.Universe = Universe.Public;
-                var accountID = uint.Parse(match.Groups[3].Value, CultureInfo.InvariantCulture);
-                steamId.AccountId = match.Groups[2].Value == "0" ? accountID << 1 : (accountID << 1) + 1;
+                var accountId = uint.Parse(match.Groups[3].Value, CultureInfo.InvariantCulture);
+                steamId.AccountId = match.Groups[2].Value == "0" ? accountId << 1 : (accountId << 1) + 1;
                 steamId.Instance = Instance.Desktop;
                 steamId.AccountType = AccountType.Individual;
                 steamId.IsValid = steamId.Validate();
@@ -226,7 +226,7 @@ namespace QueryMaster.Utils
             if (Uri.IsWellFormedUriString(url, UriKind.Relative))
             {
                 var query = new SteamQuery(webApiKey);
-                var id = query.ISteamUser.ResolveVanityURL(url).ParsedResponse.SteamId;
+                var id = query.SteamUser.ResolveVanityUrl(url).ParsedResponse.SteamId;
                 if (id == null)
                 {
                     steamId = new SteamId();

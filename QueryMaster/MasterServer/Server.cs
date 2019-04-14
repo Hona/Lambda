@@ -34,6 +34,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using QueryMaster.MasterServer.DataObjects;
 
 namespace QueryMaster.MasterServer
 {
@@ -48,29 +49,30 @@ namespace QueryMaster.MasterServer
     /// </summary>
     public class Server : QueryMasterBase
     {
-        private static readonly int BufferSize = 1400;
-        private readonly ConnectionInfo ConInfo;
-        private readonly IPEndPoint SeedEndpoint = new IPEndPoint(IPAddress.Parse("0.0.0.0"), 0);
-        private readonly List<Task> TaskList = new List<Task>();
-        private AttemptCallback AttemptCallback;
-        private int BatchCount;
-        private BatchReceivedCallback Callback;
-        private CancellationTokenSource cts;
-        private ErrorCallback ErrorCallback;
-        private IpFilter filter;
-        private IPEndPoint RemoteEndPoint = new IPEndPoint(IPAddress.Any, 0), lastEndPoint;
-        private Socket Socket;
+        private const int BufferSize = 1400;
+        private readonly ConnectionInfo _conInfo;
+        private readonly IPEndPoint _seedEndpoint = new IPEndPoint(IPAddress.Parse("0.0.0.0"), 0);
+        private readonly List<Task> _taskList = new List<Task>();
+        private AttemptCallback _attemptCallback;
+        private int _batchCount;
+        private BatchReceivedCallback _callback;
+        private CancellationTokenSource _cts;
+        private ErrorCallback _errorCallback;
+        private IpFilter _filter;
+        private IPEndPoint _remoteEndPoint, _lastEndPoint;
+        private Socket _socket;
 
-        internal Server(ConnectionInfo conInfo, AttemptCallback attemptCallback)
+        internal Server(ConnectionInfo conInfo, AttemptCallback attemptCallback, IPEndPoint remoteEndPoint)
         {
-            ConInfo = conInfo;
-            AttemptCallback = attemptCallback;
+            _conInfo = conInfo;
+            _attemptCallback = attemptCallback;
+            _remoteEndPoint = remoteEndPoint;
         }
 
         /// <summary>
         ///     Get region.
         /// </summary>
-        public Region Region { get; private set; }
+        private Region Region { get; set; }
 
         /// <summary>
         ///     Starts receiving socket addresses of servers.
@@ -89,13 +91,13 @@ namespace QueryMaster.MasterServer
             ThrowIfDisposed();
             StopReceiving();
             Region = region;
-            Callback = callback;
-            ErrorCallback = errorCallback;
-            BatchCount = batchCount == -1 ? int.MaxValue : batchCount;
-            this.filter = filter;
-            lastEndPoint = null;
+            _callback = callback;
+            _errorCallback = errorCallback;
+            _batchCount = batchCount == -1 ? int.MaxValue : batchCount;
+            _filter = filter;
+            _lastEndPoint = null;
             Initialize();
-            TaskList.First().Start();
+            _taskList.First().Start();
         }
 
         /// <summary>
@@ -109,75 +111,73 @@ namespace QueryMaster.MasterServer
         public void GetNextBatch(int batchCount = 1, bool refresh = false)
         {
             ThrowIfDisposed();
-            TaskList.Add(TaskList.Last().ContinueWith(x =>
+            _taskList.Add(_taskList.Last().ContinueWith(x =>
             {
                 if (IsDisposed)
                     return;
-                if (Callback == null)
+                if (_callback == null)
                     throw new InvalidOperationException("Call GetAddresses before calling this method.");
-                if (cts.IsCancellationRequested)
+                if (_cts.IsCancellationRequested)
                     return;
                 if (refresh)
                 {
-                    lastEndPoint = null;
+                    _lastEndPoint = null;
                 }
-                else if (lastEndPoint.Equals(SeedEndpoint))
+                else if (_lastEndPoint.Equals(_seedEndpoint))
                 {
-                    if (cts != null)
-                        cts.Cancel();
+                    _cts?.Cancel();
                     throw new MasterServerException("Already received all the addresses.");
                 }
 
-                BatchCount = batchCount == -1 ? int.MaxValue : batchCount;
+                _batchCount = batchCount == -1 ? int.MaxValue : batchCount;
                 StartReceiving();
             }));
         }
 
         private void Initialize()
         {
-            Socket = new Socket(AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Dgram, ProtocolType.Udp);
-            Socket.SendTimeout = ConInfo.SendTimeout;
-            Socket.ReceiveTimeout = ConInfo.ReceiveTimeout;
-            Socket.Connect(ConInfo.EndPoint);
-            if (cts != null)
-                cts.Dispose();
-            cts = new CancellationTokenSource();
-            TaskList.Clear();
-            TaskList.Add(new Task(StartReceiving, cts.Token));
+            _socket = new Socket(AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Dgram, ProtocolType.Udp)
+            {
+                SendTimeout = _conInfo.SendTimeout,
+                ReceiveTimeout = _conInfo.ReceiveTimeout
+            };
+            _socket.Connect(_conInfo.EndPoint);
+            _cts?.Dispose();
+            _cts = new CancellationTokenSource();
+            _taskList.Clear();
+            _taskList.Add(new Task(StartReceiving, _cts.Token));
         }
 
         private void StartReceiving()
         {
             byte[] msg = null, recvBytes = null;
-            bool hasRecvMsg = true, IsNewMsg = true;
-            int recv = 0, attemptCounter = 0, attempts = ConInfo.Retries + 1, batchCounter = 0;
-            IPEndPoint endPoint;
-            List<IPEndPoint> endPoints = null;
+            var isNewMsg = true;
+            int attemptCounter = 0, attempts = _conInfo.Retries + 1, batchCounter = 0;
             var isLastBatch = false;
-            if (lastEndPoint == null)
-                endPoint = SeedEndpoint;
-            else
-                endPoint = lastEndPoint;
+            var endPoint = _lastEndPoint ?? _seedEndpoint;
 
             try
             {
-                while (batchCounter < BatchCount)
+                while (batchCounter < _batchCount)
                 {
-                    hasRecvMsg = false;
-                    if (IsNewMsg)
+                    bool hasRecvMsg;
+                    if (isNewMsg)
                     {
-                        msg = MasterUtil.BuildPacket(endPoint.ToString(), Region, filter);
+                        msg = MasterUtil.BuildPacket(endPoint.ToString(), Region, _filter);
                         recvBytes = new byte[BufferSize];
-                        IsNewMsg = false;
+                        isNewMsg = false;
                     }
 
                     try
                     {
                         attemptCounter++;
-                        if (AttemptCallback != null)
-                            ThreadPool.QueueUserWorkItem(x => AttemptCallback(attemptCounter));
-                        Socket.Send(msg);
-                        recv = Socket.Receive(recvBytes);
+                        if (_attemptCallback != null)
+                        {
+                            var counter = attemptCounter;
+                            ThreadPool.QueueUserWorkItem(x => _attemptCallback(counter));
+                        }
+                        _socket.Send(msg);
+                        var recv = _socket.Receive(recvBytes);
                         recvBytes = recvBytes.Take(recv).ToArray();
                         hasRecvMsg = true;
                     }
@@ -187,7 +187,7 @@ namespace QueryMaster.MasterServer
                     }
                     catch (SocketException ex)
                     {
-                        cts.Token.ThrowIfCancellationRequested();
+                        _cts.Token.ThrowIfCancellationRequested();
                         if (ex.SocketErrorCode == SocketError.TimedOut)
                         {
                             hasRecvMsg = false;
@@ -204,31 +204,31 @@ namespace QueryMaster.MasterServer
                     {
                         attemptCounter = 0;
                         batchCounter++;
-                        endPoints = MasterUtil.ProcessPacket(recvBytes);
+                        var endPoints = MasterUtil.ProcessPacket(recvBytes);
                         endPoint = endPoints.Last();
-                        IsNewMsg = true;
-                        lastEndPoint = endPoint;
-                        if (endPoints.Last().Equals(SeedEndpoint))
+                        isNewMsg = true;
+                        _lastEndPoint = endPoint;
+                        if (endPoints.Last().Equals(_seedEndpoint))
                         {
                             endPoints.RemoveAt(endPoints.Count - 1);
                             isLastBatch = true;
                         }
 
-                        Callback(new BatchInfo
+                        _callback(new BatchInfo
                         {
                             Region = Region,
-                            Source = ConInfo.EndPoint,
+                            Source = _conInfo.EndPoint,
                             ReceivedEndpoints = new QueryMasterCollection<IPEndPoint>(endPoints),
                             IsLastBatch = isLastBatch
                         });
                         if (isLastBatch)
                         {
-                            cts.Cancel();
+                            _cts.Cancel();
                             break;
                         }
                     }
 
-                    cts.Token.ThrowIfCancellationRequested();
+                    _cts.Token.ThrowIfCancellationRequested();
                 }
             }
             catch (OperationCanceledException)
@@ -236,47 +236,40 @@ namespace QueryMaster.MasterServer
             }
             catch (Exception ex)
             {
-                if (ErrorCallback != null)
-                    ErrorCallback(ex);
+                _errorCallback?.Invoke(ex);
             }
         }
 
         private void StopReceiving()
         {
-            if (TaskList.Count != 0)
-            {
-                if (cts != null)
-                    cts.Cancel();
-                if (Socket != null)
-                    Socket.Dispose();
-                Task.WaitAll(TaskList.ToArray());
-                TaskList.Clear();
-                cts = null;
-            }
+            if (_taskList.Count == 0) return;
+            _cts?.Cancel();
+            _socket?.Dispose();
+            Task.WaitAll(_taskList.ToArray());
+            _taskList.Clear();
+            _cts = null;
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (!IsDisposed)
+            if (IsDisposed) return;
+            if (disposing)
             {
-                if (disposing)
+                StopReceiving();
+                if (_cts != null)
                 {
-                    StopReceiving();
-                    if (cts != null)
-                    {
-                        cts.Dispose();
-                        cts = null;
-                    }
-
-                    TaskList.Clear();
-                    Callback = null;
-                    ErrorCallback = null;
-                    AttemptCallback = null;
+                    _cts.Dispose();
+                    _cts = null;
                 }
 
-                base.Dispose(disposing);
-                IsDisposed = true;
+                _taskList.Clear();
+                _callback = null;
+                _errorCallback = null;
+                _attemptCallback = null;
             }
+
+            base.Dispose(disposing);
+            IsDisposed = true;
         }
     }
 }

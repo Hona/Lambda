@@ -16,12 +16,14 @@ namespace LambdaUI.Modules
             var result = await TempusDataAccess.GetRecentActivityAsync();
             await ReplyNewEmbed(JsonConvert.SerializeObject(result));
         }
+
         [Command("status")]
         public async Task GetStatus()
         {
             var result = await TempusDataAccess.GetServerStatusAsync();
             await ReplyNewEmbed(JsonConvert.SerializeObject(result));
         }
+
         [Command("dwr")]
         public async Task GetDemoRecord(string map)
         {

@@ -30,7 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using Newtonsoft.Json;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.DataObjects.ISteamUser
 {
     /// <summary>
     ///     Contains response of GetPlayerBans method.
@@ -73,12 +73,12 @@ namespace QueryMaster.Steam
         ///     Indicates whether the player has VAC bans on record.
         /// </summary>
         [JsonProperty("VACBanned")]
-        public bool? IsVACBanned { get; internal set; }
+        public bool? IsVacBanned { get; internal set; }
 
         /// <summary>
         ///     Number of bans.
         /// </summary>
-        public int? NumberOfVACBans { get; internal set; }
+        public int? NumberOfVacBans { get; internal set; }
 
         /// <summary>
         ///     Days since last ban.

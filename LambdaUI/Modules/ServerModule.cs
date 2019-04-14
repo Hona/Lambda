@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using LambdaUI.Constants;
 using LambdaUI.Minecraft;
 using QueryMaster;
 using QueryMaster.GameServer;
@@ -12,17 +13,21 @@ namespace LambdaUI.Modules
     [Summary("Gets server info")]
     public class ServerModule : ExtraModuleBase
     {
-        public EmbedBuilder SourceEmbed(string ip, ushort port) => GetEmbedBuilder(ip, port, Game.Team_Fortress_2);
         public EmbedBuilder JustJumpEmbed => GetEmbedBuilder(ServerConstants.JustJumpServerIpAddress,
             ServerConstants.JustJumpServerPort,
-            Game.Team_Fortress_2);
+            Game.TeamFortress2);
 
         public EmbedBuilder HightowerEmbed => GetEmbedBuilder(ServerConstants.HightowerServerIpAddress,
             ServerConstants.HightowerServerPort,
-            Game.Team_Fortress_2);
+            Game.TeamFortress2);
 
         public EmbedBuilder GmodEmbed => GetEmbedBuilder(ServerConstants.GmodServerIpAddress,
-            ServerConstants.GmodServerPort, Game.Garrys_Mod);
+            ServerConstants.GmodServerPort, Game.GarrysMod);
+
+        public EmbedBuilder SourceEmbed(string ip, ushort port)
+        {
+            return GetEmbedBuilder(ip, port, Game.TeamFortress2);
+        }
 
         [Alias("si")]
         [Command("serverinfo")]

@@ -37,17 +37,17 @@ namespace QueryMaster.MasterServer
         /// <summary>
         ///     US East coast
         /// </summary>
-        US_East_coast,
+        UsEastCoast,
 
         /// <summary>
         ///     US West coast
         /// </summary>
-        US_West_coast,
+        UsWestCoast,
 
         /// <summary>
         ///     South America
         /// </summary>
-        South_America,
+        SouthAmerica,
 
         /// <summary>
         ///     Europe
@@ -67,7 +67,7 @@ namespace QueryMaster.MasterServer
         /// <summary>
         ///     Middle East
         /// </summary>
-        Middle_East,
+        MiddleEast,
 
         /// <summary>
         ///     Africa
@@ -77,6 +77,6 @@ namespace QueryMaster.MasterServer
         /// <summary>
         ///     Rest of the world
         /// </summary>
-        Rest_of_the_world = 0xFF
+        RestOfTheWorld = 0xFF
     }
 }

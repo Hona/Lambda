@@ -2,12 +2,12 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using LambdaUI.Utilities;
 
 namespace LambdaUI.Modules
 {
     public class ExtraModuleBase : ModuleBase
     {
-        // TODO: Check that this is consistent
         public async Task ReplyNewEmbed(string text)
         {
             var parts = text.SplitInParts(2000);
@@ -26,7 +26,7 @@ namespace LambdaUI.Modules
         public async Task ReplyEmbed(EmbedBuilder embed)
         {
             if (embed.Description != null && embed.Description.Length > 2048)
-                embed.WithDescription(embed.Description.Take(2000) + "...");
+                embed.WithDescription(new string(embed.Description.Take(2000).ToArray()).EscapeDiscordChars() + "...");
             await ReplyAsync("", embed: embed.Build());
         }
     }

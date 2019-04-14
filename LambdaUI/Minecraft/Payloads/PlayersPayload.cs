@@ -5,7 +5,8 @@ namespace LambdaUI.Minecraft.Payloads
 {
     internal class PlayersPayload
     {
-        [JsonProperty(PropertyName = "max")] public int Max { get; set; }
+        [JsonProperty(PropertyName = "max")]
+        public int Max { get; set; }
 
         [JsonProperty(PropertyName = "online")]
         public int Online { get; set; }

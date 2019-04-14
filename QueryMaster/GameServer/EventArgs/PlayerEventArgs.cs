@@ -28,8 +28,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
 using System;
+using QueryMaster.GameServer.DataObjects;
 
-namespace QueryMaster.GameServer
+namespace QueryMaster.GameServer.EventArgs
 {
     /// <summary>
     ///     Provides data for Playervalidate,playerenteredgame and player disconnected event.

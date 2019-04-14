@@ -27,7 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #endregion
 
-namespace QueryMaster.MasterServer
+namespace QueryMaster.MasterServer.DataObjects
 {
     /// <summary>
     ///     Allows you to restrict the results to servers running a certain game.
@@ -123,12 +123,12 @@ namespace QueryMaster.MasterServer
         /// <summary>
         ///     Return only one server for each unique IP address matched.
         /// </summary>
-        public bool IsUniqueIPAddress { get; set; }
+        public bool IsUniqueIpAddress { get; set; }
 
         /// <summary>
         ///     Return only servers on the specified End Point(Port is optional).
         /// </summary>
-        public string IPAddress { get; set; }
+        public string IpAddress { get; set; }
 
         /// <summary>
         ///     Exclude servers that match any of the mentioned conditions(Nor filter).

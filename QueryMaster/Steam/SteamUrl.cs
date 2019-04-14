@@ -40,7 +40,7 @@ namespace QueryMaster.Steam
     public class SteamUrl
     {
         internal static readonly string BaseUrl = "http://api.steampowered.com";
-        private bool appendKey;
+        private bool _appendKey;
 
         public SteamUrl()
         {
@@ -72,12 +72,12 @@ namespace QueryMaster.Steam
         /// </summary>
         public bool AppendKey
         {
-            get => appendKey;
+            get => _appendKey;
             set
             {
                 if (value && string.IsNullOrWhiteSpace(ApiKey))
                     throw new SteamException("Api key is not set.");
-                appendKey = value;
+                _appendKey = value;
             }
         }
 

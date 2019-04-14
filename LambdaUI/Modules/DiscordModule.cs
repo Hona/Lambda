@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using LambdaUI.Constants;
 
 namespace LambdaUI.Modules
 {
@@ -63,12 +64,12 @@ namespace LambdaUI.Modules
                 var builder = new EmbedBuilder {Title = server.Name};
                 builder.AddField("Channels", server.Channels.Count)
                     .AddField("Created", server.CreatedAt.ToString("d"))
-                .AddField("Default Notifications", server.DefaultMessageNotifications.ToString())
-                .AddField("Members", server.MemberCount)
-                .AddField("2FA", server.MfaLevel.ToString())
-                .AddField("Owner", server.Owner.Username)
+                    .AddField("Default Notifications", server.DefaultMessageNotifications.ToString())
+                    .AddField("Members", server.MemberCount)
+                    .AddField("2FA", server.MfaLevel.ToString())
+                    .AddField("Owner", server.Owner.Username)
                     .WithColor(ColorConstants.InfoColor)
-                .WithFooter(server.Id.ToString());
+                    .WithFooter(server.Id.ToString());
                 await ReplyEmbed(builder);
             }
         }
@@ -76,7 +77,7 @@ namespace LambdaUI.Modules
         private static string NicknameString(string nickname) => string.IsNullOrWhiteSpace(nickname) ? string.Empty : $" ({nickname})";
 
         private static string PermissionsToString(GuildPermissions perms) => perms.ToList()
-                .Aggregate("", (currentString, nextPermission) => currentString + nextPermission.ToString() + ", ")
-                .TrimEnd(' ', ',');
+            .Aggregate("", (currentString, nextPermission) => currentString + nextPermission.ToString() + ", ")
+            .TrimEnd(' ', ',');
     }
 }

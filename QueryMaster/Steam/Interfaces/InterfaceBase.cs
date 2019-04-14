@@ -29,8 +29,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using QueryMaster.Steam.DataObjects;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.Interfaces
 {
     /// <summary>
     ///     Parent of all interfaces.
@@ -42,26 +43,25 @@ namespace QueryMaster.Steam
         /// </summary>
         internal string Interface { get; set; }
 
-        internal T GetParsedResponse<T>(SteamUrl url, bool AddRootObject = false, params JsonConverter[] jsonConverters)
+        internal T GetParsedResponse<T>(SteamUrl url, bool addRootObject = false, params JsonConverter[] jsonConverters)
             where T : SteamResponse, new()
         {
             var reply = GetResponse(url);
-            var response = ParseResponse<T>(reply, AddRootObject, jsonConverters);
+            var response = ParseResponse<T>(reply, addRootObject, jsonConverters);
             response.RequestUrl = url;
             return response;
         }
 
-        internal T ParseResponse<T>(string reply, bool AddRootObject = false, params JsonConverter[] jsonConverters)
+        internal static T ParseResponse<T>(string reply, bool addRootObject = false, params JsonConverter[] jsonConverters)
             where T : SteamResponse, new()
         {
-            var jsonString = string.Empty;
             T response = null;
             try
             {
-                if (AddRootObject)
+                string jsonString;
+                if (addRootObject)
                 {
-                    var rootObject = new JObject();
-                    rootObject.Add("RootObject", JToken.Parse(reply));
+                    var rootObject = new JObject {{"RootObject", JToken.Parse(reply)}};
                     jsonString = rootObject.ToString();
                 }
                 else
@@ -79,16 +79,15 @@ namespace QueryMaster.Steam
             }
             finally
             {
-                response.ReceivedResponse = reply;
-                response.Converters = jsonConverters;
+                if (response != null) {
+                    response.ReceivedResponse = reply;
+                    response.Converters = jsonConverters;
+                }
             }
 
             return response;
         }
 
-        internal string GetResponse(SteamUrl url)
-        {
-            return new SteamSocket().GetResponse(url.ToString());
-        }
+        private static string GetResponse(SteamUrl url) => new SteamSocket().GetResponse(url.ToString());
     }
 }

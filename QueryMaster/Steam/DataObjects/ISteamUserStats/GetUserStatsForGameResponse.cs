@@ -30,7 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using Newtonsoft.Json;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.DataObjects.ISteamUserStats
 {
     /// <summary>
     ///     Contains response of GetUserStatsForGame method.
@@ -52,7 +52,7 @@ namespace QueryMaster.Steam
         ///     64 bit steam id.
         /// </summary>
         [JsonProperty("steamID")]
-        public ulong SteamID { get; internal set; }
+        public ulong SteamId { get; internal set; }
 
         /// <summary>
         ///     Game name.

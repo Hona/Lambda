@@ -30,7 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using Newtonsoft.Json;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.DataObjects.ISteamGroup
 {
     /// <summary>
     ///     Contains response of GetGroupDetails method.
@@ -114,7 +114,7 @@ namespace QueryMaster.Steam
         ///     Group Url.
         /// </summary>
         [JsonProperty("groupURL")]
-        public string URL { get; set; }
+        public string Url { get; set; }
 
         /// <summary>
         ///     Headline(may contain html tags).

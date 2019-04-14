@@ -29,15 +29,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Globalization;
 using Newtonsoft.Json;
+using QueryMaster.JsonConverters;
+using QueryMaster.Steam.DataObjects.ISteamUser;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.Interfaces
 {
     /// <summary>
     ///     Represents the ISteamUser interface.
     /// </summary>
-    public class ISteamUser : InterfaceBase
+    public class SteamUser : InterfaceBase
     {
-        internal ISteamUser()
+        internal SteamUser()
         {
             Interface = "ISteamUser";
         }
@@ -107,12 +109,12 @@ namespace QueryMaster.Steam
         ///     Resolve vanity URL parts to a 64 bit ID(ResolveVanityURL web api method(version 1)).
         /// </summary>
         /// <param name="vanityUrl">The user's vanity URL.(eg:-Vanity Url for "http://steamcommunity.com/id/abcd" will be abcd). </param>
-        /// <returns>Instance of <see cref="ResolveVanityURLResponse" />.</returns>
-        public ResolveVanityURLResponse ResolveVanityURL(string vanityUrl)
+        /// <returns>Instance of <see cref="ResolveVanityUrlResponse" />.</returns>
+        public ResolveVanityUrlResponse ResolveVanityUrl(string vanityUrl)
         {
             var url = new SteamUrl {Interface = Interface, Method = "ResolveVanityURL", Version = 1, AppendKey = true};
             url.Parameters.Add(new Parameter {Name = "vanityurl", Value = vanityUrl});
-            return GetParsedResponse<ResolveVanityURLResponse>(url);
+            return GetParsedResponse<ResolveVanityUrlResponse>(url);
         }
     }
 }

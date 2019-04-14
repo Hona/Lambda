@@ -30,7 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using Newtonsoft.Json;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.DataObjects.ISteamUserStats
 {
     /// <summary>
     ///     Contains response of GetPlayerAchievements method.
@@ -80,7 +80,7 @@ namespace QueryMaster.Steam
         ///     The 64 bit Steam id of the user.
         /// </summary>
         [JsonProperty("steamID")]
-        public ulong SteamID { get; internal set; }
+        public ulong SteamId { get; internal set; }
 
         /// <summary>
         ///     Game Name.

@@ -28,15 +28,16 @@ OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
 using System.Globalization;
+using QueryMaster.Steam.DataObjects.ISteamDirectory;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.Interfaces
 {
     /// <summary>
     ///     Represents the ISteamDirectory interface.
     /// </summary>
-    public class ISteamDirectory : InterfaceBase
+    public class SteamDirectory : InterfaceBase
     {
-        internal ISteamDirectory()
+        internal SteamDirectory()
         {
             Interface = "ISteamDirectory";
         }
@@ -46,14 +47,14 @@ namespace QueryMaster.Steam
         /// </summary>
         /// <param name="cellId">Client's Steam cell ID</param>
         /// <param name="maxCount">Max number of servers to return.</param>
-        /// <returns>Instance of <see cref="GetCMListResponse" />.</returns>
-        public GetCMListResponse GetCMList(uint cellId, uint maxCount = 10)
+        /// <returns>Instance of <see cref="GetCmListResponse" />.</returns>
+        public GetCmListResponse GetCmList(uint cellId, uint maxCount = 10)
         {
             var url = new SteamUrl {Interface = Interface, Method = "GetCMList", Version = 1};
             url.Parameters.Add(new Parameter {Name = "cellid", Value = cellId.ToString(CultureInfo.InvariantCulture)});
             url.Parameters.Add(new Parameter
                 {Name = "maxcount", Value = maxCount.ToString(CultureInfo.InvariantCulture)});
-            return GetParsedResponse<GetCMListResponse>(url);
+            return GetParsedResponse<GetCmListResponse>(url);
         }
     }
 }

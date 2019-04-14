@@ -29,13 +29,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 
-namespace QueryMaster.GameServer
+namespace QueryMaster.GameServer.EventArgs
 {
     /// <summary>
     ///     Serves as base class for all log  EventArgs.
     /// </summary>
     [Serializable]
-    public class LogEventArgs : EventArgs
+    public class LogEventArgs : System.EventArgs
     {
         /// <summary>
         ///     Gets Timestamp.

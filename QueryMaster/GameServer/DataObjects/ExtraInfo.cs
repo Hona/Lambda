@@ -29,7 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 
-namespace QueryMaster.GameServer
+namespace QueryMaster.GameServer.DataObjects
 {
     /// <summary>
     ///     Contains extra information about server.
@@ -50,7 +50,7 @@ namespace QueryMaster.GameServer
         /// <summary>
         ///     Contains information on Source TV.(if it is Source TV).
         /// </summary>
-        public SourceTVInfo SpecInfo { get; internal set; }
+        public SourceTvInfo SpecInfo { get; internal set; }
 
         /// <summary>
         ///     Tags that describe the game according to the server.

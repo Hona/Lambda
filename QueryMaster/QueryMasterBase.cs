@@ -72,18 +72,18 @@ namespace QueryMaster
         internal T Invoke<T>(Func<T> method, int attempts, AttemptCallback attemptcallback, bool throwExceptions)
             where T : class
         {
-            var AttemptCounter = 0;
+            var attemptCounter = 0;
             while (true)
                 try
                 {
-                    AttemptCounter++;
-                    if (attemptcallback != null) ThreadPool.QueueUserWorkItem(x => attemptcallback(AttemptCounter));
+                    attemptCounter++;
+                    if (attemptcallback != null) ThreadPool.QueueUserWorkItem(x => attemptcallback(attemptCounter));
                     var reply = method();
                     return reply;
                 }
                 catch (Exception)
                 {
-                    if (AttemptCounter >= attempts)
+                    if (attemptCounter >= attempts)
                         if (throwExceptions)
                             throw;
                         else

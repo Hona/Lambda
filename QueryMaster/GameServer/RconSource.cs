@@ -35,23 +35,23 @@ namespace QueryMaster.GameServer
 {
     internal class RconSource : Rcon
     {
-        private readonly ConnectionInfo ConInfo;
-        internal TcpQuery socket;
+        private readonly ConnectionInfo _conInfo;
+        internal TcpQuery Socket;
 
         private RconSource(ConnectionInfo conInfo)
         {
-            ConInfo = conInfo;
+            _conInfo = conInfo;
         }
 
         internal static Rcon Authorize(ConnectionInfo conInfo, string msg)
         {
             return new QueryMasterBase().Invoke<Rcon>(() =>
                 {
-                    var obj = new RconSource(conInfo) {socket = new TcpQuery(conInfo)};
+                    var obj = new RconSource(conInfo) {Socket = new TcpQuery(conInfo)};
                     var recvData = new byte[50];
                     var packet = new RconSrcPacket
                         {Body = msg, Id = (int) PacketId.ExecCmd, Type = (int) PacketType.Auth};
-                    recvData = obj.socket.GetResponse(RconUtil.GetBytes(packet));
+                    recvData = obj.Socket.GetResponse(RconUtil.GetBytes(packet));
                     int header;
                     try
                     {
@@ -70,14 +70,14 @@ namespace QueryMaster.GameServer
         public override string SendCommand(string command, bool isMultipacketResponse = false)
         {
             ThrowIfDisposed();
-            return Invoke(() => sendCommand(command, isMultipacketResponse), 1, null, ConInfo.ThrowExceptions);
+            return Invoke(() => sendCommand(command, isMultipacketResponse), 1, null, _conInfo.ThrowExceptions);
         }
 
         private string sendCommand(string command, bool isMultipacketResponse)
         {
             var senPacket = new RconSrcPacket
                 {Body = command, Id = (int) PacketId.ExecCmd, Type = (int) PacketType.Exec};
-            var recvData = socket.GetMultiPacketResponse(RconUtil.GetBytes(senPacket));
+            var recvData = Socket.GetMultiPacketResponse(RconUtil.GetBytes(senPacket));
             var str = new StringBuilder();
             try
             {
@@ -119,8 +119,8 @@ namespace QueryMaster.GameServer
             if (!IsDisposed)
             {
                 if (disposing)
-                    if (socket != null)
-                        socket.Dispose();
+                    if (Socket != null)
+                        Socket.Dispose();
                 base.Dispose(disposing);
                 IsDisposed = true;
             }

@@ -30,7 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using Newtonsoft.Json;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.DataObjects.ISteamUserStats
 {
     /// <summary>
     ///     Contains response of GetSchemaForGame method.
@@ -124,7 +124,7 @@ namespace QueryMaster.Steam
         ///     Display title string of achievement.
         /// </summary>
         [JsonProperty("displayName")]
-        public string displayName { get; internal set; }
+        public string DisplayName { get; internal set; }
 
         /// <summary>
         ///     If achievement is hidden to the user before earning achievement.

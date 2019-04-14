@@ -28,15 +28,16 @@ OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
 using System.Globalization;
+using QueryMaster.Steam.DataObjects.ISteamUserStats;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.Interfaces
 {
     /// <summary>
     ///     Represents the ISteamUserStats Interface.
     /// </summary>
-    public class ISteamUserStats : InterfaceBase
+    public class SteamUserStats : InterfaceBase
     {
-        internal ISteamUserStats()
+        internal SteamUserStats()
         {
             Interface = "ISteamUserStats";
         }
@@ -62,12 +63,12 @@ namespace QueryMaster.Steam
         ///     Gets global stats(GetGlobalStatsForGame web api method(version 1)).
         /// </summary>
         /// <param name="appId">Application ID</param>
-        /// <param name="StartDate">Start date for daily totals (unix epoch timestamp).</param>
-        /// <param name="EndDate">End date for daily totals (unix epoch timestamp).</param>
+        /// <param name="startDate">Start date for daily totals (unix epoch timestamp).</param>
+        /// <param name="endDate">End date for daily totals (unix epoch timestamp).</param>
         /// <param name="names">Names of stat to get data for.</param>
         /// <returns>Instance of <see cref="GetGlobalStatsForGameResponse" />.</returns>
-        public GetGlobalStatsForGameResponse GetGlobalStatsForGame(uint appId, uint? StartDate = null,
-            uint? EndDate = null, params string[] names)
+        public GetGlobalStatsForGameResponse GetGlobalStatsForGame(uint appId, uint? startDate = null,
+            uint? endDate = null, params string[] names)
         {
             var url = new SteamUrl {Interface = Interface, Method = "GetGlobalStatsForGame", Version = 1};
             url.Parameters.Add(new Parameter {Name = "appid", Value = appId.ToString(CultureInfo.InvariantCulture)});
@@ -75,10 +76,10 @@ namespace QueryMaster.Steam
                 {Name = "count", Value = names.Length.ToString(CultureInfo.InvariantCulture)});
             for (var i = 0; i < names.Length; i++)
                 url.Parameters.Add(new Parameter {Name = "name[" + i + "]", Value = names[i]});
-            if (StartDate != null)
-                url.Parameters.Add(new Parameter {Name = "startdate", Value = StartDate.ToString()});
-            if (EndDate != null)
-                url.Parameters.Add(new Parameter {Name = "enddate", Value = EndDate.ToString()});
+            if (startDate != null)
+                url.Parameters.Add(new Parameter {Name = "startdate", Value = startDate.ToString()});
+            if (endDate != null)
+                url.Parameters.Add(new Parameter {Name = "enddate", Value = endDate.ToString()});
             return GetParsedResponse<GetGlobalStatsForGameResponse>(url);
         }
 

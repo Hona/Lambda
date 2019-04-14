@@ -29,13 +29,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 
-namespace QueryMaster.GameServer
+namespace QueryMaster.GameServer.DataObjects
 {
     /// <summary>
     ///     Contains information on SourceTV.
     /// </summary>
     [Serializable]
-    public class SourceTVInfo : DataObject
+    public class SourceTvInfo : DataObject
     {
         /// <summary>
         ///     Spectator port number for SourceTV.

@@ -105,7 +105,7 @@ namespace QueryMaster
             return newArray;
         }
 
-        internal static IPEndPoint ToIPEndPoint(string endPointStr)
+        internal static IPEndPoint ToIpEndPoint(string endPointStr)
         {
             IPEndPoint iPEndPoint = null;
             IPAddress address;

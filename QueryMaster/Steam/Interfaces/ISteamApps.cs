@@ -29,15 +29,16 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Globalization;
 using System.Net;
+using QueryMaster.Steam.DataObjects.ISteamApps;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.Interfaces
 {
     /// <summary>
     ///     Represents the ISteamApps interface.
     /// </summary>
-    public class ISteamApps : InterfaceBase
+    public class SteamApps : InterfaceBase
     {
-        internal ISteamApps()
+        internal SteamApps()
         {
             Interface = "ISteamApps";
         }

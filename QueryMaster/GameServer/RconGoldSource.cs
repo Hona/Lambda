@@ -44,32 +44,32 @@ namespace QueryMaster.GameServer
                 0xFF, 0xFF, 0xFF, 0xFF, 0x72, 0x63, 0x6f, 0x6e, 0x20
             }; //+<challenge id>+"<rcon password>"+<value>
 
-        private readonly ConnectionInfo ConInfo;
+        private readonly ConnectionInfo _conInfo;
 
         internal string ChallengeId = string.Empty;
 
         internal string RConPass = string.Empty;
-        internal UdpQuery socket;
+        internal UdpQuery Socket;
 
         private RconGoldSource(ConnectionInfo conInfo)
         {
-            socket = new UdpQuery(conInfo);
-            ConInfo = conInfo;
+            Socket = new UdpQuery(conInfo);
+            _conInfo = conInfo;
         }
 
         internal static Rcon Authorize(ConnectionInfo conInfo, string pass)
         {
-            var Obj = new RconGoldSource(conInfo);
-            Obj.ChallengeId = Obj.GetChallengeId();
-            Obj.RConPass = pass;
-            if (Obj != null)
+            var obj = new RconGoldSource(conInfo);
+            obj.ChallengeId = obj.GetChallengeId();
+            obj.RConPass = pass;
+            if (obj != null)
             {
-                var reply = Obj.SendCommand("");
+                var reply = obj.SendCommand("");
                 if (reply != null && !reply.Contains("Bad rcon_password"))
-                    return Obj;
+                    return obj;
             }
 
-            Obj.Dispose();
+            obj.Dispose();
             return null;
         }
 
@@ -77,7 +77,7 @@ namespace QueryMaster.GameServer
         public override string SendCommand(string command, bool isMultiPacketresponse = false)
         {
             ThrowIfDisposed();
-            return Invoke(() => sendCommand(command, isMultiPacketresponse), 1, null, ConInfo.ThrowExceptions);
+            return Invoke(() => sendCommand(command, isMultiPacketresponse), 1, null, _conInfo.ThrowExceptions);
         }
 
         private string sendCommand(string command, bool isMultiPacketresponse)
@@ -87,9 +87,9 @@ namespace QueryMaster.GameServer
             var recvData = new byte[2000];
             string s;
             if (string.IsNullOrEmpty(command))
-                recvData = socket.GetResponse(rconMsg, EngineType.GoldSource, isMultiPacketresponse);
+                recvData = Socket.GetResponse(rconMsg, EngineType.GoldSource, isMultiPacketresponse);
             else
-                recvData = socket.GetResponse(rconMsg, EngineType.GoldSource, isMultiPacketresponse);
+                recvData = Socket.GetResponse(rconMsg, EngineType.GoldSource, isMultiPacketresponse);
             try
             {
                 s = Util.BytesToString(recvData).Remove(0, 1);
@@ -111,7 +111,7 @@ namespace QueryMaster.GameServer
                     var challengeId = string.Empty;
                     try
                     {
-                        recvData = socket.GetResponse(RconChIdQuery, EngineType.GoldSource);
+                        recvData = Socket.GetResponse(RconChIdQuery, EngineType.GoldSource);
                         var parser = new Parser(recvData);
                         challengeId = parser.ReadString().Split(' ')[2].Trim();
                     }
@@ -122,7 +122,7 @@ namespace QueryMaster.GameServer
                     }
 
                     return challengeId;
-                }, ConInfo.Retries + 1, null, ConInfo.ThrowExceptions);
+                }, _conInfo.Retries + 1, null, _conInfo.ThrowExceptions);
         }
 
         public override void AddlogAddress(string ip, ushort port)
@@ -142,8 +142,8 @@ namespace QueryMaster.GameServer
             if (!IsDisposed)
             {
                 if (disposing)
-                    if (socket != null)
-                        socket.Dispose();
+                    if (Socket != null)
+                        Socket.Dispose();
                 base.Dispose(disposing);
                 IsDisposed = true;
             }

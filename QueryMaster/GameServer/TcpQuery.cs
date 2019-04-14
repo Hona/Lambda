@@ -35,7 +35,7 @@ namespace QueryMaster.GameServer
 {
     internal class TcpQuery : ServerSocket
     {
-        private readonly byte[] EmptyPkt =
+        private readonly byte[] _emptyPkt =
             {0x0a, 0x00, 0x00, 0x00, 0x0A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
         internal TcpQuery(ConnectionInfo conInfo)
@@ -59,7 +59,7 @@ namespace QueryMaster.GameServer
             var isRemaining = true;
             byte[] recvData;
             SendData(msg);
-            SendData(EmptyPkt); //Empty packet
+            SendData(_emptyPkt); //Empty packet
             recvData = ReceiveData(); //reply
             recvBytes.Add(recvData);
 

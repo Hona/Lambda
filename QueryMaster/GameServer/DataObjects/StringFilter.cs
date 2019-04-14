@@ -27,7 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #endregion
 
-namespace QueryMaster.GameServer
+namespace QueryMaster.GameServer.DataObjects
 {
     /// <summary>
     ///     Represents a filter that filters by provided string.

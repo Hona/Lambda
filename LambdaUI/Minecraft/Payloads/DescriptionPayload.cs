@@ -4,6 +4,7 @@ namespace LambdaUI.Minecraft.Payloads
 {
     internal class DescriptionPayload
     {
-        [JsonProperty("text")] public string Text { get; set; }
+        [JsonProperty("text")]
+        public string Text { get; set; }
     }
 }

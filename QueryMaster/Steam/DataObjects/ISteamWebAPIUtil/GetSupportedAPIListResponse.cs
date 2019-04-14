@@ -31,33 +31,33 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.DataObjects.ISteamWebAPIUtil
 {
     /// <summary>
     ///     Contains response of GetSupportedAPIList method.
     /// </summary>
     [Serializable]
-    public class GetSupportedAPIListResponse : SteamResponse
+    public class GetSupportedApiListResponse : SteamResponse
     {
         /// <summary>
         ///     Parsed response.
         /// </summary>
         [JsonProperty("apilist")]
-        public GetSupportedAPIListResponseApilist ParsedResponse { get; internal set; }
+        public GetSupportedApiListResponseApilist ParsedResponse { get; internal set; }
     }
 
     [Serializable]
-    public class GetSupportedAPIListResponseApilist : DataObject
+    public class GetSupportedApiListResponseApilist : DataObject
     {
         /// <summary>
-        ///     Collection of <see cref="GetSupportedAPIListResponseInterface" /> instances.
+        ///     Collection of <see cref="GetSupportedApiListResponseInterface" /> instances.
         /// </summary>
         [JsonProperty("interfaces")]
-        public QueryMasterCollection<GetSupportedAPIListResponseInterface> Interfaces { get; internal set; }
+        public QueryMasterCollection<GetSupportedApiListResponseInterface> Interfaces { get; internal set; }
     }
 
     [Serializable]
-    public class GetSupportedAPIListResponseInterface : DataObject
+    public class GetSupportedApiListResponseInterface : DataObject
     {
         /// <summary>
         ///     Name of Interface.
@@ -66,14 +66,14 @@ namespace QueryMaster.Steam
         public string Name { get; internal set; }
 
         /// <summary>
-        ///     Collection of <see cref="GetSupportedAPIListResponseMethod" /> instances.
+        ///     Collection of <see cref="GetSupportedApiListResponseMethod" /> instances.
         /// </summary>
         [JsonProperty("methods")]
-        public QueryMasterCollection<GetSupportedAPIListResponseMethod> Methods { get; internal set; }
+        public QueryMasterCollection<GetSupportedApiListResponseMethod> Methods { get; internal set; }
     }
 
     [Serializable]
-    public class GetSupportedAPIListResponseMethod : DataObject
+    public class GetSupportedApiListResponseMethod : DataObject
     {
         /// <summary>
         ///     Name of method.
@@ -94,14 +94,14 @@ namespace QueryMaster.Steam
         public string HttpMethod { get; internal set; }
 
         /// <summary>
-        ///     Collection of <see cref="GetSupportedAPIListResponseParameter" /> instances.
+        ///     Collection of <see cref="GetSupportedApiListResponseParameter" /> instances.
         /// </summary>
         [JsonProperty("parameters")]
-        public List<GetSupportedAPIListResponseParameter> Parameters { get; internal set; }
+        public List<GetSupportedApiListResponseParameter> Parameters { get; internal set; }
     }
 
     [Serializable]
-    public class GetSupportedAPIListResponseParameter : DataObject
+    public class GetSupportedApiListResponseParameter : DataObject
     {
         /// <summary>
         ///     Name of parameter.

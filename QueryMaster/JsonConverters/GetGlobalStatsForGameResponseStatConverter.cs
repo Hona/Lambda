@@ -31,9 +31,9 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using QueryMaster.Steam;
+using QueryMaster.Steam.DataObjects.ISteamUserStats;
 
-namespace QueryMaster
+namespace QueryMaster.JsonConverters
 {
     internal class GetGlobalStatsForGameResponseStatConverter : JsonConverter
     {

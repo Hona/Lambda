@@ -30,8 +30,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using QueryMaster.JsonConverters;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.DataObjects.ISteamUser
 {
     /// <summary>
     ///     Contains response of GetFriendList method.

@@ -27,14 +27,16 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #endregion
 
-namespace QueryMaster.Steam
+using QueryMaster.Steam.DataObjects.ISteamWebAPIUtil;
+
+namespace QueryMaster.Steam.Interfaces
 {
     /// <summary>
     ///     Represents the ISteamWebAPIUtil interface.
     /// </summary>
-    public class ISteamWebApiUtil : InterfaceBase
+    public class SteamWebApiUtil : InterfaceBase
     {
-        internal ISteamWebApiUtil()
+        internal SteamWebApiUtil()
         {
             Interface = "ISteamWebAPIUtil";
         }
@@ -53,12 +55,12 @@ namespace QueryMaster.Steam
         ///     Lists all available WebAPI interfaces(GetSupportedAPIList web api method(version 1)).
         /// </summary>
         /// <param name="appendKey">if true then response would include all available methods and interfaces allowed for that key.</param>
-        /// <returns>Instance of <see cref="GetSupportedAPIListResponse" />.</returns>
-        public GetSupportedAPIListResponse GetSupportedAPIList(bool appendKey = false)
+        /// <returns>Instance of <see cref="GetSupportedApiListResponse" />.</returns>
+        public GetSupportedApiListResponse GetSupportedApiList(bool appendKey = false)
         {
             var url = new SteamUrl
                 {Interface = Interface, Method = "GetSupportedAPIList", Version = 1, AppendKey = appendKey};
-            return GetParsedResponse<GetSupportedAPIListResponse>(url);
+            return GetParsedResponse<GetSupportedApiListResponse>(url);
         }
     }
 }

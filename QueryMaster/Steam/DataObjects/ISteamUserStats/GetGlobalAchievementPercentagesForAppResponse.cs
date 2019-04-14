@@ -30,7 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using Newtonsoft.Json;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.DataObjects.ISteamUserStats
 {
     /// <summary>
     ///     Contains response of GetGlobalAchievementPercentagesForApp method.

@@ -4,9 +4,10 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+using LambdaUI.Constants;
 using LambdaUI.Minecraft.Payloads;
 using LambdaUI.Models;
+using Newtonsoft.Json;
 
 namespace LambdaUI.Minecraft
 {
@@ -179,9 +180,9 @@ namespace LambdaUI.Minecraft
             var bufferLength = _buffer.ToArray();
             _buffer.Clear();
 
-            _stream.Write(bufferLength, 0, bufferLength.Length);
-            _stream.Write(packetData, 0, packetData.Length);
-            _stream.Write(buffer, 0, buffer.Length);
+            _stream.WriteAsync(bufferLength, 0, bufferLength.Length);
+            _stream.WriteAsync(packetData, 0, packetData.Length);
+            _stream.WriteAsync(buffer, 0, buffer.Length);
         }
 
         #endregion

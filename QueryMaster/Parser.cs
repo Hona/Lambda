@@ -35,41 +35,41 @@ namespace QueryMaster
 {
     internal class Parser
     {
-        private readonly byte[] Data;
-        private readonly int LastPosition;
-        private int CurrentPosition = -1;
+        private readonly byte[] _data;
+        private readonly int _lastPosition;
+        private int _currentPosition = -1;
 
         internal Parser(byte[] data)
         {
-            Data = data;
-            CurrentPosition = -1;
-            LastPosition = Data.Length - 1;
+            _data = data;
+            _currentPosition = -1;
+            _lastPosition = _data.Length - 1;
         }
 
-        internal bool HasUnParsedBytes => CurrentPosition <= LastPosition;
+        internal bool HasUnParsedBytes => _currentPosition <= _lastPosition;
 
         internal byte ReadByte()
         {
-            CurrentPosition++;
-            if (CurrentPosition > LastPosition)
+            _currentPosition++;
+            if (_currentPosition > _lastPosition)
                 throw new ParseException("Index was outside the bounds of the byte array.");
 
-            return Data[CurrentPosition];
+            return _data[_currentPosition];
         }
 
         internal ushort ReadUShort()
         {
             ushort num = 0;
 
-            CurrentPosition++;
-            if (CurrentPosition + 3 > LastPosition)
+            _currentPosition++;
+            if (_currentPosition + 3 > _lastPosition)
                 throw new ParseException("Unable to parse bytes to ushort.");
 
             if (!BitConverter.IsLittleEndian)
-                Array.Reverse(Data, CurrentPosition, 2);
+                Array.Reverse(_data, _currentPosition, 2);
 
-            num = BitConverter.ToUInt16(Data, CurrentPosition);
-            CurrentPosition++;
+            num = BitConverter.ToUInt16(_data, _currentPosition);
+            _currentPosition++;
 
             return num;
         }
@@ -78,15 +78,15 @@ namespace QueryMaster
         {
             var num = 0;
 
-            CurrentPosition++;
-            if (CurrentPosition + 3 > LastPosition)
+            _currentPosition++;
+            if (_currentPosition + 3 > _lastPosition)
                 throw new ParseException("Unable to parse bytes to int.");
 
             if (!BitConverter.IsLittleEndian)
-                Array.Reverse(Data, CurrentPosition, 4);
+                Array.Reverse(_data, _currentPosition, 4);
 
-            num = BitConverter.ToInt32(Data, CurrentPosition);
-            CurrentPosition += 3;
+            num = BitConverter.ToInt32(_data, _currentPosition);
+            _currentPosition += 3;
 
             return num;
         }
@@ -95,34 +95,34 @@ namespace QueryMaster
         {
             ulong num = 0;
 
-            CurrentPosition++;
-            if (CurrentPosition + 7 > LastPosition)
+            _currentPosition++;
+            if (_currentPosition + 7 > _lastPosition)
                 throw new ParseException("Unable to parse bytes to ulong.");
 
             if (!BitConverter.IsLittleEndian)
-                Array.Reverse(Data, CurrentPosition, 8);
+                Array.Reverse(_data, _currentPosition, 8);
 
-            num = BitConverter.ToUInt64(Data, CurrentPosition);
-            CurrentPosition += 7;
+            num = BitConverter.ToUInt64(_data, _currentPosition);
+            _currentPosition += 7;
 
             return num;
         }
 
         internal float ReadFloat()
         {
-            float Num = 0;
+            float num = 0;
 
-            CurrentPosition++;
-            if (CurrentPosition + 3 > LastPosition)
+            _currentPosition++;
+            if (_currentPosition + 3 > _lastPosition)
                 throw new ParseException("Unable to parse bytes to float.");
 
             if (!BitConverter.IsLittleEndian)
-                Array.Reverse(Data, CurrentPosition, 4);
+                Array.Reverse(_data, _currentPosition, 4);
 
-            Num = BitConverter.ToSingle(Data, CurrentPosition);
-            CurrentPosition += 3;
+            num = BitConverter.ToSingle(_data, _currentPosition);
+            _currentPosition += 3;
 
-            return Num;
+            return num;
         }
 
         internal string ReadString()
@@ -130,31 +130,31 @@ namespace QueryMaster
             var str = string.Empty;
             var temp = 0;
 
-            CurrentPosition++;
-            temp = CurrentPosition;
+            _currentPosition++;
+            temp = _currentPosition;
 
-            while (Data[CurrentPosition] != 0x00)
+            while (_data[_currentPosition] != 0x00)
             {
-                CurrentPosition++;
-                if (CurrentPosition > LastPosition)
+                _currentPosition++;
+                if (_currentPosition > _lastPosition)
                     throw new ParseException("Unable to parse bytes to string.");
             }
 
-            str = Encoding.UTF8.GetString(Data, temp, CurrentPosition - temp);
+            str = Encoding.UTF8.GetString(_data, temp, _currentPosition - temp);
 
             return str;
         }
 
         internal void SkipBytes(byte count)
         {
-            CurrentPosition += count;
-            if (CurrentPosition > LastPosition)
+            _currentPosition += count;
+            if (_currentPosition > _lastPosition)
                 throw new ParseException("skip count was outside the bounds of the byte array.");
         }
 
         internal byte[] GetUnParsedBytes()
         {
-            return Data.Skip(CurrentPosition + 1).ToArray();
+            return _data.Skip(_currentPosition + 1).ToArray();
         }
     }
 }

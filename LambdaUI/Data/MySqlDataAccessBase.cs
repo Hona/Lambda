@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Dapper;
-using Dapper.FluentMap;
-using Dapper.FluentMap.Configuration;
 using MySql.Data.MySqlClient;
 
 namespace LambdaUI.Data
@@ -16,21 +12,25 @@ namespace LambdaUI.Data
         private readonly string _connectionString;
         private MySqlConnection _connection;
 
-        public MySqlDataAccessBase(string connectionString)
+        protected MySqlDataAccessBase(string connectionString)
         {
             _connectionString = connectionString;
         }
+
         private async Task OpenConnectionAsync()
         {
             if (_connection == null) _connection = new MySqlConnection(_connectionString);
             await _connection.OpenAsync();
         }
-        protected async Task CheckConnectionAsync()
+
+        private async Task CheckConnectionAsync()
         {
-            if (_connection == null || _connection.State == ConnectionState.Closed || _connection.State == ConnectionState.Broken)
+            if (_connection == null || _connection.State == ConnectionState.Closed ||
+                _connection.State == ConnectionState.Broken)
                 await OpenConnectionAsync();
         }
-        internal async void CloseAsync()
+
+        private async void CloseAsync()
         {
             if (_connection != null) await _connection.CloseAsync();
         }
@@ -42,6 +42,7 @@ namespace LambdaUI.Data
             CloseAsync();
             return result;
         }
+
         protected async Task<List<T>> QueryAsync<T>(string query, object param)
         {
             await CheckConnectionAsync();
@@ -49,12 +50,12 @@ namespace LambdaUI.Data
             CloseAsync();
             return result;
         }
+
         protected async Task ExecuteAsync(string query, object param)
         {
             await CheckConnectionAsync();
-            var result = (await _connection.ExecuteAsync(query, param));
+            await _connection.ExecuteAsync(query, param);
             CloseAsync();
         }
     }
-
 }

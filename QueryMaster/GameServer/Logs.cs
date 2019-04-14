@@ -47,27 +47,27 @@ namespace QueryMaster.GameServer
     /// </summary>
     public class Logs : QueryMasterBase
     {
-        private readonly int BufferSize = 1400;
-        private readonly List<LogEvents> EventsInstanceList = new List<LogEvents>();
-        private readonly int HeaderSize;
-        private readonly int Port;
-        private readonly byte[] recvData;
+        private readonly int _bufferSize = 1400;
+        private readonly List<LogEvents> _eventsInstanceList = new List<LogEvents>();
+        private readonly int _headerSize;
+        private readonly int _port;
+        private readonly byte[] _recvData;
         internal LogCallback Callback;
         internal IPEndPoint ServerEndPoint;
-        private Socket UdpSocket;
+        private Socket _udpSocket;
 
         internal Logs(EngineType type, int port, IPEndPoint serverEndPoint)
         {
-            Port = port;
+            _port = port;
             ServerEndPoint = serverEndPoint;
-            recvData = new byte[BufferSize];
+            _recvData = new byte[_bufferSize];
             switch (type)
             {
                 case EngineType.GoldSource:
-                    HeaderSize = 10;
+                    _headerSize = 10;
                     break;
                 case EngineType.Source:
-                    HeaderSize = 7;
+                    _headerSize = 7;
                     break;
             }
         }
@@ -87,10 +87,10 @@ namespace QueryMaster.GameServer
             if (IsListening)
                 throw new QueryMasterException("QueryMaster already listening to logs.");
             IsListening = true;
-            UdpSocket = new Socket(AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Dgram, ProtocolType.Udp);
-            UdpSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-            UdpSocket.Bind(new IPEndPoint(IPAddress.Any, Port));
-            UdpSocket.BeginReceive(recvData, 0, recvData.Length, SocketFlags.None, Recv, null);
+            _udpSocket = new Socket(AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Dgram, ProtocolType.Udp);
+            _udpSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            _udpSocket.Bind(new IPEndPoint(IPAddress.Any, _port));
+            _udpSocket.BeginReceive(_recvData, 0, _recvData.Length, SocketFlags.None, Recv, null);
         }
 
         /// <summary>
@@ -99,8 +99,8 @@ namespace QueryMaster.GameServer
         public void Stop()
         {
             ThrowIfDisposed();
-            if (UdpSocket != null)
-                UdpSocket.Close();
+            if (_udpSocket != null)
+                _udpSocket.Close();
             IsListening = false;
         }
 
@@ -122,7 +122,7 @@ namespace QueryMaster.GameServer
         {
             ThrowIfDisposed();
             var eventObj = new LogEvents(ServerEndPoint);
-            EventsInstanceList.Add(eventObj);
+            _eventsInstanceList.Add(eventObj);
             return eventObj;
         }
 
@@ -132,9 +132,9 @@ namespace QueryMaster.GameServer
             {
                 if (disposing)
                 {
-                    if (UdpSocket != null)
-                        UdpSocket.Close();
-                    foreach (var i in EventsInstanceList) i.Dispose();
+                    if (_udpSocket != null)
+                        _udpSocket.Close();
+                    foreach (var i in _eventsInstanceList) i.Dispose();
                 }
 
                 base.Dispose(disposing);
@@ -147,21 +147,21 @@ namespace QueryMaster.GameServer
             var bytesRecv = 0;
             try
             {
-                bytesRecv = UdpSocket.EndReceive(res);
+                bytesRecv = _udpSocket.EndReceive(res);
             }
             catch (ObjectDisposedException)
             {
                 return;
             }
 
-            if (bytesRecv > HeaderSize)
+            if (bytesRecv > _headerSize)
             {
-                var logLine = Encoding.UTF8.GetString(recvData, HeaderSize, bytesRecv - HeaderSize);
+                var logLine = Encoding.UTF8.GetString(_recvData, _headerSize, bytesRecv - _headerSize);
                 Callback?.Invoke(string.Copy(logLine));
-                foreach (var i in EventsInstanceList) i.ProcessLog(string.Copy(logLine));
+                foreach (var i in _eventsInstanceList) i.ProcessLog(string.Copy(logLine));
             }
 
-            UdpSocket.BeginReceive(recvData, 0, recvData.Length, SocketFlags.None, Recv, null);
+            _udpSocket.BeginReceive(_recvData, 0, _recvData.Length, SocketFlags.None, Recv, null);
         }
     }
 }

@@ -1,10 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using LambdaUI.Data;
+using LambdaUI.Discord;
+using LambdaUI.Utilities;
 
 namespace LambdaUI.Modules
 {
@@ -14,29 +15,30 @@ namespace LambdaUI.Modules
     {
         public TempusDataAccess TempusDataAccess { get; set; }
         public DiscordSocketClient Client { get; set; }
-        public Program Program { get; set; }
+        public Lambda Lambda { get; set; }
         public ConfigDataAccess ConfigDataAccess { get; set; }
 
         [Command("embed")]
         public async Task Embed([Remainder] string text)
         {
             var builder = new EmbedBuilder();
-            builder.WithTitle(text)
-                .WithAuthor(text)
-                .WithDescription(text)
-                .WithFooter(text);
-            await ReplyEmbed(builder);
+            builder.WithTitle(text.EscapeDiscordChars())
+                .WithAuthor(text.EscapeDiscordChars())
+                .WithDescription(text.EscapeDiscordChars())
+                .WithFooter(text.EscapeDiscordChars());
+            await ReplyEmbed(builder.Build());
         }
+
         [Command("maplist")]
         public async Task GetMapList()
         {
-            await ReplyNewEmbed(string.Join(", ",(await TempusDataAccess.GetMapListAsync()).ConvertAll(x=>x.Name)));
+            await ReplyNewEmbed(string.Join(", ", (await TempusDataAccess.GetMapListAsync()).ConvertAll(x => x.Name)));
         }
 
         [Command("updateStatus")]
         public async Task UpdateStatus()
         {
-            Program.IntervalFunctions(null);
+            Lambda.IntervalFunctions(null);
             await ReplyNewEmbed("Done.");
         }
 
@@ -55,6 +57,5 @@ namespace LambdaUI.Modules
 
             await ReplyNewEmbed($"Done adding to {count} non-bot users");
         }
-
     }
 }

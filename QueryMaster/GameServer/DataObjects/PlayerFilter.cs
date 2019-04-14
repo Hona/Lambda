@@ -29,7 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Text;
 
-namespace QueryMaster.GameServer
+namespace QueryMaster.GameServer.DataObjects
 {
     /// <summary>
     ///     Represents a filter that filters by player.

@@ -29,7 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 
-namespace QueryMaster.GameServer
+namespace QueryMaster.GameServer.EventArgs
 {
     /// <summary>
     ///     Provides data for map started event.
@@ -40,6 +40,6 @@ namespace QueryMaster.GameServer
         /// <summary>
         ///     Get map CRC value.
         /// </summary>
-        public string MapCRC { get; internal set; }
+        public string MapCrc { get; internal set; }
     }
 }

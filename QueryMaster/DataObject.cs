@@ -29,6 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using Newtonsoft.Json;
+using QueryMaster.ContractSolver;
 
 namespace QueryMaster
 {

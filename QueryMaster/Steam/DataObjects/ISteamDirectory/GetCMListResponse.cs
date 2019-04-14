@@ -30,24 +30,25 @@ OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Net;
 using Newtonsoft.Json;
+using QueryMaster.JsonConverters;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.DataObjects.ISteamDirectory
 {
     /// <summary>
     ///     Contains response of GetCMList method.
     /// </summary>
     [Serializable]
-    public class GetCMListResponse : SteamResponse
+    public class GetCmListResponse : SteamResponse
     {
         /// <summary>
         ///     Parsed response.
         /// </summary>
         [JsonProperty("response")]
-        public GetCMListResponseResponse ParsedResponse { get; internal set; }
+        public GetCmListResponseResponse ParsedResponse { get; internal set; }
     }
 
     [Serializable]
-    public class GetCMListResponseResponse : DataObject
+    public class GetCmListResponseResponse : DataObject
     {
         /// <summary>
         ///     List of server end points

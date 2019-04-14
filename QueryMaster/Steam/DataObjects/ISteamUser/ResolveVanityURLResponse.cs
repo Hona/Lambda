@@ -30,23 +30,23 @@ OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using Newtonsoft.Json;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.DataObjects.ISteamUser
 {
     /// <summary>
     ///     Contains response of ResolveVanityURL method.
     /// </summary>
     [Serializable]
-    public class ResolveVanityURLResponse : SteamResponse
+    public class ResolveVanityUrlResponse : SteamResponse
     {
         /// <summary>
         ///     Parsed response.
         /// </summary>
         [JsonProperty("response")]
-        public ResolveVanityURLResponseResponse ParsedResponse { get; internal set; }
+        public ResolveVanityUrlResponseResponse ParsedResponse { get; internal set; }
     }
 
     [Serializable]
-    public class ResolveVanityURLResponseResponse : DataObject
+    public class ResolveVanityUrlResponseResponse : DataObject
     {
         /// <summary>
         ///     The 64 bit Steam ID the vanity URL resolves to.

@@ -27,7 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #endregion
 
-namespace QueryMaster.GameServer
+namespace QueryMaster.GameServer.EventArgs
 {
     /// <summary>
     ///     Provides data for Comment Received event.

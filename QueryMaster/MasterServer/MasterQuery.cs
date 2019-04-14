@@ -60,7 +60,7 @@ namespace QueryMaster.MasterServer
         public static Server GetServerInstance(IPEndPoint endPoint, int sendTimeout = 3000, int receiveTimeout = 3000,
             int retries = 3, AttemptCallback attemptCallback = null)
         {
-            Server server = null;
+            Server server;
             var conInfo = new ConnectionInfo
             {
                 SendTimeout = sendTimeout,
@@ -68,7 +68,7 @@ namespace QueryMaster.MasterServer
                 Retries = retries,
                 EndPoint = endPoint
             };
-            server = new Server(conInfo, attemptCallback);
+            server = new Server(conInfo, attemptCallback, endPoint);
             return server;
         }
     }

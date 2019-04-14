@@ -34,6 +34,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using QueryMaster.GameServer.DataObjects;
 
 namespace QueryMaster.GameServer
 {
@@ -42,15 +43,14 @@ namespace QueryMaster.GameServer
     /// </summary>
     public abstract class Server : QueryMasterBase
     {
-        private readonly EngineType Type;
-        internal ConnectionInfo ConInfo;
-        private bool IsPlayerChallengeId;
-        private bool IsRuleChallengeId;
-        private long Latency;
-        private Logs logs;
-        private byte[] PlayerChallengeId;
-        private Rcon rcon = null;
-        private byte[] RuleChallengeId;
+        private readonly EngineType _type;
+        internal readonly ConnectionInfo ConInfo;
+        private bool _isPlayerChallengeId;
+        private bool _isRuleChallengeId;
+        private long _latency;
+        private Logs _logs;
+        private byte[] _playerChallengeId;
+        private byte[] _ruleChallengeId;
 
         internal UdpQuery UdpSocket;
 
@@ -59,11 +59,11 @@ namespace QueryMaster.GameServer
             ConInfo = conInfo;
             EndPoint = conInfo.EndPoint;
             UdpSocket = new UdpQuery(conInfo);
-            Type = type;
+            _type = type;
             if (isObsolete == null)
                 try
                 {
-                    if (UdpSocket.GetResponse(QueryMsg.ObsoleteInfoQuery, Type)[0] == 0x6D)
+                    if (UdpSocket.GetResponse(QueryMsg.ObsoleteInfoQuery, _type)[0] == 0x6D)
                         IsObsolete = true;
                 }
                 catch (SocketException e)
@@ -72,7 +72,7 @@ namespace QueryMaster.GameServer
                         IsObsolete = false;
                 }
             else
-                IsObsolete = isObsolete == true ? true : false;
+                IsObsolete = isObsolete == true;
         }
 
         /// <summary>
@@ -125,16 +125,16 @@ namespace QueryMaster.GameServer
             ServerInfo serverInfo = null;
             try
             {
-                var Query = QueryMsg.InfoQuery;
+                var query = QueryMsg.InfoQuery;
                 if (IsObsolete)
-                    Query = QueryMsg.ObsoleteInfoQuery;
+                    query = QueryMsg.ObsoleteInfoQuery;
 
                 recvData = new byte[UdpSocket.BufferSize];
 
                 var sw = Stopwatch.StartNew();
-                recvData = UdpSocket.GetResponse(Query, Type);
+                recvData = UdpSocket.GetResponse(query, _type);
                 sw.Stop();
-                Latency = sw.ElapsedMilliseconds;
+                _latency = sw.ElapsedMilliseconds;
                 switch (recvData[0])
                 {
                     case 0x49:
@@ -159,7 +159,7 @@ namespace QueryMaster.GameServer
         {
             ServerInfo server = null;
             var parser = new Parser(data);
-            if (parser.ReadByte() != (byte) ResponseMsgHeader.A2S_INFO)
+            if (parser.ReadByte() != (byte) ResponseMsgHeader.A2SInfo)
                 throw new InvalidHeaderException("A2S_INFO message header is not valid");
             server = new ServerInfo();
             server.IsObsolete = false;
@@ -178,7 +178,7 @@ namespace QueryMaster.GameServer
                 {
                     case 'l': return GameServertype.Listen;
                     case 'd': return GameServertype.Dedicated;
-                    case 'p': return GameServertype.SourceTV;
+                    case 'p': return GameServertype.SourceTv;
                 }
 
                 return GameServertype.Invalid;
@@ -215,7 +215,7 @@ namespace QueryMaster.GameServer
                         ship.Mode = ShipMode.Deathmatch;
                         break;
                     case 4:
-                        ship.Mode = ShipMode.VIPTeam;
+                        ship.Mode = ShipMode.VipTeam;
                         break;
                     case 5:
                         ship.Mode = ShipMode.TeamElimination;
@@ -238,14 +238,14 @@ namespace QueryMaster.GameServer
                 server.ExtraInfo.Port = (edf & 0x80) > 0 ? parser.ReadUShort() : (ushort) 0;
                 server.ExtraInfo.SteamId = (edf & 0x10) > 0 ? parser.ReadULong() : 0;
                 if ((edf & 0x40) > 0)
-                    server.ExtraInfo.SpecInfo = new SourceTVInfo
+                    server.ExtraInfo.SpecInfo = new SourceTvInfo
                         {Port = parser.ReadUShort(), Name = parser.ReadString()};
                 server.ExtraInfo.Keywords = (edf & 0x20) > 0 ? parser.ReadString() : string.Empty;
                 server.ExtraInfo.GameId = (edf & 0x10) > 0 ? parser.ReadULong() : 0;
             }
 
             server.Address = UdpSocket.Address.ToString();
-            server.Ping = Latency;
+            server.Ping = _latency;
 
             return server;
         }
@@ -254,7 +254,7 @@ namespace QueryMaster.GameServer
         {
             ServerInfo server = null;
             var parser = new Parser(data);
-            if (parser.ReadByte() != (byte) ResponseMsgHeader.A2S_INFO_Obsolete)
+            if (parser.ReadByte() != (byte) ResponseMsgHeader.A2SInfoObsolete)
                 throw new InvalidHeaderException("A2S_INFO(obsolete) message header is not valid");
             server = new ServerInfo();
             server.IsObsolete = true;
@@ -272,7 +272,7 @@ namespace QueryMaster.GameServer
                 {
                     case 'L': return GameServertype.NonDedicated;
                     case 'D': return GameServertype.Dedicated;
-                    case 'P': return GameServertype.HLTVServer;
+                    case 'P': return GameServertype.HltvServer;
                 }
 
                 return GameServertype.Invalid;
@@ -306,7 +306,7 @@ namespace QueryMaster.GameServer
             server.IsSecure = parser.ReadByte() > 0;
             server.Bots = parser.ReadByte();
             server.GameVersion = "server is obsolete,does not provide this information";
-            server.Ping = Latency;
+            server.Ping = _latency;
 
             return server;
         }
@@ -330,24 +330,24 @@ namespace QueryMaster.GameServer
             {
                 if (IsObsolete)
                 {
-                    recvData = UdpSocket.GetResponse(QueryMsg.ObsoletePlayerQuery, Type);
+                    recvData = UdpSocket.GetResponse(QueryMsg.ObsoletePlayerQuery, _type);
                 }
                 else
                 {
-                    if (PlayerChallengeId == null)
+                    if (_playerChallengeId == null)
                     {
                         recvData = GetPlayerChallengeId();
-                        if (IsPlayerChallengeId)
-                            PlayerChallengeId = recvData;
+                        if (_isPlayerChallengeId)
+                            _playerChallengeId = recvData;
                     }
 
-                    if (IsPlayerChallengeId)
-                        recvData = UdpSocket.GetResponse(Util.MergeByteArrays(QueryMsg.PlayerQuery, PlayerChallengeId),
-                            Type);
+                    if (_isPlayerChallengeId)
+                        recvData = UdpSocket.GetResponse(Util.MergeByteArrays(QueryMsg.PlayerQuery, _playerChallengeId),
+                            _type);
                 }
 
                 var parser = new Parser(recvData);
-                if (parser.ReadByte() != (byte) ResponseMsgHeader.A2S_PLAYER)
+                if (parser.ReadByte() != (byte) ResponseMsgHeader.A2SPlayer)
                     throw new InvalidHeaderException("A2S_PLAYER message header is not valid");
                 int playerCount = parser.ReadByte();
                 players = new List<PlayerInfo>(playerCount);
@@ -377,18 +377,18 @@ namespace QueryMaster.GameServer
         private byte[] GetPlayerChallengeId()
         {
             byte[] recvBytes = null;
-            recvBytes = UdpSocket.GetResponse(QueryMsg.PlayerChallengeQuery, Type);
+            recvBytes = UdpSocket.GetResponse(QueryMsg.PlayerChallengeQuery, _type);
             try
             {
                 var parser = new Parser(recvBytes);
                 var header = parser.ReadByte();
                 switch (header)
                 {
-                    case (byte) ResponseMsgHeader.A2S_SERVERQUERY_GETCHALLENGE:
-                        IsPlayerChallengeId = true;
+                    case (byte) ResponseMsgHeader.A2SServerqueryGetchallenge:
+                        _isPlayerChallengeId = true;
                         return parser.GetUnParsedBytes();
-                    case (byte) ResponseMsgHeader.A2S_PLAYER:
-                        IsPlayerChallengeId = false;
+                    case (byte) ResponseMsgHeader.A2SPlayer:
+                        _isPlayerChallengeId = false;
                         return recvBytes;
                     default:
                         throw new InvalidHeaderException("A2S_SERVERQUERY_GETCHALLENGE message header is not valid");
@@ -423,24 +423,24 @@ namespace QueryMaster.GameServer
             {
                 if (IsObsolete)
                 {
-                    recvData = UdpSocket.GetResponse(QueryMsg.ObsoleteRuleQuery, Type);
+                    recvData = UdpSocket.GetResponse(QueryMsg.ObsoleteRuleQuery, _type);
                 }
                 else
                 {
-                    if (RuleChallengeId == null)
+                    if (_ruleChallengeId == null)
                     {
                         recvData = GetRuleChallengeId();
-                        if (IsRuleChallengeId)
-                            RuleChallengeId = recvData;
+                        if (_isRuleChallengeId)
+                            _ruleChallengeId = recvData;
                     }
 
-                    if (IsRuleChallengeId)
-                        recvData = UdpSocket.GetResponse(Util.MergeByteArrays(QueryMsg.RuleQuery, RuleChallengeId),
-                            Type);
+                    if (_isRuleChallengeId)
+                        recvData = UdpSocket.GetResponse(Util.MergeByteArrays(QueryMsg.RuleQuery, _ruleChallengeId),
+                            _type);
                 }
 
                 var parser = new Parser(recvData);
-                if (parser.ReadByte() != (byte) ResponseMsgHeader.A2S_RULES)
+                if (parser.ReadByte() != (byte) ResponseMsgHeader.A2SRules)
                     throw new InvalidHeaderException("A2S_RULES message header is not valid");
 
                 int ruleCount = parser.ReadUShort();
@@ -460,7 +460,7 @@ namespace QueryMaster.GameServer
         private byte[] GetRuleChallengeId()
         {
             byte[] recvBytes = null;
-            recvBytes = UdpSocket.GetResponse(QueryMsg.RuleChallengeQuery, Type);
+            recvBytes = UdpSocket.GetResponse(QueryMsg.RuleChallengeQuery, _type);
             try
             {
                 var parser = new Parser(recvBytes);
@@ -468,11 +468,11 @@ namespace QueryMaster.GameServer
 
                 switch (header)
                 {
-                    case (byte) ResponseMsgHeader.A2S_SERVERQUERY_GETCHALLENGE:
-                        IsRuleChallengeId = true;
+                    case (byte) ResponseMsgHeader.A2SServerqueryGetchallenge:
+                        _isRuleChallengeId = true;
                         return BitConverter.GetBytes(parser.ReadInt());
-                    case (byte) ResponseMsgHeader.A2S_RULES:
-                        IsRuleChallengeId = false;
+                    case (byte) ResponseMsgHeader.A2SRules:
+                        _isRuleChallengeId = false;
                         return recvBytes;
                     default:
                         throw new InvalidHeaderException("A2S_SERVERQUERY_GETCHALLENGE message header is not valid");
@@ -494,9 +494,9 @@ namespace QueryMaster.GameServer
         public virtual Logs GetLogs(int port)
         {
             ThrowIfDisposed();
-            if (logs == null)
-                logs = new Logs(Type, port, EndPoint);
-            return logs;
+            if (_logs == null)
+                _logs = new Logs(_type, port, EndPoint);
+            return _logs;
         }
 
         /// <summary>
@@ -518,9 +518,9 @@ namespace QueryMaster.GameServer
             try
             {
                 if (IsObsolete)
-                    UdpSocket.GetResponse(QueryMsg.ObsoletePingQuery, Type);
+                    UdpSocket.GetResponse(QueryMsg.ObsoletePingQuery, _type);
                 else
-                    UdpSocket.GetResponse(QueryMsg.InfoQuery, Type);
+                    UdpSocket.GetResponse(QueryMsg.InfoQuery, _type);
             }
             catch (SocketException)
             {
@@ -545,9 +545,9 @@ namespace QueryMaster.GameServer
                     if (Rcon != null)
                         Rcon.Dispose();
                     Rcon = null;
-                    if (logs != null)
-                        logs.Dispose();
-                    logs = null;
+                    if (_logs != null)
+                        _logs.Dispose();
+                    _logs = null;
                     if (UdpSocket != null)
                         UdpSocket.Dispose();
                     UdpSocket = null;

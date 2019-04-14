@@ -31,7 +31,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace QueryMaster.GameServer
+namespace QueryMaster.GameServer.DataObjects
 {
     /// <summary>
     ///     Represents collection of logfilter.
@@ -43,7 +43,7 @@ namespace QueryMaster.GameServer
         /// </summary>
         protected internal static object LockObj = new object();
 
-        private readonly List<LogFilter> filterList = new List<LogFilter>();
+        private readonly List<LogFilter> _filterList = new List<LogFilter>();
 
         /// <summary>
         ///     Returns an enumerator that iterates through the Filter collection.
@@ -51,7 +51,7 @@ namespace QueryMaster.GameServer
         /// <returns></returns>
         public IEnumerator<LogFilter> GetEnumerator()
         {
-            foreach (var i in filterList) yield return i;
+            foreach (var i in _filterList) yield return i;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -64,7 +64,7 @@ namespace QueryMaster.GameServer
         /// </summary>
         public void EnableAll()
         {
-            filterList.ForEach(x => x.Enabled = true);
+            _filterList.ForEach(x => x.Enabled = true);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace QueryMaster.GameServer
         /// <param name="type">Filter type.</param>
         public void EnableAll(Type type)
         {
-            filterList.ForEach(x =>
+            _filterList.ForEach(x =>
             {
                 if (x.GetType() == type) x.Enabled = true;
             });
@@ -84,7 +84,7 @@ namespace QueryMaster.GameServer
         /// </summary>
         public void DisableAll()
         {
-            filterList.ForEach(x => x.Enabled = false);
+            _filterList.ForEach(x => x.Enabled = false);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace QueryMaster.GameServer
         /// <param name="type">Filter type.</param>
         public void DisableAll(Type type)
         {
-            filterList.ForEach(x =>
+            _filterList.ForEach(x =>
             {
                 if (x.GetType() == type) x.Enabled = false;
             });
@@ -107,7 +107,7 @@ namespace QueryMaster.GameServer
         {
             lock (LockObj)
             {
-                filterList.Add(filter);
+                _filterList.Add(filter);
             }
         }
 
@@ -119,7 +119,7 @@ namespace QueryMaster.GameServer
         {
             lock (LockObj)
             {
-                filterList.Remove(filter);
+                _filterList.Remove(filter);
             }
         }
 
@@ -128,7 +128,7 @@ namespace QueryMaster.GameServer
         /// </summary>
         public void Clear()
         {
-            filterList.Clear();
+            _filterList.Clear();
         }
     }
 }

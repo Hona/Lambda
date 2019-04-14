@@ -31,8 +31,9 @@ using System;
 using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using QueryMaster.JsonConverters;
 
-namespace QueryMaster.MasterServer
+namespace QueryMaster.MasterServer.DataObjects
 {
     /// <summary>
     ///     Contains information on the batch received from master server.

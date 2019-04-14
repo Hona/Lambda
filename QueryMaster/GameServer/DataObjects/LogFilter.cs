@@ -29,7 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Text.RegularExpressions;
 
-namespace QueryMaster.GameServer
+namespace QueryMaster.GameServer.DataObjects
 {
     /// <summary>
     ///     Represents log filter.

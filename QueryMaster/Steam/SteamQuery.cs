@@ -27,6 +27,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #endregion
 
+using QueryMaster.Steam.Interfaces;
+
 namespace QueryMaster.Steam
 {
     /// <summary>
@@ -34,19 +36,19 @@ namespace QueryMaster.Steam
     /// </summary>
     public class SteamQuery
     {
-        private IPlayerService iPlayerService;
-        private ISteamApps iSteamApps;
+        private PlayerService _iPlayerService;
+        private SteamApps _iSteamApps;
 
-        private ISteamDirectory iSteamDirectory;
-        private ISteamGroup iSteamGroup;
+        private SteamDirectory _iSteamDirectory;
+        private SteamGroup _iSteamGroup;
 
-        private ISteamNews iSteamNews;
+        private SteamNews _iSteamNews;
 
-        private ISteamUser iSteamUser;
+        private SteamUser _iSteamUser;
 
-        private ISteamUserStats iSteamUserStats;
+        private SteamUserStats _iSteamUserStats;
 
-        private ISteamWebApiUtil iSteamWebApiUtil;
+        private SteamWebApiUtil _iSteamWebApiUtil;
 
         /// <summary>
         ///     Initializes Steam's web api interface.
@@ -69,96 +71,96 @@ namespace QueryMaster.Steam
         /// <summary>
         ///     Represents the ISteamApps interface.
         /// </summary>
-        public ISteamApps ISteamApps
+        public SteamApps SteamApps
         {
             get
             {
-                if (iSteamApps == null) iSteamApps = new ISteamApps();
-                return iSteamApps;
+                if (_iSteamApps == null) _iSteamApps = new SteamApps();
+                return _iSteamApps;
             }
         }
 
         /// <summary>
         ///     Represents the ISteamNews interface.
         /// </summary>
-        public ISteamNews ISteamNews
+        public SteamNews SteamNews
         {
             get
             {
-                if (iSteamNews == null) iSteamNews = new ISteamNews();
-                return iSteamNews;
+                if (_iSteamNews == null) _iSteamNews = new SteamNews();
+                return _iSteamNews;
             }
         }
 
         /// <summary>
         ///     Represents the ISteamUser interface.
         /// </summary>
-        public ISteamUser ISteamUser
+        public SteamUser SteamUser
         {
             get
             {
-                if (iSteamUser == null) iSteamUser = new ISteamUser();
-                return iSteamUser;
+                if (_iSteamUser == null) _iSteamUser = new SteamUser();
+                return _iSteamUser;
             }
         }
 
         /// <summary>
         ///     Represents the ISteamUserStats interface.
         /// </summary>
-        public ISteamUserStats ISteamUserStats
+        public SteamUserStats SteamUserStats
         {
             get
             {
-                if (iSteamUserStats == null) iSteamUserStats = new ISteamUserStats();
-                return iSteamUserStats;
+                if (_iSteamUserStats == null) _iSteamUserStats = new SteamUserStats();
+                return _iSteamUserStats;
             }
         }
 
         /// <summary>
         ///     Represents the ISteamWebAPIUtil interface.
         /// </summary>
-        public ISteamWebApiUtil ISteamWebApiUtil
+        public SteamWebApiUtil SteamWebApiUtil
         {
             get
             {
-                if (iSteamWebApiUtil == null) iSteamWebApiUtil = new ISteamWebApiUtil();
-                return iSteamWebApiUtil;
+                if (_iSteamWebApiUtil == null) _iSteamWebApiUtil = new SteamWebApiUtil();
+                return _iSteamWebApiUtil;
             }
         }
 
         /// <summary>
         ///     Represents the ISteamDirectory interface.
         /// </summary>
-        public ISteamDirectory ISteamDirectory
+        public SteamDirectory SteamDirectory
         {
             get
             {
-                if (iSteamDirectory == null) iSteamDirectory = new ISteamDirectory();
-                return iSteamDirectory;
+                if (_iSteamDirectory == null) _iSteamDirectory = new SteamDirectory();
+                return _iSteamDirectory;
             }
         }
 
         /// <summary>
         ///     Represents the IPlayerService interface.
         /// </summary>
-        public IPlayerService IPlayerService
+        public PlayerService PlayerService
         {
             get
             {
-                if (iPlayerService == null) iPlayerService = new IPlayerService();
-                return iPlayerService;
+                if (_iPlayerService == null) _iPlayerService = new PlayerService();
+                return _iPlayerService;
             }
         }
 
         /// <summary>
         ///     Represents the ISteamGroup interface(not part of steam's web api).
         /// </summary>
-        public ISteamGroup ISteamGroup
+        public SteamGroup SteamGroup
         {
             get
             {
-                if (iSteamGroup == null) iSteamGroup = new ISteamGroup();
-                return iSteamGroup;
+                if (_iSteamGroup == null) _iSteamGroup = new SteamGroup();
+                return _iSteamGroup;
             }
         }
     }

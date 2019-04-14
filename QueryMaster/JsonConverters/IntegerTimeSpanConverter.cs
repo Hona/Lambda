@@ -30,7 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using Newtonsoft.Json;
 
-namespace QueryMaster
+namespace QueryMaster.JsonConverters
 {
     internal class IntegerTimeSpanConverter : JsonConverter
     {

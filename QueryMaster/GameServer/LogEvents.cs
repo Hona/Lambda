@@ -31,6 +31,8 @@ using System;
 using System.Globalization;
 using System.Net;
 using System.Text.RegularExpressions;
+using QueryMaster.GameServer.DataObjects;
+using QueryMaster.GameServer.EventArgs;
 
 namespace QueryMaster.GameServer
 {
@@ -253,12 +255,12 @@ namespace QueryMaster.GameServer
         protected internal void ProcessLog(string logLine)
         {
             ThrowIfDisposed();
-            DateTime Timestamp;
+            DateTime timestamp;
             string info;
             try
             {
                 var data = LineSplit.Split(logLine, 2);
-                Timestamp = DateTime.ParseExact(data[0], "MM/dd/yyyy - HH:mm:ss", CultureInfo.InvariantCulture);
+                timestamp = DateTime.ParseExact(data[0], "MM/dd/yyyy - HH:mm:ss", CultureInfo.InvariantCulture);
                 info = data[1].Remove(data[1].Length - 2);
             }
             catch (Exception e)
@@ -272,9 +274,9 @@ namespace QueryMaster.GameServer
                 return;
 
             if (info.StartsWith("//", StringComparison.OrdinalIgnoreCase))
-                OnCommentReceive(Timestamp, info);
+                OnCommentReceive(timestamp, info);
 
-            OnLogReceive(Timestamp, info);
+            OnLogReceive(timestamp, info);
 
             var result = info.Split(QuoteSplitPattern, StringSplitOptions.RemoveEmptyEntries);
             try
@@ -283,135 +285,135 @@ namespace QueryMaster.GameServer
                     switch (result[1])
                     {
                         case " connected, address ":
-                            OnConnection(Timestamp, result);
+                            OnConnection(timestamp, result);
                             break; // 50
                         case " STEAM USERID validated":
-                            OnValidation(Timestamp, result);
+                            OnValidation(timestamp, result);
                             break; //50b
                         case " entered the game":
-                            OnEnterGame(Timestamp, result);
+                            OnEnterGame(timestamp, result);
                             break; //51
                         case " disconnected":
-                            OnDisconnection(Timestamp, result);
+                            OnDisconnection(timestamp, result);
                             break; //52
                         case " committed suicide with ":
-                            OnSuicide(Timestamp, result);
+                            OnSuicide(timestamp, result);
                             break; //53
                         case " joined team ":
-                            OnTeamSelection(Timestamp, result);
+                            OnTeamSelection(timestamp, result);
                             break; //54
                         case " changed role to ":
-                            OnRoleSelection(Timestamp, result);
+                            OnRoleSelection(timestamp, result);
                             break; //55
                         case " changed name to ":
-                            OnNameChange(Timestamp, result);
+                            OnNameChange(timestamp, result);
                             break; //56
                         case " killed ":
-                            OnKill(Timestamp, result);
+                            OnKill(timestamp, result);
                             break; //57
                         case " attacked ":
-                            OnInjure(Timestamp, result);
+                            OnInjure(timestamp, result);
                             break; //58
                         case " triggered ": //59 ,60
                         {
                             if (result.Length > 3 && result[3] == " against ")
-                                OnPlayer_PlayerAction(Timestamp, result);
+                                OnPlayer_PlayerAction(timestamp, result);
                             else
-                                OnPlayerAction(Timestamp, result);
+                                OnPlayerAction(timestamp, result);
                             break;
                         }
                         case " say ":
-                            OnSay(Timestamp, result);
+                            OnSay(timestamp, result);
                             break; //63a
                         case " say_team ":
-                            OnTeamSay(Timestamp, result);
+                            OnTeamSay(timestamp, result);
                             break; //63b
                         case " tell ":
-                            OnPrivateChat(Timestamp, result);
+                            OnPrivateChat(timestamp, result);
                             break; //66
                         case " selected weapon ":
-                            OnWeaponSelection(Timestamp, result);
+                            OnWeaponSelection(timestamp, result);
                             break; //68
                         case " acquired weapon ":
-                            OnWeaponPickup(Timestamp, result);
+                            OnWeaponPickup(timestamp, result);
                             break; //69
                         default:
-                            OnException(Timestamp, info);
+                            OnException(timestamp, info);
                             break;
                     }
                 else
                     switch (result[0])
                     {
                         case "Server cvars start":
-                            OnCvarStart(Timestamp);
+                            OnCvarStart(timestamp);
                             break; //001.1
                         case "Server cvar ":
-                            OnServerCvar(Timestamp, result);
+                            OnServerCvar(timestamp, result);
                             break; //001.2
                         case "Server cvars end":
-                            OnCvarEnd(Timestamp);
+                            OnCvarEnd(timestamp);
                             break; //001.3
                         case "Log file started (file ":
-                            OnLogFileStart(Timestamp, result);
+                            OnLogFileStart(timestamp, result);
                             break; //002.1
                         case "Log file closed":
-                            OnLogFileClose(Timestamp);
+                            OnLogFileClose(timestamp);
                             break; //002.2
                         case "Loading map ":
-                            OnMapLoading(Timestamp, result);
+                            OnMapLoading(timestamp, result);
                             break; //003.1
                         case "Started map ":
-                            OnMapStart(Timestamp, result);
+                            OnMapStart(timestamp, result);
                             break; //003.2
                         case "Rcon: ":
-                            OnRconMsg(Timestamp, result);
+                            OnRconMsg(timestamp, result);
                             break; //004.1
                         case "Bad Rcon: ":
-                            OnRconMsg(Timestamp, result);
+                            OnRconMsg(timestamp, result);
                             break; //004.2
                         case "Server name is ":
-                            OnserverName(Timestamp, result);
+                            OnserverName(timestamp, result);
                             break; //005
                         case "Server say ":
-                            OnServerSay(Timestamp, result);
+                            OnServerSay(timestamp, result);
                             break; //006
                         case "Kick: ":
-                            OnKick(Timestamp, result);
+                            OnKick(timestamp, result);
                             break; //0052b
                         case "Team ":
                         {
                             switch (result[2])
                             {
                                 case " triggered ":
-                                    OnTeamAction(Timestamp, result);
+                                    OnTeamAction(timestamp, result);
                                     break; //061
                                 case " formed alliance with team ":
-                                    OnTeamAlliance(Timestamp, result);
+                                    OnTeamAlliance(timestamp, result);
                                     break; //064
                                 case " scored ":
-                                    OnTeamScoreReport(Timestamp, result);
+                                    OnTeamScoreReport(timestamp, result);
                                     break; //065
                             }
 
                             break;
                         }
                         case "World triggered ":
-                            OnWorldAction(Timestamp, result);
+                            OnWorldAction(timestamp, result);
                             break; //062
                         case "Player ":
-                            OnPlayerAction(Timestamp, result);
+                            OnPlayerAction(timestamp, result);
                             break; //60
                         case "Server shutdown":
-                            OnShutdown(Timestamp);
+                            OnShutdown(timestamp);
                             break; //new
                         default:
-                            OnException(Timestamp, info);
+                            OnException(timestamp, info);
                             break;
                     }
             }
             catch (Exception)
             {
-                Exception.Fire(ServerEndPoint, new ExceptionEventArgs {Timestamp = Timestamp, Message = info});
+                Exception.Fire(ServerEndPoint, new ExceptionEventArgs {Timestamp = timestamp, Message = info});
             }
         }
 
@@ -618,7 +620,7 @@ namespace QueryMaster.GameServer
             {
                 Timestamp = timestamp,
                 MapName = info[1],
-                MapCRC = info[3]
+                MapCrc = info[3]
             };
             MapStarted.Fire(ServerEndPoint, eventArgs);
         }

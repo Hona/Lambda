@@ -30,17 +30,18 @@ OTHER DEALINGS IN THE SOFTWARE.
 using System.Globalization;
 using System.Xml;
 using Newtonsoft.Json;
+using QueryMaster.Steam.DataObjects.ISteamGroup;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.Interfaces
 {
     /// <summary>
     ///     Represents the ISteamGroup interface(not part of steam's web api).
     /// </summary>
-    public class ISteamGroup : InterfaceBase
+    public class SteamGroup : InterfaceBase
     {
-        private readonly XmlDocument doc = new XmlDocument();
+        private readonly XmlDocument _doc = new XmlDocument();
 
-        internal ISteamGroup()
+        internal SteamGroup()
         {
             Interface = "ISteamGroup";
         }
@@ -74,8 +75,8 @@ namespace QueryMaster.Steam
         private GetGroupDetailsResponse GetGroupDetails(string url)
         {
             var reply = new SteamSocket().GetResponse(url);
-            doc.LoadXml(reply);
-            doc.RemoveChild(doc.FirstChild);
+            _doc.LoadXml(reply);
+            _doc.RemoveChild(_doc.FirstChild);
             RemoveCData("memberList/groupDetails/groupName");
             RemoveCData("memberList/groupDetails/groupURL");
             RemoveCData("memberList/groupDetails/headline");
@@ -83,10 +84,10 @@ namespace QueryMaster.Steam
             RemoveCData("memberList/groupDetails/avatarIcon");
             RemoveCData("memberList/groupDetails/avatarMedium");
             RemoveCData("memberList/groupDetails/avatarFull");
-            doc.SelectSingleNode("memberList").RemoveChild(doc.SelectSingleNode("memberList/memberCount"));
-            doc.SelectSingleNode("memberList").InnerXml += doc.SelectSingleNode("memberList/members").InnerXml;
-            doc.SelectSingleNode("memberList").RemoveChild(doc.SelectSingleNode("memberList/members"));
-            var jsonString = JsonConvert.SerializeXmlNode(doc);
+            _doc.SelectSingleNode("memberList").RemoveChild(_doc.SelectSingleNode("memberList/memberCount"));
+            _doc.SelectSingleNode("memberList").InnerXml += _doc.SelectSingleNode("memberList/members").InnerXml;
+            _doc.SelectSingleNode("memberList").RemoveChild(_doc.SelectSingleNode("memberList/members"));
+            var jsonString = JsonConvert.SerializeXmlNode(_doc);
             var response = ParseResponse<GetGroupDetailsResponse>(jsonString);
             response.ReceivedResponse = reply;
             return response;
@@ -95,7 +96,7 @@ namespace QueryMaster.Steam
         private void RemoveCData(string xPath)
         {
             XmlNode node = null;
-            node = doc.SelectSingleNode(xPath);
+            node = _doc.SelectSingleNode(xPath);
             if (node.FirstChild != null)
                 node.InnerText = node.FirstChild.InnerText;
         }

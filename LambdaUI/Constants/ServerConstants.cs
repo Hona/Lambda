@@ -1,4 +1,4 @@
-﻿namespace LambdaUI
+﻿namespace LambdaUI.Constants
 {
     internal static class ServerConstants
     {

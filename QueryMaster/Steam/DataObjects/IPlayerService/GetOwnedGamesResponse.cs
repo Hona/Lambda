@@ -29,8 +29,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using Newtonsoft.Json;
+using QueryMaster.JsonConverters;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.DataObjects.IPlayerService
 {
     /// <summary>
     ///     Contains response of GetOwnedGames method.

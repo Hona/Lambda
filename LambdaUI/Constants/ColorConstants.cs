@@ -1,6 +1,6 @@
 ﻿using Discord;
 
-namespace LambdaUI
+namespace LambdaUI.Constants
 {
     public static class ColorConstants
     {

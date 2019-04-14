@@ -27,7 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #endregion
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.DataObjects
 {
     /// <summary>
     ///     Base of all Steam web api method responses.

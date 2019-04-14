@@ -28,15 +28,16 @@ OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
 using System.Globalization;
+using QueryMaster.Steam.DataObjects.ISteamNews;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.Interfaces
 {
     /// <summary>
     ///     Represents the ISteamNews interface.
     /// </summary>
-    public class ISteamNews : InterfaceBase
+    public class SteamNews : InterfaceBase
     {
-        internal ISteamNews()
+        internal SteamNews()
         {
             Interface = "ISteamNews";
         }

@@ -29,15 +29,16 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Collections.Generic;
 using System.Globalization;
+using QueryMaster.Steam.DataObjects.IPlayerService;
 
-namespace QueryMaster.Steam
+namespace QueryMaster.Steam.Interfaces
 {
     /// <summary>
     ///     Represents the IPlayerService interface.
     /// </summary>
-    public class IPlayerService : InterfaceBase
+    public class PlayerService : InterfaceBase
     {
-        internal IPlayerService()
+        internal PlayerService()
         {
             Interface = "IPlayerService";
         }
@@ -82,17 +83,17 @@ namespace QueryMaster.Steam
         /// </summary>
         /// <param name="steamId">The 64 bit SteamID of the player.</param>
         /// <param name="includeAppInfo">Whether or not to include additional details(name, icon) about each game.</param>
-        /// <param name="IncludeFreeGames">Whether or not to include free games.</param>
+        /// <param name="includeFreeGames">Whether or not to include free games.</param>
         /// <param name="filters">Restricts results to contain only mentioned appids.</param>
         /// <returns>Instance of <see cref="GetOwnedGamesResponse" />.</returns>
         public GetOwnedGamesResponse GetOwnedGames(ulong steamId, bool includeAppInfo = true,
-            bool IncludeFreeGames = true, params uint[] filters)
+            bool includeFreeGames = true, params uint[] filters)
         {
             var url = new SteamUrl {Interface = Interface, Method = "GetOwnedGames", Version = 1, AppendKey = true};
             url.Parameters.Add(new Parameter
                 {Name = "steamid", Value = steamId.ToString(CultureInfo.InvariantCulture)});
             url.Parameters.Add(new Parameter {Name = "include_appinfo", Value = includeAppInfo.ToString()});
-            url.Parameters.Add(new Parameter {Name = "include_played_free_games", Value = IncludeFreeGames.ToString()});
+            url.Parameters.Add(new Parameter {Name = "include_played_free_games", Value = includeFreeGames.ToString()});
             for (var i = 0; i < filters.Length; i++)
                 url.Parameters.Add(new Parameter
                     {Name = "appids_filter[" + i + "]", Value = filters[i].ToString(CultureInfo.InvariantCulture)});

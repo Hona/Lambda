@@ -25,17 +25,17 @@
         /// <summary>
         ///     US East coast
         /// </summary>
-        US_East_coast,
+        UsEastCoast,
 
         /// <summary>
         ///     US West coast
         /// </summary>
-        US_West_coast,
+        UsWestCoast,
 
         /// <summary>
         ///     South America
         /// </summary>
-        South_America,
+        SouthAmerica,
 
         /// <summary>
         ///     Europe
@@ -55,7 +55,7 @@
         /// <summary>
         ///     Middle East
         /// </summary>
-        Middle_East,
+        MiddleEast,
 
         /// <summary>
         ///     Africa
@@ -65,7 +65,7 @@
         /// <summary>
         ///     Rest of the world
         /// </summary>
-        Rest_of_the_world = 0xFF
+        RestOfTheWorld = 0xFF
     }
 
     internal enum SocketType
@@ -76,11 +76,11 @@
 
     internal enum ResponseMsgHeader : byte
     {
-        A2S_INFO = 0x49,
-        A2S_INFO_Obsolete = 0x6D,
-        A2S_PLAYER = 0x44,
-        A2S_RULES = 0x45,
-        A2S_SERVERQUERY_GETCHALLENGE = 0x41
+        A2SInfo = 0x49,
+        A2SInfoObsolete = 0x6D,
+        A2SPlayer = 0x44,
+        A2SRules = 0x45,
+        A2SServerqueryGetchallenge = 0x41
     }
 
     //Used in Source Rcon

@@ -29,7 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 
-namespace QueryMaster.GameServer
+namespace QueryMaster.GameServer.EventArgs
 {
     /// <summary>
     ///     Provides data for rcon event.

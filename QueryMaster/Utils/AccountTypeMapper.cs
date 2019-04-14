@@ -35,32 +35,32 @@ namespace QueryMaster.Utils
 {
     internal class AccountTypeMapper
     {
-        private static readonly List<Tuple<int, char, AccountType>> accountTypes =
+        private static readonly List<Tuple<int, char, AccountType>> AccountTypes =
             new List<Tuple<int, char, AccountType>>();
 
-        private static AccountTypeMapper obj;
+        private static AccountTypeMapper _obj;
 
         private AccountTypeMapper()
         {
-            accountTypes.Add(new Tuple<int, char, AccountType>(0, 'I', AccountType.Invalid));
-            accountTypes.Add(new Tuple<int, char, AccountType>(1, 'U', AccountType.Individual));
-            accountTypes.Add(new Tuple<int, char, AccountType>(2, 'M', AccountType.MultiSeat));
-            accountTypes.Add(new Tuple<int, char, AccountType>(3, 'G', AccountType.GameServer));
-            accountTypes.Add(new Tuple<int, char, AccountType>(4, 'A', AccountType.AnonGameServer));
-            accountTypes.Add(new Tuple<int, char, AccountType>(5, 'P', AccountType.Pending));
-            accountTypes.Add(new Tuple<int, char, AccountType>(6, 'C', AccountType.ContentServer));
-            accountTypes.Add(new Tuple<int, char, AccountType>(7, 'g', AccountType.Clan));
-            accountTypes.Add(new Tuple<int, char, AccountType>(8, 'T', AccountType.Chat));
-            accountTypes.Add(new Tuple<int, char, AccountType>(9, ' ', AccountType.P2PSuperSeeder));
-            accountTypes.Add(new Tuple<int, char, AccountType>(10, 'a', AccountType.AnonUser));
+            AccountTypes.Add(new Tuple<int, char, AccountType>(0, 'I', AccountType.Invalid));
+            AccountTypes.Add(new Tuple<int, char, AccountType>(1, 'U', AccountType.Individual));
+            AccountTypes.Add(new Tuple<int, char, AccountType>(2, 'M', AccountType.MultiSeat));
+            AccountTypes.Add(new Tuple<int, char, AccountType>(3, 'G', AccountType.GameServer));
+            AccountTypes.Add(new Tuple<int, char, AccountType>(4, 'A', AccountType.AnonGameServer));
+            AccountTypes.Add(new Tuple<int, char, AccountType>(5, 'P', AccountType.Pending));
+            AccountTypes.Add(new Tuple<int, char, AccountType>(6, 'C', AccountType.ContentServer));
+            AccountTypes.Add(new Tuple<int, char, AccountType>(7, 'g', AccountType.Clan));
+            AccountTypes.Add(new Tuple<int, char, AccountType>(8, 'T', AccountType.Chat));
+            AccountTypes.Add(new Tuple<int, char, AccountType>(9, ' ', AccountType.P2PSuperSeeder));
+            AccountTypes.Add(new Tuple<int, char, AccountType>(10, 'a', AccountType.AnonUser));
         }
 
         internal static AccountTypeMapper Instance
         {
             get
             {
-                if (obj == null) obj = new AccountTypeMapper();
-                return obj;
+                if (_obj == null) _obj = new AccountTypeMapper();
+                return _obj;
             }
         }
 
@@ -70,8 +70,8 @@ namespace QueryMaster.Utils
             {
                 if (character == 'c' || character == 'L')
                     character = 'T';
-                if (accountTypes.Where(x => x.Item2 == character).Count() > 0)
-                    return accountTypes.Where(x => x.Item2 == character).First().Item3;
+                if (AccountTypes.Where(x => x.Item2 == character).Count() > 0)
+                    return AccountTypes.Where(x => x.Item2 == character).First().Item3;
                 return AccountType.Invalid;
             }
         }
@@ -80,8 +80,8 @@ namespace QueryMaster.Utils
         {
             get
             {
-                if (accountTypes.Where(x => x.Item3 == type).Count() > 0)
-                    return accountTypes.Where(x => x.Item3 == type).First().Item2;
+                if (AccountTypes.Where(x => x.Item3 == type).Count() > 0)
+                    return AccountTypes.Where(x => x.Item3 == type).First().Item2;
                 return 'I';
             }
         }

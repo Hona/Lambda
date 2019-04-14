@@ -32,7 +32,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace QueryMaster
+namespace QueryMaster.ContractSolver
 {
     internal class OriginalNameContractResolver : DefaultContractResolver
     {

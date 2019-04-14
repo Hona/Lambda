@@ -33,7 +33,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
-namespace QueryMaster
+namespace QueryMaster.JsonConverters
 {
     internal class StringIpEndPointConverter : JsonConverter
     {
@@ -56,7 +56,7 @@ namespace QueryMaster
                 var endPoints = new List<IPEndPoint>();
                 while (Regex.Match(value, @"^(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}):(\d{1,5})$").Success)
                 {
-                    endPoints.Add(Util.ToIPEndPoint(value));
+                    endPoints.Add(Util.ToIpEndPoint(value));
                     value = reader.ReadAsString();
                     if (string.IsNullOrEmpty(value))
                         break;
@@ -68,7 +68,7 @@ namespace QueryMaster
             if (objectType == typeof(IPEndPoint))
                 if (Regex.Match(value, @"^(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}):(\d{1,5})$").Success)
                 {
-                    var endPoint = Util.ToIPEndPoint(value);
+                    var endPoint = Util.ToIpEndPoint(value);
                     return endPoint;
                 }
 

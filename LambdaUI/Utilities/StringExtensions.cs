@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace LambdaUI
+namespace LambdaUI.Utilities
 {
     internal static class StringExtensions
     {
@@ -14,6 +15,12 @@ namespace LambdaUI
 
             for (var i = 0; i < s.Length; i += partLength)
                 yield return s.Substring(i, Math.Min(partLength, s.Length - i));
+        }
+
+        public static string EscapeDiscordChars(this string s)
+        {
+            var chars = new List<char> {'*', '_', '~', '`', '@'};
+            return chars.Aggregate(s, (current, character) => current.Replace($"{character}", $@"\{character}"));
         }
     }
 }
