@@ -5,14 +5,14 @@ using Discord.Commands;
 using Discord.WebSocket;
 using LambdaUI.Constants;
 
-namespace LambdaUI.Modules
+namespace LambdaUI.Discord.Modules
 {
     public class DiscordModule : ExtraModuleBase
     {
         [Command("roleinfo")]
         public async Task GetRoleInfo(string roleParam)
         {
-            var roles = Context.Guild.Roles.Where(x => x.Name.ToLower().Contains(roleParam.ToLower()));
+            var roles = Enumerable.Where<IRole>(Context.Guild.Roles, x => x.Name.ToLower().Contains(roleParam.ToLower()));
             foreach (var role in roles.Take(5))
             {
                 var builder = new EmbedBuilder {Title = "@" + role.Name};
@@ -44,11 +44,11 @@ namespace LambdaUI.Modules
             builder.AddField("Permissions", PermissionsToString(userParam.GuildPermissions));
             if (userParam.Hierarchy == int.MaxValue)
             {
-                builder.WithColor(Context.Guild.Roles.OrderByDescending(x => x.Position).First().Color);
+                builder.WithColor(Enumerable.First<IRole>(Context.Guild.Roles.OrderByDescending(x => x.Position)).Color);
             }
             else
             {
-                var role = Context.Guild.Roles.First(x => x.Position == userParam.Hierarchy);
+                var role = Enumerable.First<IRole>(Context.Guild.Roles, x => x.Position == userParam.Hierarchy);
                 if (role != null) builder.WithColor(role.Color);
             }
 

@@ -4,16 +4,16 @@ using Discord;
 using Discord.Commands;
 using LambdaUI.Utilities;
 
-namespace LambdaUI.Modules
+namespace LambdaUI.Discord.Modules
 {
     public class ExtraModuleBase : ModuleBase
     {
-        public async Task ReplyNewEmbed(string text)
+        public async Task ReplyNewEmbed(string text, bool escape = true)
         {
             var parts = text.SplitInParts(2000);
             foreach (var part in parts)
             {
-                await ReplyEmbed(EmbedHelper.CreateEmbed(part));
+                await ReplyEmbed(EmbedHelper.CreateEmbed(part, escape));
                 await Task.Delay(250);
             }
         }

@@ -30,11 +30,14 @@ namespace LambdaUI.Discord
         private TempusServerUpdater _tempusServerUpdater;
         private TodoDataAccess _todoDataAccess;
 
+        private DateTime _startDateTime;
 
         private static int FromMinutes(int minutes) => 1000 * 60 * minutes;
 
         internal async Task StartAsync()
         {
+            _startDateTime = DateTime.Now;
+
             PrintDisplay();
 
             InitializeVariables();
@@ -53,7 +56,7 @@ namespace LambdaUI.Discord
             await Task.Delay(-1);
         }
 
-        private void PrintDisplay()
+        private static void PrintDisplay()
         {
             Console.ForegroundColor = ConsoleColor.DarkBlue;
             Console.WriteLine(
@@ -83,8 +86,6 @@ namespace LambdaUI.Discord
 
             _tempusServerUpdater = new TempusServerUpdater(_client, _configDataAccess, _tempusDataAccess);
             _tempusActivityUpdater = new TempusActivityUpdater(_client, _configDataAccess, _tempusDataAccess);
-
-            _intervalFunctionTimer = new Timer(IntervalFunctions, null, 0, FromMinutes(5));
         }
 
         private void AddClientEvents()
@@ -99,7 +100,7 @@ namespace LambdaUI.Discord
         {
             try
             {
-                Logger.LogInfo("Lambda", DiscordConstants.TokenPath);
+                Logger.LogInfo("Lambda", "Token: " + DiscordConstants.TokenPath);
 
                 var token = File.ReadAllText(DiscordConstants.TokenPath);
                 await _client.LoginAsync(TokenType.Bot, token);
@@ -129,21 +130,26 @@ namespace LambdaUI.Discord
             // rather an object stating if the command executed successfully)
             var result = await _commands.ExecuteAsync(context, commandPosition, _services);
             if (!result.IsSuccess)
-                await context.Channel.SendMessageAsync("", embed: EmbedHelper.CreateEmbed(result.ErrorReason));
+                await context.Channel.SendMessageAsync("", embed: EmbedHelper.CreateEmbed(result.ErrorReason, false));
         }
 
 
         private async Task Ready()
         {
-            // IntervalFunctions(null);
+            Logger.LogInfo("Lambda", $"Time elapsed since startup {(DateTime.Now -_startDateTime).TotalMilliseconds}ms");
             await _client.SetGameAsync("!help");
+
+            // Runs once on startup, make sure it runs when connected
+            _intervalFunctionTimer = new Timer(IntervalFunctions, null, 0, FromMinutes(5));
         }
 
         internal async void IntervalFunctions(object state)
         {
+            var startDateTime = DateTime.Now;
             await _tempusDataAccess.UpdateMapListAsync();
-            //await _tempusServerUpdater.UpdateServers();
+            await _tempusServerUpdater.UpdateServers();
             await _tempusActivityUpdater.UpdateActivity();
+            Logger.LogInfo("Lambda", $"Interval functions took {(DateTime.Now - startDateTime).TotalMilliseconds}ms");
         }
 
         private void BuildServiceProvider()
@@ -158,7 +164,7 @@ namespace LambdaUI.Discord
                 .BuildServiceProvider();
         }
 
-        public async Task InstallCommands()
+        private async Task InstallCommands()
         {
             // Discover all of the commands in this assembly and load them.
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);

@@ -8,7 +8,7 @@ using Discord.WebSocket;
 using LambdaUI.Constants;
 using LambdaUI.Utilities;
 
-namespace LambdaUI.Modules
+namespace LambdaUI.Discord.Modules
 {
     [Summary("General commands that don't belong in a group")]
     public class MiscModule : ExtraModuleBase
@@ -30,7 +30,7 @@ namespace LambdaUI.Modules
             builder.AddField("Uptime", Uptime)
                 .AddField("Memory Usage", MemoryUsage)
                 .AddField("Latency", ((DiscordSocketClient) Context.Client).Latency)
-                .WithFooter($"Discord.Net ({DiscordConfig.Version}");
+                .WithFooter($"Discord.Net ({DiscordConfig.Version})");
             await ReplyEmbed(builder);
         }
 

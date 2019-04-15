@@ -12,19 +12,26 @@ namespace LambdaUI.Utilities
                 throw new Exception("Text should be less than 2048 - use ExtraModuleBase to split any messages");
         }
 
-        internal static Embed CreateEmbed(string text)
+        internal static Embed CreateEmbed(string text, bool escape)
         {
             var builder = new EmbedBuilder();
-            builder.WithDescription(text.EscapeDiscordChars())
+            if (escape)
+                text = text.EscapeDiscordChars();
+            builder.WithDescription(text)
                 .WithColor(ColorConstants.InfoColor);
             return builder.Build();
         }
 
-        internal static Embed CreateEmbed(string title, string text)
+        internal static Embed CreateEmbed(string title, string text, bool escape = true)
         {
             var builder = new EmbedBuilder();
-            builder.WithDescription(text.EscapeDiscordChars())
-                .WithTitle(title.EscapeDiscordChars())
+            if (escape)
+            {
+                text = text.EscapeDiscordChars();
+                title = title.EscapeDiscordChars();
+            }
+            builder.WithDescription(text)
+                .WithTitle(title)
                 .WithColor(ColorConstants.InfoColor);
             return builder.Build();
         }

@@ -4,10 +4,10 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using LambdaUI.Data;
-using LambdaUI.Discord;
+using LambdaUI.Logging;
 using LambdaUI.Utilities;
 
-namespace LambdaUI.Modules
+namespace LambdaUI.Discord.Modules
 {
     [Summary("Commands that you you'll never need")]
     [RequireOwner]
@@ -46,8 +46,8 @@ namespace LambdaUI.Modules
         [Summary("Executes unescaped SQL queries on the PlayerRanks database")]
         public async Task GiveAll([Remainder] string roleParam)
         {
-            var role = Context.Guild.Roles.First(x => x.Name.ToLower().Contains(roleParam.ToLower()));
-            var users = (await Context.Guild.GetUsersAsync()).Where(x => !x.IsBot).ToList();
+            var role = Enumerable.First<IRole>(Context.Guild.Roles, x => x.Name.ToLower().Contains(roleParam.ToLower()));
+            var users = Enumerable.Where<IGuildUser>((await Context.Guild.GetUsersAsync()), x => !x.IsBot).ToList();
             var count = 0;
             foreach (var user in users)
             {
@@ -56,6 +56,11 @@ namespace LambdaUI.Modules
             }
 
             await ReplyNewEmbed($"Done adding to {count} non-bot users");
+        }
+        [Command("log")]
+        public async Task UpdateStatus(LogSeverity severity, [Remainder] string message)
+        {
+            await Logger.Log(new LogMessage(severity, "Command", message));
         }
     }
 }

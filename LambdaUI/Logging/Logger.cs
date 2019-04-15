@@ -15,8 +15,27 @@ namespace LambdaUI.Logging
 
         internal static Task Log(LogMessage logMessage)
         {
+            switch (logMessage.Severity)
+            {
+                case LogSeverity.Critical:
+                case LogSeverity.Error:
+                    Console.ForegroundColor = ColorConstants.ErrorLogColor;
+                    break;
+                case LogSeverity.Warning:
+                    Console.ForegroundColor = ColorConstants.WarningLogColor;
+                    break;
+                case LogSeverity.Info:
+                case LogSeverity.Verbose:
+                case LogSeverity.Debug:
+                    Console.ForegroundColor = ColorConstants.InfoLogColor;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             Console.WriteLine(
                 $"{logMessage.Severity.ToString().PadRight(DiscordConstants.LogPaddingLength)}    {logMessage.Source.PadRight(DiscordConstants.LogPaddingLength)}    {logMessage.Message.PadRight(DiscordConstants.LogPaddingLength)}    {logMessage.Exception}");
+
+            Console.ForegroundColor = ColorConstants.InfoLogColor;
             return Task.CompletedTask;
         }
     }

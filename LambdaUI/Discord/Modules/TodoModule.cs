@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using LambdaUI.Data;
 
-namespace LambdaUI.Modules
+namespace LambdaUI.Discord.Modules
 {
     internal class TodoModule : ExtraModuleBase
     {

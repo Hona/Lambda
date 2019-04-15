@@ -8,7 +8,7 @@ using QueryMaster;
 using QueryMaster.GameServer;
 using Game = QueryMaster.Game;
 
-namespace LambdaUI.Modules
+namespace LambdaUI.Discord.Modules
 {
     [Summary("Gets server info")]
     public class ServerModule : ExtraModuleBase

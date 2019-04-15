@@ -2,26 +2,26 @@
 using System.Threading.Tasks;
 using Discord.Commands;
 using LambdaUI.Data;
+using LambdaUI.Services;
 using Newtonsoft.Json;
 
-namespace LambdaUI.Modules
+namespace LambdaUI.Discord.Modules
 {
     public class TempusModule : ExtraModuleBase
     {
         public TempusDataAccess TempusDataAccess { get; set; }
 
-        [Command("activity")]
-        public async Task GetActivity()
+        [Command("rr")]
+        public async Task GetRecentRecords()
         {
-            var result = await TempusDataAccess.GetRecentActivityAsync();
-            await ReplyNewEmbed(JsonConvert.SerializeObject(result));
+            var activity = await TempusDataAccess.GetRecentActivityAsync();
+            await TempusUpdaterService.SendMapRecords(activity.MapRecords, Context.Channel);
         }
-
-        [Command("status")]
-        public async Task GetStatus()
+        [Command("rrtt")]
+        public async Task GetRecentTopTimes()
         {
-            var result = await TempusDataAccess.GetServerStatusAsync();
-            await ReplyNewEmbed(JsonConvert.SerializeObject(result));
+            var activity = await TempusDataAccess.GetRecentActivityAsync();
+            await TempusUpdaterService.SendMapTopTimes(activity.MapTopTimes, Context.Channel);
         }
 
         [Command("dwr")]
@@ -30,7 +30,7 @@ namespace LambdaUI.Modules
             var result = await TempusDataAccess.GetFullMapOverViewAsync(map);
             var demoRecord = result.DemomanRuns.OrderBy(x => x.Duration).First();
             await ReplyNewEmbed(
-                $"**Demo WR** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}");
+                $"**Demo WR** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}", false);
         }
 
         [Command("dtime")]
@@ -40,7 +40,7 @@ namespace LambdaUI.Modules
             var demoRecord = result.DemomanRuns.OrderBy(x => x.Duration).Skip(place - 1).First();
             if (demoRecord != null)
                 await ReplyNewEmbed(
-                    $"**Demo #{place}** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}");
+                    $"**Demo #{place}** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}", false);
             else
                 await ReplyNewEmbed("Time not found");
         }
@@ -51,7 +51,7 @@ namespace LambdaUI.Modules
             var result = await TempusDataAccess.GetFullMapOverViewAsync(map);
             var demoRecord = result.SoldierRuns.OrderBy(x => x.Duration).First();
             await ReplyNewEmbed(
-                $"**Solly WR** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}");
+                $"**Solly WR** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}", false);
         }
 
         [Command("stime")]
@@ -61,7 +61,7 @@ namespace LambdaUI.Modules
             var demoRecord = result.SoldierRuns.OrderBy(x => x.Duration).Skip(place - 1).First();
             if (demoRecord != null)
                 await ReplyNewEmbed(
-                    $"**Solly #{place}** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}");
+                    $"**Solly #{place}** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}", false);
             else
                 await ReplyNewEmbed("Time not found");
         }
