@@ -1,8 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
 using LambdaUI.Data;
+using LambdaUI.Logging;
+using LambdaUI.Models.Tempus;
 using LambdaUI.Services;
+using LambdaUI.Utilities;
 using Newtonsoft.Json;
 
 namespace LambdaUI.Discord.Modules
@@ -64,6 +69,12 @@ namespace LambdaUI.Discord.Modules
                     $"**Solly #{place}** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}", false);
             else
                 await ReplyNewEmbed("Time not found");
+        }
+
+        [Command("stalktop")]
+        public async Task StalkTop()
+        {
+            await TempusApiService.SendStalkTopEmbedAsync(TempusDataAccess, Context.Channel);
         }
     }
 }

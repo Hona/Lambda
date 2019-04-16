@@ -5,6 +5,8 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using LambdaUI.Logging;
+using LambdaUI.Models.Tempus.Rank;
 using LambdaUI.Models.Tempus.Responses;
 using Newtonsoft.Json;
 
@@ -35,6 +37,7 @@ namespace LambdaUI.Data
 
         private static async Task<T> GetResponseAsync<T>(string request)
         {
+            Logger.LogInfo("TempusAPI", request);
             object stringValue;
             using (var response = (HttpWebResponse) await BuildWebRequest(request).GetResponseAsync())
             {
@@ -81,6 +84,11 @@ namespace LambdaUI.Data
         public async Task<List<ShortMapInfoModel>> GetMapListAsync()
         {
             var response = await GetResponseAsync<List<ShortMapInfoModel>>("/maps/list");
+            return response;
+        }
+        public async Task<Rank> GetUserRank(string id)
+        {
+            var response = await GetResponseAsync<Rank>($"/players/id/{id}/rank");
             return response;
         }
 

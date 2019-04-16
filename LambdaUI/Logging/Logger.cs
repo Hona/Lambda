@@ -32,6 +32,8 @@ namespace LambdaUI.Logging
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+            if (logMessage.Message == null) logMessage = new LogMessage(logMessage.Severity, logMessage.Source, "", logMessage.Exception);
+            if (logMessage.Source == null) logMessage = new LogMessage(logMessage.Severity, "", logMessage.Message, logMessage.Exception);
             Console.WriteLine(
                 $"{logMessage.Severity.ToString().PadRight(DiscordConstants.LogPaddingLength)}    {logMessage.Source.PadRight(DiscordConstants.LogPaddingLength)}    {logMessage.Message.PadRight(DiscordConstants.LogPaddingLength)}    {logMessage.Exception}");
 

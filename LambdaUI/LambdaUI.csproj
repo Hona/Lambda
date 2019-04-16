@@ -17,8 +17,4 @@
     <ProjectReference Include="..\QueryMaster\QueryMaster.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Modules\" />
-  </ItemGroup>
-
 </Project>

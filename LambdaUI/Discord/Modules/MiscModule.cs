@@ -46,7 +46,7 @@ namespace LambdaUI.Discord.Modules
                     (current, module) =>
                         current +
                         $"  - **{module.Name}** ({module.Summary}), {module.Commands.Count} command/s{Environment.NewLine}  ");
-                await ReplyEmbed(EmbedHelper.CreateEmbed(title, text));
+                await ReplyEmbed(EmbedHelper.CreateEmbed(title, text, false));
             }
             else
             {
@@ -56,7 +56,7 @@ namespace LambdaUI.Discord.Modules
                     (current, command) =>
                         current +
                         $"**__{DiscordConstants.CommandPrefix + command.Name}__**{Environment.NewLine}**{command.Summary}**. Parameters: {command.Parameters.Aggregate("", (currentString, nextParameter) => currentString + $"{nextParameter.Name} {GetSummaryString(nextParameter.Summary)}, ").TrimEnd(' ', ',')}{Environment.NewLine}");
-                await ReplyEmbed(EmbedHelper.CreateEmbed(title, text));
+                await ReplyEmbed(EmbedHelper.CreateEmbed(title, text, false));
             }
         }
     }
