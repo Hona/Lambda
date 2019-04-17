@@ -44,7 +44,7 @@ namespace LambdaUI.Discord.Modules
             builder.AddField("Permissions", PermissionsToString(userParam.GuildPermissions));
             if (userParam.Hierarchy == int.MaxValue)
             {
-                builder.WithColor(Enumerable.First<IRole>(Context.Guild.Roles.OrderByDescending(x => x.Position)).Color);
+                builder.WithColor(Context.Guild.Roles.OrderByDescending(x => x.Position).First().Color);
             }
             else
             {
@@ -74,7 +74,9 @@ namespace LambdaUI.Discord.Modules
             }
         }
 
-        private static string NicknameString(string nickname) => string.IsNullOrWhiteSpace(nickname) ? string.Empty : $" ({nickname})";
+        private static string NicknameString(string nickname) => string.IsNullOrWhiteSpace(nickname)
+            ? string.Empty
+            : $" ({nickname})";
 
         private static string PermissionsToString(GuildPermissions perms) => perms.ToList()
             .Aggregate("", (currentString, nextPermission) => currentString + nextPermission.ToString() + ", ")

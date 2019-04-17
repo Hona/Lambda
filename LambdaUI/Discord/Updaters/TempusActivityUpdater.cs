@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using LambdaUI.Constants;
 using LambdaUI.Data;
-using LambdaUI.Models.Tempus.Activity;
 using LambdaUI.Services;
-using LambdaUI.Utilities;
 
 namespace LambdaUI.Discord.Updaters
 {
@@ -40,7 +36,5 @@ namespace LambdaUI.Discord.Updaters
                 await TempusUpdaterService.SendBonusRecords(activity.BonusRecords, channel);
             }
         }
-
-
     }
 }

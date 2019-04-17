@@ -16,6 +16,7 @@ namespace LambdaUI.Data
     public class TempusDataAccess
     {
         private static readonly Stopwatch _stopwatch = new Stopwatch();
+
         public TempusDataAccess()
         {
             UpdateMapListAsync();
@@ -23,10 +24,8 @@ namespace LambdaUI.Data
 
         public List<string> MapList { get; set; }
 
-        private static HttpWebRequest CreateWebRequest(string path)
-        {
-            return (HttpWebRequest) WebRequest.Create("https://tempus.xyz/api" + path);
-        }
+        private static HttpWebRequest CreateWebRequest(string path) => (HttpWebRequest) WebRequest.Create(
+            "https://tempus.xyz/api" + path);
 
         private static HttpWebRequest BuildWebRequest(string relativePath)
         {
@@ -59,19 +58,25 @@ namespace LambdaUI.Data
                 response.Close();
             }
             _stopwatch.Stop();
-            Logger.LogInfo("Tempus", "/api" + request + " " + _stopwatch.ElapsedMilliseconds +"ms");
+            Logger.LogInfo("Tempus", "/api" + request + " " + _stopwatch.ElapsedMilliseconds + "ms");
             // If T is a string, don't deserialise
             return typeof(T) == typeof(string)
                 ? (T) stringValue
                 : JsonConvert.DeserializeObject<T>((string) stringValue);
         }
-        public async Task<MapFullOverviewModel> GetFullMapOverViewAsync(string map) => await GetResponseAsync<MapFullOverviewModel>($"/maps/name/{ParseMapName(map)}/fullOverview");
 
-        public async Task<RecentActivityModel> GetRecentActivityAsync() => await GetResponseAsync<RecentActivityModel>("/activity");
+        public async Task<MapFullOverviewModel> GetFullMapOverViewAsync(string map) => await
+            GetResponseAsync<MapFullOverviewModel>($"/maps/name/{ParseMapName(map)}/fullOverview");
 
-        public async Task<List<ServerStatusModel>> GetServerStatusAsync() => await GetResponseAsync<List<ServerStatusModel>>("/servers/statusList");
+        public async Task<RecentActivityModel> GetRecentActivityAsync() =>
+            await GetResponseAsync<RecentActivityModel>("/activity");
 
-        public async Task<List<ShortMapInfoModel>> GetMapListAsync() => await GetResponseAsync<List<ShortMapInfoModel>>("/maps/list");
+        public async Task<List<ServerStatusModel>> GetServerStatusAsync() =>
+            await GetResponseAsync<List<ServerStatusModel>>("/servers/statusList");
+
+        public async Task<List<ShortMapInfoModel>> GetMapListAsync() =>
+            await GetResponseAsync<List<ShortMapInfoModel>>("/maps/list");
+
         public async Task<Rank> GetUserRank(string id) => await GetResponseAsync<Rank>($"/players/id/{id}/rank");
 
 

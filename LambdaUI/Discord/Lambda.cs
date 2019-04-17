@@ -23,14 +23,14 @@ namespace LambdaUI.Discord
 
         private Timer _intervalFunctionTimer;
         private IServiceProvider _services;
+
+        private DateTime _startDateTime;
         private TempusActivityUpdater _tempusActivityUpdater;
 
         private TempusDataAccess _tempusDataAccess;
 
         private TempusServerUpdater _tempusServerUpdater;
         private TodoDataAccess _todoDataAccess;
-
-        private DateTime _startDateTime;
 
         private static int FromMinutes(int minutes) => 1000 * 60 * minutes;
 
@@ -136,7 +136,8 @@ namespace LambdaUI.Discord
 
         private async Task Ready()
         {
-            Logger.LogInfo("Lambda", $"Time elapsed since startup {(DateTime.Now -_startDateTime).TotalMilliseconds}ms");
+            Logger.LogInfo("Lambda",
+                $"Time elapsed since startup {(DateTime.Now - _startDateTime).TotalMilliseconds}ms");
             await _client.SetGameAsync("!help");
 
             // Runs once on startup, make sure it runs when connected

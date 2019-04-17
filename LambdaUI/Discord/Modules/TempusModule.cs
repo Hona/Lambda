@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
 using LambdaUI.Data;
-using LambdaUI.Logging;
-using LambdaUI.Models.Tempus;
 using LambdaUI.Services;
 using LambdaUI.Utilities;
-using Newtonsoft.Json;
 
 namespace LambdaUI.Discord.Modules
 {
@@ -22,11 +17,26 @@ namespace LambdaUI.Discord.Modules
             var activity = await TempusDataAccess.GetRecentActivityAsync();
             await TempusUpdaterService.SendMapRecords(activity.MapRecords, Context.Channel);
         }
+
         [Command("rrtt")]
         public async Task GetRecentTopTimes()
         {
             var activity = await TempusDataAccess.GetRecentActivityAsync();
             await TempusUpdaterService.SendMapTopTimes(activity.MapTopTimes, Context.Channel);
+        }
+
+        [Command("rrc")]
+        public async Task GetRecentCourseRecords()
+        {
+            var activity = await TempusDataAccess.GetRecentActivityAsync();
+            await TempusUpdaterService.SendCourseRecords(activity.CourseRecords, Context.Channel);
+        }
+
+        [Command("rrb")]
+        public async Task GetRecentBonusRecords()
+        {
+            var activity = await TempusDataAccess.GetRecentActivityAsync();
+            await TempusUpdaterService.SendBonusRecords(activity.BonusRecords, Context.Channel);
         }
 
         [Command("dwr")]
@@ -45,7 +55,8 @@ namespace LambdaUI.Discord.Modules
             var demoRecord = result.DemomanRuns.OrderBy(x => x.Duration).Skip(place - 1).First();
             if (demoRecord != null)
                 await ReplyNewEmbed(
-                    $"**Demo #{place}** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}", false);
+                    $"**Demo #{place}** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}",
+                    false);
             else
                 await ReplyNewEmbed("Time not found");
         }
@@ -66,7 +77,8 @@ namespace LambdaUI.Discord.Modules
             var demoRecord = result.SoldierRuns.OrderBy(x => x.Duration).Skip(place - 1).First();
             if (demoRecord != null)
                 await ReplyNewEmbed(
-                    $"**Solly #{place}** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}", false);
+                    $"**Solly #{place}** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}",
+                    false);
             else
                 await ReplyNewEmbed("Time not found");
         }
@@ -75,6 +87,27 @@ namespace LambdaUI.Discord.Modules
         public async Task StalkTop()
         {
             await TempusApiService.SendStalkTopEmbedAsync(TempusDataAccess, Context.Channel);
+        }
+
+        [Command("servers")]
+        public async Task ServerOverview()
+        {
+            await TempusServerStatusService.SendServersStatusOverviewAsync(
+                await TempusDataAccess.GetServerStatusAsync(), Context.Channel);
+        }
+
+        [Command("ticktime")]
+        public async Task TickTime(int tick1, int tick2 = -1)
+        {
+            if (tick2 == -1)
+            {
+                await ReplyNewEmbed(TempusHelper.TicksToFormattedTime(tick1));
+            }
+            else
+            {
+                var ticks = tick1 > tick2 ? tick1 - tick2 : tick2 - tick1;
+                await ReplyNewEmbed(TempusHelper.TicksToFormattedTime(ticks));
+            }
         }
     }
 }

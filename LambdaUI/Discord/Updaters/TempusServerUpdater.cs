@@ -3,17 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using LambdaUI.Constants;
 using LambdaUI.Data;
-using LambdaUI.Models.Tempus.Responses;
 using LambdaUI.Services;
-using LambdaUI.Utilities;
 
 namespace LambdaUI.Discord.Updaters
 {
     public class TempusServerUpdater : UpdaterBase
     {
-
         private readonly DiscordSocketClient _client;
         private readonly ConfigDataAccess _configDataAccess;
         private readonly TempusDataAccess _tempusDataAccess;
@@ -25,6 +21,7 @@ namespace LambdaUI.Discord.Updaters
             _configDataAccess = configDataAccess;
             _tempusDataAccess = tempusDataAccess;
         }
+
         public async Task UpdateServers()
         {
             var updateChannel = (await _configDataAccess.GetConfigAsync("tempusUpdateChannel")).First().Value;
@@ -36,10 +33,9 @@ namespace LambdaUI.Discord.Updaters
                 {
                     if (i != 0 && i % 5 == 0)
                         await Task.Delay(3500);
-                    await TempusServerStatusService.UpdateServer(serverInfo[i], channel);
+                    await TempusServerStatusService.SendServerStatusAsync(serverInfo[i], channel);
                 }
             }
         }
-
     }
 }

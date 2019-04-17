@@ -17,6 +17,7 @@ namespace LambdaUI.Discord.Modules
                 await Task.Delay(250);
             }
         }
+
         public async Task ReplyNewEmbed(string title, string text, bool escape = true)
         {
             var parts = text.SplitInParts(2000);

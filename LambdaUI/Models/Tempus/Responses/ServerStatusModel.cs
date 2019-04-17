@@ -10,9 +10,6 @@ namespace LambdaUI.Models.Tempus.Responses
         [JsonProperty(PropertyName = "server_info")]
         public ServerInfo ServerInfo { get; set; }
 
-        public override string ToString()
-        {
-            return ServerInfo.Name;
-        }
+        public override string ToString() => ServerInfo.Name;
     }
 }

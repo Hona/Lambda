@@ -24,19 +24,5 @@ namespace LambdaUI.Models.Tempus.Activity
 
         [JsonProperty(PropertyName = "id")]
         public int Id { get; set; }
-
-        //TODO REfactor this to a TempusUtilities.cs
-        public string ClassString()
-        {
-            switch (Class)
-            {
-                case 4:
-                    return "D";
-                case 3:
-                    return "S";
-                default:
-                    return Class.ToString();
-            }
-        }
     }
 }

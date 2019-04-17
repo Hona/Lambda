@@ -46,8 +46,8 @@ namespace LambdaUI.Discord.Modules
         [Summary("Executes unescaped SQL queries on the PlayerRanks database")]
         public async Task GiveAll([Remainder] string roleParam)
         {
-            var role = Enumerable.First<IRole>(Context.Guild.Roles, x => x.Name.ToLower().Contains(roleParam.ToLower()));
-            var users = Enumerable.Where<IGuildUser>((await Context.Guild.GetUsersAsync()), x => !x.IsBot).ToList();
+            var role = Context.Guild.Roles.First(x => x.Name.ToLower().Contains(roleParam.ToLower()));
+            var users = (await Context.Guild.GetUsersAsync()).Where(x => !x.IsBot).ToList();
             var count = 0;
             foreach (var user in users)
             {
@@ -57,6 +57,7 @@ namespace LambdaUI.Discord.Modules
 
             await ReplyNewEmbed($"Done adding to {count} non-bot users");
         }
+
         [Command("log")]
         public async Task UpdateStatus(LogSeverity severity, [Remainder] string message)
         {

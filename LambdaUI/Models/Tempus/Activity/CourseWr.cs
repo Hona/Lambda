@@ -15,6 +15,5 @@ namespace LambdaUI.Models.Tempus.Activity
 
         [JsonProperty(PropertyName = "player_info")]
         public PlayerInfo2 PlayerInfo { get; set; }
-
     }
 }

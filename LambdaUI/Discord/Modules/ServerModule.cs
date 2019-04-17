@@ -24,10 +24,7 @@ namespace LambdaUI.Discord.Modules
         public EmbedBuilder GmodEmbed => GetEmbedBuilder(ServerConstants.GmodServerIpAddress,
             ServerConstants.GmodServerPort, Game.GarrysMod);
 
-        public EmbedBuilder SourceEmbed(string ip, ushort port)
-        {
-            return GetEmbedBuilder(ip, port, Game.TeamFortress2);
-        }
+        public EmbedBuilder SourceEmbed(string ip, ushort port) => GetEmbedBuilder(ip, port, Game.TeamFortress2);
 
         [Alias("si")]
         [Command("serverinfo")]
