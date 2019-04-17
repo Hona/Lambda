@@ -12,7 +12,7 @@ namespace LambdaUI.Discord.Modules
         [Command("roleinfo")]
         public async Task GetRoleInfo(string roleParam)
         {
-            var roles = Enumerable.Where<IRole>(Context.Guild.Roles, x => x.Name.ToLower().Contains(roleParam.ToLower()));
+            var roles = Context.Guild.Roles.Where(x => x.Name.ToLower().Contains(roleParam.ToLower()));
             foreach (var role in roles.Take(5))
             {
                 var builder = new EmbedBuilder {Title = "@" + role.Name};
@@ -48,7 +48,7 @@ namespace LambdaUI.Discord.Modules
             }
             else
             {
-                var role = Enumerable.First<IRole>(Context.Guild.Roles, x => x.Position == userParam.Hierarchy);
+                var role = Context.Guild.Roles.First(x => x.Position == userParam.Hierarchy);
                 if (role != null) builder.WithColor(role.Color);
             }
 

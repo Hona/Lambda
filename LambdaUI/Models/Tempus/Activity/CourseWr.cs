@@ -11,9 +11,10 @@ namespace LambdaUI.Models.Tempus.Activity
         public ZoneInfo2 ZoneInfo { get; set; }
 
         [JsonProperty(PropertyName = "map_info")]
-        public MapInfo2 MapInfo { get; set; }
+        public MapInfo MapInfo { get; set; }
 
         [JsonProperty(PropertyName = "player_info")]
         public PlayerInfo2 PlayerInfo { get; set; }
+
     }
 }

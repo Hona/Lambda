@@ -36,6 +36,8 @@ namespace LambdaUI.Discord.Updaters
                 var activity = await _tempusDataAccess.GetRecentActivityAsync();
                 await TempusUpdaterService.SendMapRecords(activity.MapRecords, channel);
                 await TempusUpdaterService.SendMapTopTimes(activity.MapTopTimes, channel);
+                await TempusUpdaterService.SendCourseRecords(activity.CourseRecords, channel);
+                await TempusUpdaterService.SendBonusRecords(activity.BonusRecords, channel);
             }
         }
 
