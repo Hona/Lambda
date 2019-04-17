@@ -15,7 +15,7 @@ namespace LambdaUI.Data
 {
     public class TempusDataAccess
     {
-        private static Stopwatch _stopwatch = new Stopwatch();
+        private static readonly Stopwatch _stopwatch = new Stopwatch();
         public TempusDataAccess()
         {
             UpdateMapListAsync();
@@ -65,35 +65,14 @@ namespace LambdaUI.Data
                 ? (T) stringValue
                 : JsonConvert.DeserializeObject<T>((string) stringValue);
         }
+        public async Task<MapFullOverviewModel> GetFullMapOverViewAsync(string map) => await GetResponseAsync<MapFullOverviewModel>($"/maps/name/{ParseMapName(map)}/fullOverview");
 
-        public async Task<MapFullOverviewModel> GetFullMapOverViewAsync(string map)
-        {
-            var response = await GetResponseAsync<MapFullOverviewModel>($"/maps/name/{ParseMapName(map)}/fullOverview");
-            return response;
-        }
+        public async Task<RecentActivityModel> GetRecentActivityAsync() => await GetResponseAsync<RecentActivityModel>("/activity");
 
-        public async Task<RecentActivityModel> GetRecentActivityAsync()
-        {
-            var response = await GetResponseAsync<RecentActivityModel>($"/activity");
-            return response;
-        }
+        public async Task<List<ServerStatusModel>> GetServerStatusAsync() => await GetResponseAsync<List<ServerStatusModel>>("/servers/statusList");
 
-        public async Task<List<ServerStatusModel>> GetServerStatusAsync()
-        {
-            var response = await GetResponseAsync<List<ServerStatusModel>>($"/servers/statusList");
-            return response;
-        }
-
-        public async Task<List<ShortMapInfoModel>> GetMapListAsync()
-        {
-            var response = await GetResponseAsync<List<ShortMapInfoModel>>("/maps/list");
-            return response;
-        }
-        public async Task<Rank> GetUserRank(string id)
-        {
-            var response = await GetResponseAsync<Rank>($"/players/id/{id}/rank");
-            return response;
-        }
+        public async Task<List<ShortMapInfoModel>> GetMapListAsync() => await GetResponseAsync<List<ShortMapInfoModel>>("/maps/list");
+        public async Task<Rank> GetUserRank(string id) => await GetResponseAsync<Rank>($"/players/id/{id}/rank");
 
 
         private string ParseMapName(string map)
