@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -14,6 +15,7 @@ namespace LambdaUI.Data
 {
     public class TempusDataAccess
     {
+        private static Stopwatch _stopwatch = new Stopwatch();
         public TempusDataAccess()
         {
             UpdateMapListAsync();
@@ -37,7 +39,7 @@ namespace LambdaUI.Data
 
         private static async Task<T> GetResponseAsync<T>(string request)
         {
-            Logger.LogInfo("TempusAPI", request);
+            _stopwatch.Restart();
             object stringValue;
             using (var response = (HttpWebResponse) await BuildWebRequest(request).GetResponseAsync())
             {
@@ -56,7 +58,8 @@ namespace LambdaUI.Data
                 }
                 response.Close();
             }
-
+            _stopwatch.Stop();
+            Logger.LogInfo("Tempus", "/api" + request + " " + _stopwatch.ElapsedMilliseconds +"ms");
             // If T is a string, don't deserialise
             return typeof(T) == typeof(string)
                 ? (T) stringValue
