@@ -32,6 +32,7 @@ namespace LambdaUI.Discord.Updaters
                 await DeleteAllMessages(channel);
                 await channel.SendMessageAsync(embed: await _simplyDataService.GetHightowerRankEmbedAsync());
                 await channel.SendMessageAsync(embed: await _simplyDataService.GetRecentRecordEmbedAsync());
+                await channel.SendMessageAsync(embed: await _simplyDataService.GetTopPlayersEmbedAsync());
 
 
 

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using LambdaUI.Constants;
 using LambdaUI.Data;
+using LambdaUI.Models.Simply;
 using LambdaUI.Utilities;
 
 namespace LambdaUI.Services
@@ -51,6 +53,78 @@ namespace LambdaUI.Services
                 .WithFooter("Updated " + DateTime.Now.ToShortTimeString());
             return builder.Build();
         }
+        public async Task<Embed> GetTopPlayersEmbedAsync()
+        {
+            var overallTopString = await GetOverallTopString();
+            var soldierTopString = await GetSoldierTopString();
+            var demomanTopString = await GetDemomanTopString();
+            var concTopString = await GetConcTopString();
+            var engiTopString = await GetEngiTopString();
+            var pyroTopString = await GetPyroTopString();
 
+            var builder = new EmbedBuilder { Title = "**Top Ranked Jumpers**" };
+            builder.AddField("Overall", overallTopString)
+                .AddField("Soldier", soldierTopString)
+                .AddField("Demoman", demomanTopString)
+                .AddField("Engineer", engiTopString)
+                .AddField("Pyro", pyroTopString)
+                .AddField("Conc", concTopString)
+                .WithColor(ColorConstants.InfoColor)
+                .WithFooter("Updated " + DateTime.Now.ToShortTimeString());
+            return builder.Build();
+        }
+        private async Task<string> GetPyroTopString()
+        {
+            var pyroTop = await _justJumpDataAccess.GetTopPyro(SimplyConstants.TopRankCount);
+            return TopRankToString(pyroTop, "Pyro");
+        }
+
+        private async Task<string> GetEngiTopString()
+        {
+            var engiTop = await _justJumpDataAccess.GetTopEngi(SimplyConstants.TopRankCount);
+            return TopRankToString(engiTop, "Engi");
+        }
+
+        private async Task<string> GetConcTopString()
+        {
+            var concTop = await _justJumpDataAccess.GetTopConc(SimplyConstants.TopRankCount);
+            return TopRankToString(concTop, "Conc");
+        }
+
+        private async Task<string> GetDemomanTopString()
+        {
+            var demoTop = await _justJumpDataAccess.GetTopDemo(SimplyConstants.TopRankCount);
+            return TopRankToString(demoTop, "Demoman");
+        }
+
+        private async Task<string> GetOverallTopString()
+        {
+            var overallTop = await _justJumpDataAccess.GetTopOverall(SimplyConstants.TopRankCount);
+            return TopRankToString(overallTop, "Overall");
+        }
+
+        private async Task<string> GetSoldierTopString()
+        {
+            var soldierTop = await _justJumpDataAccess.GetTopSolly(SimplyConstants.TopRankCount);
+            return TopRankToString(soldierTop, "Soldier");
+        }
+
+        private string TopRankToString(List<JumpRankModel> list, string property)
+        {
+            var outputString = "";
+            for (var i = 0; i < list.Count; i++) outputString += FormatLine(list, i, property);
+            return outputString;
+        }
+
+        private string FormatLine(List<JumpRankModel> list, int index, string property)
+        {
+            return
+                $"**#{index + 1}**: **{list[index].Name}** - {GetPropValue(list[index], property)} points{Environment.NewLine}";
+        }
+
+        public static object GetPropValue(object src, string propName)
+        {
+            return src.GetType().GetProperty(propName).GetValue(src, null);
+        }
     }
 }
