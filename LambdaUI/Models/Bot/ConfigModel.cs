@@ -1,4 +1,4 @@
-﻿namespace LambdaUI.Models
+﻿namespace LambdaUI.Models.Bot
 {
     internal class ConfigModel
     {

@@ -18,16 +18,20 @@ namespace LambdaUI.Utilities
             }
         }
 
-        public static string TicksToFormattedTime(int ticks)
+        public static string TicksToFormattedTime(long ticks)
         {
-            var factor = (int) Math.Pow(10, 7 - TempusConstants.RoundingSize);
             var timeSpan = TicksToTimeSpan(ticks);
-            var roundedTimeSpan = new TimeSpan((long) Math.Round(1.0 * timeSpan.Ticks / factor) * factor);
-            return
-                $"{roundedTimeSpan.Days}:{roundedTimeSpan.Hours}:{roundedTimeSpan.Minutes}:{roundedTimeSpan.Seconds}.{Math.Round((double) roundedTimeSpan.Milliseconds)}"
-                    .Trim('0', ':') + "seconds";
+            return TimeSpanToFormattedTime(timeSpan);
         }
 
+        public static string TimeSpanToFormattedTime(TimeSpan timeSpan)
+        {
+            var factor = (int)Math.Pow(10, 7 - TempusConstants.RoundingSize);
+            var roundedTimeSpan = new TimeSpan((long)Math.Round(1.0 * timeSpan.Ticks / factor) * factor);
+            return
+                $"{roundedTimeSpan.Days}:{roundedTimeSpan.Hours}:{roundedTimeSpan.Minutes}:{roundedTimeSpan.Seconds}.{Math.Round((double)roundedTimeSpan.Milliseconds)}"
+                    .Trim('0', ':', '.');
+        }
         public static TimeSpan TicksToTimeSpan(long ticks) => new TimeSpan(ticks * 149998);
     }
 }

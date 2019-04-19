@@ -109,5 +109,12 @@ namespace LambdaUI.Discord.Modules
                 await ReplyNewEmbed(TempusHelper.TicksToFormattedTime(ticks));
             }
         }
+        [Command("maplist")]
+        public async Task GetMapList(int tier = 0)
+        {
+            var maps = await TempusDataAccess.GetMapListAsync();
+                await ReplyNewEmbed(string.Join(", ", maps));
+
+        }
     }
 }

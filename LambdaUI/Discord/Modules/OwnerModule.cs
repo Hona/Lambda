@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -17,7 +18,7 @@ namespace LambdaUI.Discord.Modules
         public DiscordSocketClient Client { get; set; }
         public Lambda Lambda { get; set; }
         public ConfigDataAccess ConfigDataAccess { get; set; }
-
+        public JustJumpDataAccess JustJumpDataAccess { get; set; }
         [Command("embed")]
         public async Task Embed([Remainder] string text)
         {
@@ -29,10 +30,11 @@ namespace LambdaUI.Discord.Modules
             await ReplyEmbed(builder.Build());
         }
 
-        [Command("maplist")]
-        public async Task GetMapList()
+        [Command("execjj")]
+        public async Task ExecJJ([Remainder] string text)
         {
-            await ReplyNewEmbed(string.Join(", ", (await TempusDataAccess.GetMapListAsync()).ConvertAll(x => x.Name)));
+            var result = await JustJumpDataAccess.QueryAsync(text);
+            await ReplyNewEmbed(string.Join(Environment.NewLine, result));
         }
 
         [Command("updateStatus")]
@@ -43,7 +45,6 @@ namespace LambdaUI.Discord.Modules
         }
 
         [Command("giveall")]
-        [Summary("Executes unescaped SQL queries on the PlayerRanks database")]
         public async Task GiveAll([Remainder] string roleParam)
         {
             var role = Context.Guild.Roles.First(x => x.Name.ToLower().Contains(roleParam.ToLower()));

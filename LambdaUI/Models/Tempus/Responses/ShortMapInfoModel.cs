@@ -9,5 +9,7 @@ namespace LambdaUI.Models.Tempus.Responses
 
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
+
+        public override string ToString() => Name;
     }
 }

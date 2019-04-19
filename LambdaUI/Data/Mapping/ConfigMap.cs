@@ -1,5 +1,6 @@
 ﻿using Dapper.FluentMap.Mapping;
 using LambdaUI.Models;
+using LambdaUI.Models.Bot;
 
 namespace LambdaUI.Data.Mapping
 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -10,6 +11,7 @@ using LambdaUI.Constants;
 using LambdaUI.Data;
 using LambdaUI.Discord.Updaters;
 using LambdaUI.Logging;
+using LambdaUI.Services;
 using LambdaUI.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -31,6 +33,11 @@ namespace LambdaUI.Discord
 
         private TempusServerUpdater _tempusServerUpdater;
         private TodoDataAccess _todoDataAccess;
+
+        private SimplyTFServerUpdater _simplyTFServerUpdater;
+        private SimplyDataUpdater _simplyDataUpdater;
+        private SimplyHightowerDataAccess _simplyHightowerDataAccess;
+        private JustJumpDataAccess _justJumpDataAccess;
 
         private static int FromMinutes(int minutes) => 1000 * 60 * minutes;
 
@@ -83,9 +90,13 @@ namespace LambdaUI.Discord
             _tempusDataAccess = new TempusDataAccess();
             _todoDataAccess = new TodoDataAccess(connectionStrings[0]);
             _configDataAccess = new ConfigDataAccess(connectionStrings[0]);
+            _justJumpDataAccess = new JustJumpDataAccess(connectionStrings[1]);
+            _simplyHightowerDataAccess = new SimplyHightowerDataAccess(connectionStrings[2]);
 
             _tempusServerUpdater = new TempusServerUpdater(_client, _configDataAccess, _tempusDataAccess);
             _tempusActivityUpdater = new TempusActivityUpdater(_client, _configDataAccess, _tempusDataAccess);
+            _simplyTFServerUpdater = new SimplyTFServerUpdater(_client, _configDataAccess);
+            _simplyDataUpdater = new SimplyDataUpdater(_client, _configDataAccess, new SimplyDataService( _simplyHightowerDataAccess, _justJumpDataAccess));
         }
 
         private void AddClientEvents()
@@ -147,9 +158,16 @@ namespace LambdaUI.Discord
         internal async void IntervalFunctions(object state)
         {
             var startDateTime = DateTime.Now;
-            await _tempusDataAccess.UpdateMapListAsync();
-            await _tempusServerUpdater.UpdateServers();
-            await _tempusActivityUpdater.UpdateActivity();
+            var tasks = new List<Task>
+            {
+                _tempusDataAccess.UpdateMapListAsync(),
+                _tempusServerUpdater.UpdateServers(),
+                _tempusActivityUpdater.UpdateActivity(),
+                _simplyTFServerUpdater.UpdateServers(),
+                _simplyDataUpdater.UpdateData()
+            };
+            await Task.WhenAll(tasks);
+            
             Logger.LogInfo("Lambda", $"Interval functions took {(DateTime.Now - startDateTime).TotalMilliseconds}ms");
         }
 
@@ -161,6 +179,7 @@ namespace LambdaUI.Discord
                 .AddSingleton(_tempusDataAccess)
                 .AddSingleton(_todoDataAccess)
                 .AddSingleton(_configDataAccess)
+                .AddSingleton(_justJumpDataAccess)
                 .AddSingleton(this)
                 .BuildServiceProvider();
         }

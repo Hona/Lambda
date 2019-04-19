@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Dapper.FluentMap;
 using LambdaUI.Data.Mapping;
 using LambdaUI.Models;
+using LambdaUI.Models.Bot;
 
 namespace LambdaUI.Data
 {
