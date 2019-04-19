@@ -64,5 +64,15 @@ namespace LambdaUI.Discord.Modules
         {
             await Logger.Log(new LogMessage(severity, "Command", message));
         }
+        [Command("clearmessages")]
+        public async Task ClearMessages()
+        {
+            var channel = Context.Channel as ITextChannel;
+            if (channel != null)
+            {
+                var messages = await channel.GetMessagesAsync().FlattenAsync();
+                await channel.DeleteMessagesAsync(messages);
+            }
+        }
     }
 }

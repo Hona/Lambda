@@ -32,7 +32,7 @@ namespace LambdaUI.Discord.Updaters
                 for (var i = 0; i < serverInfo.Count; i++)
                 {
                     if (i != 0 && i % 5 == 0)
-                        await Task.Delay(3500);
+                        await Task.Delay(4200);
                     await TempusServerStatusService.SendServerStatusAsync(serverInfo[i], channel);
                 }
             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -147,6 +148,8 @@ namespace LambdaUI.Discord
 
         private async Task Ready()
         {
+            if (_client.GetChannel(Convert.ToUInt64((await _configDataAccess.GetConfigAsync("logChannel")).First().Value)) is ITextChannel channel)
+                Logger.StartLoggingToChannel(_client, channel);
             Logger.LogInfo("Lambda",
                 $"Time elapsed since startup {(DateTime.Now - _startDateTime).TotalMilliseconds}ms");
             await _client.SetGameAsync("!help");
