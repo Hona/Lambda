@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using LambdaUI.Data;
+using LambdaUI.Data.Access;
 using LambdaUI.Models.Tempus;
+using LambdaUI.Models.Tempus.DetailedMapList;
 using LambdaUI.Utilities;
 
 namespace LambdaUI.Services
@@ -43,6 +45,16 @@ namespace LambdaUI.Services
 
             await channel.SendMessageAsync(
                 embed: EmbedHelper.CreateEmbed("**Highest Ranked Players Online**", rankedLines, false));
+        }
+
+        public static Embed GetMapInfoEmbed(DetailedMapOverviewModel map)
+        {
+            var builder = new EmbedBuilder();
+            builder.WithTitle($"[{map.Name}]({TempusHelper.GetMapUrl(map.Name)})")
+                .AddField("",
+                    $"Solly : T{map.TierInfo.Soldier} [Showcase]({TempusHelper.GetYoutubeUrl(map.Videos.Soldier)}) | Demo : T{map.TierInfo.Demoman} [Showcase]({TempusHelper.GetYoutubeUrl(map.Videos.Demoman)}");
+            return builder.Build();
+
         }
     }
 }

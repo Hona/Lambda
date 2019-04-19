@@ -7,22 +7,19 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using LambdaUI.Logging;
+using LambdaUI.Models.Tempus.DetailedMapList;
 using LambdaUI.Models.Tempus.Rank;
 using LambdaUI.Models.Tempus.Responses;
 using Newtonsoft.Json;
 
-namespace LambdaUI.Data
+namespace LambdaUI.Data.Access
 {
     public class TempusDataAccess
     {
-        private static readonly Stopwatch _stopwatch = new Stopwatch();
+        private static readonly Stopwatch Stopwatch = new Stopwatch();
 
-        public TempusDataAccess()
-        {
-            UpdateMapListAsync();
-        }
-
-        public List<string> MapList { get; set; }
+        public List<DetailedMapOverviewModel> MapList { get; set; }
+        public List<string> MapNameList { get; set; }
 
         private static HttpWebRequest CreateWebRequest(string path) => (HttpWebRequest) WebRequest.Create(
             "https://tempus.xyz/api" + path);
@@ -38,7 +35,7 @@ namespace LambdaUI.Data
 
         private static async Task<T> GetResponseAsync<T>(string request)
         {
-            _stopwatch.Restart();
+            Stopwatch.Restart();
             object stringValue;
             using (var response = (HttpWebResponse) await BuildWebRequest(request).GetResponseAsync())
             {
@@ -57,8 +54,8 @@ namespace LambdaUI.Data
                 }
                 response.Close();
             }
-            _stopwatch.Stop();
-            Logger.LogInfo("Tempus", "/api" + request + " " + _stopwatch.ElapsedMilliseconds + "ms");
+            Stopwatch.Stop();
+            Logger.LogInfo("Tempus", "/api" + request + " " + Stopwatch.ElapsedMilliseconds + "ms");
             // If T is a string, don't deserialise
             return typeof(T) == typeof(string)
                 ? (T) stringValue
@@ -77,15 +74,18 @@ namespace LambdaUI.Data
         public async Task<List<ShortMapInfoModel>> GetMapListAsync() =>
             await GetResponseAsync<List<ShortMapInfoModel>>("/maps/list");
 
+        public async Task<List<DetailedMapOverviewModel>> GetDetailedMapListAsync() =>
+            await GetResponseAsync<List<DetailedMapOverviewModel>>("/maps/detailedList");
+
         public async Task<Rank> GetUserRank(string id) => await GetResponseAsync<Rank>($"/players/id/{id}/rank");
 
 
         private string ParseMapName(string map)
         {
             map = map.ToLower();
-            if (MapList.Contains(map)) return map;
+            if (MapNameList.Contains(map)) return map;
 
-            foreach (var mapName in MapList)
+            foreach (var mapName in MapNameList)
             {
                 var mapParts = mapName.Split('_');
                 if (mapParts.Any(mapPart => map == mapPart)) return mapName;
@@ -96,8 +96,8 @@ namespace LambdaUI.Data
 
         public async Task UpdateMapListAsync()
         {
-            var maps = await GetMapListAsync();
-            MapList = maps.ConvertAll(x => x.Name);
+            var maps = await GetDetailedMapListAsync();
+            MapNameList = maps.ConvertAll(x=>x.Name);
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using LambdaUI.Constants;
 using LambdaUI.Data;
+using LambdaUI.Data.Access.Simply;
 
 namespace LambdaUI.Discord.Modules
 {

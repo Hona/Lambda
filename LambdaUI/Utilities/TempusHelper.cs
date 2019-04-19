@@ -33,5 +33,10 @@ namespace LambdaUI.Utilities
                     .Trim('0', ':', '.');
         }
         public static TimeSpan TicksToTimeSpan(long ticks) => new TimeSpan(ticks * 149998);
+        public static string GetMapUrl(string name) => "https://tempus.xyz/maps/" + name;
+        public static string GetRecordUrl(int id) => "https://tempus.xyz/records/" + id;
+        public static string GetPlayerUrl(int id) => "https://tempus.xyz/players/" + id;
+        public static string GetDemoUrl(int id) => "https://tempus.xyz/demos/" + id;
+        public static string GetYoutubeUrl(string id) => "https://youtube.com/watch?v=" + id;
     }
 }

@@ -10,6 +10,9 @@ using Discord.Commands;
 using Discord.WebSocket;
 using LambdaUI.Constants;
 using LambdaUI.Data;
+using LambdaUI.Data.Access;
+using LambdaUI.Data.Access.Bot;
+using LambdaUI.Data.Access.Simply;
 using LambdaUI.Discord.Updaters;
 using LambdaUI.Logging;
 using LambdaUI.Services;
@@ -128,7 +131,9 @@ namespace LambdaUI.Discord
         {
             // Don't process the command if it was a System Message
             if (!(messageParam is SocketUserMessage message)) return;
-
+            // Ignore TF2RJweekly messages for now
+            if (messageParam.Channel is SocketGuildChannel socketGuildChannel &&
+                socketGuildChannel.Guild.Id == 310494288570089472) return;
             // Create a number to track where the prefix ends and the command begins
             var commandPosition = 0;
 

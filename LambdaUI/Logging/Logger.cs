@@ -58,16 +58,20 @@ namespace LambdaUI.Logging
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-
+                var text = "";
                 var embed = new EmbedBuilder().AddField(logMessage.Source, logMessage.Message).WithColor(color).WithFooter(DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString());
                 if (logMessage.Exception != null)
                 {
                     embed.AddField("Exception", logMessage.Exception);
                 }
+                if (logMessage.Severity != LogSeverity.Info && logMessage.Severity != LogSeverity.Verbose && logMessage.Severity != LogSeverity.Debug)
+                {
+                    text = "<@115349553770659841>";
+                }
                     
                     
                     
-                _channel.SendMessageAsync(embed: embed.Build());
+                _channel.SendMessageAsync(text, embed: embed.Build());
             }
             switch (logMessage.Severity)
             {

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Dapper.FluentMap;
 using LambdaUI.Data.Mapping;
 using LambdaUI.Models.Simply;
 
-namespace LambdaUI.Data
+namespace LambdaUI.Data.Access.Simply
 {
     public class JustJumpDataAccess : MySqlDataAccessBase
     {
@@ -31,7 +29,7 @@ namespace LambdaUI.Data
                 ClassValue = classValue,
                 MapName = mapName
             };
-            var result = (await QueryAsync<JustJumpMapTimeModel>(query, param)).ToList();
+            var result = Enumerable.ToList<JustJumpMapTimeModel>((await QueryAsync<JustJumpMapTimeModel>(query, param)));
             return result;
         }
         internal async Task<List<JustJumpMapTimeModel>> GetRecentRecords(int count)
@@ -40,7 +38,7 @@ namespace LambdaUI.Data
             var query =
                 $@"select * from `Times` where timestamp>0 order by timestamp desc limit {count}";
 
-            var result = (await QueryAsync<JustJumpMapTimeModel>(query)).ToList();
+            var result = Enumerable.ToList<JustJumpMapTimeModel>((await QueryAsync<JustJumpMapTimeModel>(query)));
 
 
             return result;
@@ -80,7 +78,7 @@ namespace LambdaUI.Data
         private async Task<List<JumpRankModel>> GetTop(string type, int count)
         {
             var query = $@"select * from JumpRanks order by {type} desc limit {count}";
-            var result = (await QueryAsync<JumpRankModel>(query)).ToList();
+            var result = Enumerable.ToList<JumpRankModel>((await QueryAsync<JumpRankModel>(query)));
             return result;
         }
     }

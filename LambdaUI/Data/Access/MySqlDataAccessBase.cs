@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Dapper;
 using MySql.Data.MySqlClient;
 
-namespace LambdaUI.Data
+namespace LambdaUI.Data.Access
 {
     public class MySqlDataAccessBase
     {
@@ -35,7 +35,7 @@ namespace LambdaUI.Data
         protected async Task<List<T>> QueryAsync<T>(string query)
         {
             await CheckConnectionAsync();
-            var result = (await _connection.QueryAsync<T>(query)).ToList();
+            var result = (await SqlMapper.QueryAsync<T>(_connection, query)).ToList();
             CloseAsync();
             return result;
         }
@@ -43,7 +43,7 @@ namespace LambdaUI.Data
         protected async Task<List<T>> QueryAsync<T>(string query, object param)
         {
             await CheckConnectionAsync();
-            var result = (await _connection.QueryAsync<T>(query, param)).ToList();
+            var result = (await SqlMapper.QueryAsync<T>(_connection, query, param)).ToList();
             CloseAsync();
             return result;
         }
@@ -51,7 +51,7 @@ namespace LambdaUI.Data
         protected async Task ExecuteAsync(string query, object param)
         {
             await CheckConnectionAsync();
-            await _connection.ExecuteAsync(query, param);
+            await SqlMapper.ExecuteAsync(_connection, query, param);
             CloseAsync();
         }
     }

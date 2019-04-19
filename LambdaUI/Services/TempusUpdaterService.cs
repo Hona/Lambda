@@ -60,22 +60,22 @@ namespace LambdaUI.Services
 
         private static string FormatRecords(IEnumerable<MapWr> records) => records.Aggregate("",
             (currentString, nextItem) => currentString +
-                                         $"{TempusHelper.GetClass(nextItem.RecordInfo.Class)}WR | [{nextItem.MapInfo.Name.EscapeDiscordChars()}](https://tempus.xyz/maps/{nextItem.MapInfo.Name}) | [**{FormattedDuration(nextItem.RecordInfo.Duration).EscapeDiscordChars()}**](https://tempus.xyz/records/{nextItem.RecordInfo.Id}) | [{nextItem.PlayerInfo.Name.EscapeDiscordChars()}](https://tempus.xyz/players/{nextItem.PlayerInfo.Id})" +
+                                         $"{TempusHelper.GetClass(nextItem.RecordInfo.Class)}WR | [{nextItem.MapInfo.Name.EscapeDiscordChars()}]({TempusHelper.GetMapUrl(nextItem.MapInfo.Name)}) | [**{FormattedDuration(nextItem.RecordInfo.Duration).EscapeDiscordChars()}**]({TempusHelper.GetRecordUrl(nextItem.RecordInfo.Id)}) | [{nextItem.PlayerInfo.Name.EscapeDiscordChars()}]({TempusHelper.GetPlayerUrl(nextItem.PlayerInfo.Id)})" +
                                          Environment.NewLine);
 
         private static string FormatTopTimes(IEnumerable<MapTop> records) => records.Aggregate("",
             (currentString, nextItem) => currentString +
-                                         $"{TempusHelper.GetClass(nextItem.RecordInfo.Class)} #{nextItem.RecordInfo.Rank} | [{nextItem.MapInfo.Name.EscapeDiscordChars()}](https://tempus.xyz/maps/{nextItem.MapInfo.Name}) | [**{FormattedDuration(nextItem.RecordInfo.Duration).EscapeDiscordChars()}**](https://tempus.xyz/records/{nextItem.RecordInfo.Id}) | [{nextItem.PlayerInfo.Name.EscapeDiscordChars()}](https://tempus.xyz/players/{nextItem.PlayerInfo.Id})" +
+                                         $"{TempusHelper.GetClass(nextItem.RecordInfo.Class)} #{nextItem.RecordInfo.Rank} | [{nextItem.MapInfo.Name.EscapeDiscordChars()}]({TempusHelper.GetMapUrl(nextItem.MapInfo.Name)}) | [**{FormattedDuration(nextItem.RecordInfo.Duration).EscapeDiscordChars()}**]({TempusHelper.GetRecordUrl(nextItem.RecordInfo.Id)}) | [{nextItem.PlayerInfo.Name.EscapeDiscordChars()}]({TempusHelper.GetPlayerUrl(nextItem.PlayerInfo.Id)})" +
                                          Environment.NewLine);
 
         private static string FormatCourseRecords(IEnumerable<CourseWr> records) => records.Aggregate("",
             (currentString, nextItem) => currentString +
-                                         $"{TempusHelper.GetClass(nextItem.RecordInfo.Class)} C{nextItem.ZoneInfo.Zoneindex} | [{nextItem.MapInfo.Name.EscapeDiscordChars()}](https://tempus.xyz/maps/{nextItem.MapInfo.Name}) | [**{FormattedDuration(nextItem.RecordInfo.Duration).EscapeDiscordChars()}**](https://tempus.xyz/records/{nextItem.RecordInfo.Id}) | [{nextItem.PlayerInfo.Name.EscapeDiscordChars()}](https://tempus.xyz/players/{nextItem.PlayerInfo.Id})" +
+                                         $"{TempusHelper.GetClass(nextItem.RecordInfo.Class)} C{nextItem.ZoneInfo.Zoneindex} | [{nextItem.MapInfo.Name.EscapeDiscordChars()}]({TempusHelper.GetMapUrl(nextItem.MapInfo.Name)}) | [**{FormattedDuration(nextItem.RecordInfo.Duration).EscapeDiscordChars()}**]({TempusHelper.GetRecordUrl(nextItem.RecordInfo.Id)}) | [{nextItem.PlayerInfo.Name.EscapeDiscordChars()}]({TempusHelper.GetPlayerUrl(nextItem.PlayerInfo.Id)})" +
                                          Environment.NewLine);
 
         private static string FormatBonusRecords(IEnumerable<BonusWr> records) => records.Aggregate("",
             (currentString, nextItem) => currentString +
-                                         $"{TempusHelper.GetClass(nextItem.RecordInfo.Class)} B{nextItem.ZoneInfo.Zoneindex} | [{nextItem.MapInfo.Name.EscapeDiscordChars()}](https://tempus.xyz/maps/{nextItem.MapInfo.Name}) | [**{FormattedDuration(nextItem.RecordInfo.Duration).EscapeDiscordChars()}**](https://tempus.xyz/records/{nextItem.RecordInfo.Id}) | [{nextItem.PlayerInfo.Name.EscapeDiscordChars()}](https://tempus.xyz/players/{nextItem.PlayerInfo.Id})" +
+                                         $"{TempusHelper.GetClass(nextItem.RecordInfo.Class)} B{nextItem.ZoneInfo.Zoneindex} | [{nextItem.MapInfo.Name.EscapeDiscordChars()}]({TempusHelper.GetMapUrl(nextItem.MapInfo.Name)}) | [**{FormattedDuration(nextItem.RecordInfo.Duration).EscapeDiscordChars()}**]({TempusHelper.GetRecordUrl(nextItem.RecordInfo.Id)}) | [{nextItem.PlayerInfo.Name.EscapeDiscordChars()}]({TempusHelper.GetPlayerUrl(nextItem.PlayerInfo.Id)})" +
                                          Environment.NewLine);
     }
 }

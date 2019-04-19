@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Dapper.FluentMap;
 using LambdaUI.Data.Mapping;
 using LambdaUI.Models.Simply;
 
-namespace LambdaUI.Data
+namespace LambdaUI.Data.Access.Simply
 {
     public class SimplyHightowerDataAccess : MySqlDataAccessBase
     {
@@ -20,7 +18,7 @@ namespace LambdaUI.Data
 
             var query = $@"select * from players order by points desc limit {count}";
 
-            var result = (await QueryAsync<SimplyHightowerModel>(query)).ToList();
+            var result = Enumerable.ToList<SimplyHightowerModel>((await QueryAsync<SimplyHightowerModel>(query)));
 
             return result;
         }

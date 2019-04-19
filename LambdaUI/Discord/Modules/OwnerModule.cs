@@ -5,6 +5,9 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using LambdaUI.Data;
+using LambdaUI.Data.Access;
+using LambdaUI.Data.Access.Bot;
+using LambdaUI.Data.Access.Simply;
 using LambdaUI.Logging;
 using LambdaUI.Utilities;
 
@@ -67,8 +70,7 @@ namespace LambdaUI.Discord.Modules
         [Command("clearmessages")]
         public async Task ClearMessages()
         {
-            var channel = Context.Channel as ITextChannel;
-            if (channel != null)
+            if (Context.Channel is ITextChannel channel)
             {
                 var messages = await channel.GetMessagesAsync().FlattenAsync();
                 await channel.DeleteMessagesAsync(messages);

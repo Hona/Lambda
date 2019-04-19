@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using LambdaUI.Data;
+using LambdaUI.Data.Access;
+using LambdaUI.Data.Access.Bot;
 using LambdaUI.Services;
 
 namespace LambdaUI.Discord.Updaters

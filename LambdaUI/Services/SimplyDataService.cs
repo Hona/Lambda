@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Discord;
 using LambdaUI.Constants;
 using LambdaUI.Data;
+using LambdaUI.Data.Access.Simply;
 using LambdaUI.Models.Simply;
 using LambdaUI.Utilities;
 
