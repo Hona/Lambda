@@ -38,21 +38,13 @@ namespace QueryMaster
     [Serializable]
     public class QueryMasterException : Exception
     {
-        public QueryMasterException()
-        {
-        }
+        public QueryMasterException() { }
 
-        public QueryMasterException(string message) : base(message)
-        {
-        }
+        public QueryMasterException(string message) : base(message) { }
 
-        public QueryMasterException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+        public QueryMasterException(string message, Exception innerException) : base(message, innerException) { }
 
-        protected QueryMasterException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
+        protected QueryMasterException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 
     /// <summary>
@@ -61,21 +53,13 @@ namespace QueryMaster
     [Serializable]
     public class InvalidHeaderException : QueryMasterException
     {
-        public InvalidHeaderException()
-        {
-        }
+        public InvalidHeaderException() { }
 
-        public InvalidHeaderException(string message) : base(message)
-        {
-        }
+        public InvalidHeaderException(string message) : base(message) { }
 
-        public InvalidHeaderException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+        public InvalidHeaderException(string message, Exception innerException) : base(message, innerException) { }
 
-        protected InvalidHeaderException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
+        protected InvalidHeaderException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 
     /// <summary>
@@ -84,21 +68,13 @@ namespace QueryMaster
     [Serializable]
     public class InvalidPacketException : QueryMasterException
     {
-        public InvalidPacketException()
-        {
-        }
+        public InvalidPacketException() { }
 
-        public InvalidPacketException(string message) : base(message)
-        {
-        }
+        public InvalidPacketException(string message) : base(message) { }
 
-        public InvalidPacketException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+        public InvalidPacketException(string message, Exception innerException) : base(message, innerException) { }
 
-        protected InvalidPacketException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
+        protected InvalidPacketException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 
     /// <summary>
@@ -107,21 +83,13 @@ namespace QueryMaster
     [Serializable]
     public class ParseException : QueryMasterException
     {
-        public ParseException()
-        {
-        }
+        public ParseException() { }
 
-        public ParseException(string message) : base(message)
-        {
-        }
+        public ParseException(string message) : base(message) { }
 
-        public ParseException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+        public ParseException(string message, Exception innerException) : base(message, innerException) { }
 
-        protected ParseException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
+        protected ParseException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 
     /// <summary>
@@ -130,21 +98,13 @@ namespace QueryMaster
     [Serializable]
     public class GameServerException : QueryMasterException
     {
-        public GameServerException()
-        {
-        }
+        public GameServerException() { }
 
-        public GameServerException(string message) : base(message)
-        {
-        }
+        public GameServerException(string message) : base(message) { }
 
-        public GameServerException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+        public GameServerException(string message, Exception innerException) : base(message, innerException) { }
 
-        protected GameServerException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
+        protected GameServerException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 
     /// <summary>
@@ -153,21 +113,13 @@ namespace QueryMaster
     [Serializable]
     public class MasterServerException : QueryMasterException
     {
-        public MasterServerException()
-        {
-        }
+        public MasterServerException() { }
 
-        public MasterServerException(string message) : base(message)
-        {
-        }
+        public MasterServerException(string message) : base(message) { }
 
-        public MasterServerException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+        public MasterServerException(string message, Exception innerException) : base(message, innerException) { }
 
-        protected MasterServerException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
+        protected MasterServerException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 
     /// <summary>
@@ -176,20 +128,12 @@ namespace QueryMaster
     [Serializable]
     public class SteamException : QueryMasterException
     {
-        public SteamException()
-        {
-        }
+        public SteamException() { }
 
-        public SteamException(string message) : base(message)
-        {
-        }
+        public SteamException(string message) : base(message) { }
 
-        public SteamException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+        public SteamException(string message, Exception innerException) : base(message, innerException) { }
 
-        protected SteamException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
+        protected SteamException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 }

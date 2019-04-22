@@ -26,7 +26,7 @@ namespace LambdaUI.Discord.Modules
                 return;
             }
 
-            await ReplyEmbed(SourceServerStatusService.GetEmbedBuilder(ip, port));
+            await ReplyEmbed(SourceServerStatusService.GetEmbed(ip, port));
         }
 
         [Alias("mc")]

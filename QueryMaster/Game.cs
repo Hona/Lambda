@@ -60,8 +60,7 @@ namespace QueryMaster
         /// <summary>
         ///     Half-Life: Opposing Force
         /// </summary>
-        [Description("Half-Life: Opposing Force")]
-        OpposingForce = 50,
+        [Description("Half-Life: Opposing Force")] OpposingForce = 50,
 
         /// <summary>
         ///     Ricochet
@@ -81,14 +80,12 @@ namespace QueryMaster
         /// <summary>
         ///     Counter-Strike 1.6 dedicated server
         /// </summary>
-        [Description("Counter-Strike 1.6 dedicated server")]
-        CounterStrike16DedicatedServer = 90,
+        [Description("Counter-Strike 1.6 dedicated server")] CounterStrike16DedicatedServer = 90,
 
         /// <summary>
         ///     Condition Zero Deleted Scenes
         /// </summary>
-        [Description("Condition Zero Deleted Scenes")]
-        ConditionZeroDeletedScenes = 100,
+        [Description("Condition Zero Deleted Scenes")] ConditionZeroDeletedScenes = 100,
 
         /// <summary>
         ///     Half-Life: Blue Shift
@@ -104,8 +101,7 @@ namespace QueryMaster
         /// <summary>
         ///     Counter-Strike: Source
         /// </summary>
-        [Description("Counter-Strike: Source")]
-        CounterStrikeSource = 240,
+        [Description("Counter-Strike: Source")] CounterStrikeSource = 240,
 
         /// <summary>
         ///     Half-Life: Source
@@ -120,26 +116,22 @@ namespace QueryMaster
         /// <summary>
         ///     Half-Life 2: Deathmatch
         /// </summary>
-        [Description("Half-Life 2: Deathmatch")]
-        HalfLife2Deathmatch = 320,
+        [Description("Half-Life 2: Deathmatch")] HalfLife2Deathmatch = 320,
 
         /// <summary>
         ///     Half-Life 2: Lost Coast
         /// </summary>
-        [Description("Half-Life 2: Lost Coast")]
-        HalfLife2LostCoast = 340,
+        [Description("Half-Life 2: Lost Coast")] HalfLife2LostCoast = 340,
 
         /// <summary>
         ///     Half-Life Deathmatch: Source
         /// </summary>
-        [Description("Half-Life Deathmatch: Source")]
-        HalfLifeDeathmatchSource = 360,
+        [Description("Half-Life Deathmatch: Source")] HalfLifeDeathmatchSource = 360,
 
         /// <summary>
         ///     Half-Life 2: Episode One
         /// </summary>
-        [Description("Half-Life 2: Episode One")]
-        HalfLife2EpisodeOne = 380,
+        [Description("Half-Life 2: Episode One")] HalfLife2EpisodeOne = 380,
 
         /// <summary>
         ///     Portal
@@ -149,8 +141,7 @@ namespace QueryMaster
         /// <summary>
         ///     Half-Life 2: Episode Two
         /// </summary>
-        [Description("Half-Life 2: Episode Two")]
-        HalfLife2EpisodeTwo = 420,
+        [Description("Half-Life 2: Episode Two")] HalfLife2EpisodeTwo = 420,
 
         /// <summary>
         ///     Team Fortress 2
@@ -185,26 +176,22 @@ namespace QueryMaster
         /// <summary>
         ///     Counter-Strike: Global Offensive
         /// </summary>
-        [Description("Counter-Strike: Global Offensive")]
-        CounterStrikeGlobalOffensive = 730,
+        [Description("Counter-Strike: Global Offensive")] CounterStrikeGlobalOffensive = 730,
 
         /// <summary>
         ///     SiN Episodes: Emergence
         /// </summary>
-        [Description("SiN Episodes: Emergence")]
-        SiNEpisodesEmergence = 1300,
+        [Description("SiN Episodes: Emergence")] SiNEpisodesEmergence = 1300,
 
         /// <summary>
         ///     Dark Messiah of Might and Magic
         /// </summary>
-        [Description("Dark Messiah of Might and Magic")]
-        DarkMessiahOfMightAndMagic = 2100,
+        [Description("Dark Messiah of Might and Magic")] DarkMessiahOfMightAndMagic = 2100,
 
         /// <summary>
         ///     Dark Messiah Might and Magic Multi-Player
         /// </summary>
-        [Description("Dark Messiah Might and Magic Multi-Player")]
-        DarkMessiahMightAndMagicMultiPlayer = 2130,
+        [Description("Dark Messiah Might and Magic Multi-Player")] DarkMessiahMightAndMagicMultiPlayer = 2130,
 
         /// <summary>
         ///     The Ship
@@ -219,8 +206,7 @@ namespace QueryMaster
         /// <summary>
         ///     Vampire The Masquerade - Bloodlines
         /// </summary>
-        [Description("Vampire The Masquerade - Bloodlines")]
-        VampireTheMasqueradeBloodlines = 2600,
+        [Description("Vampire The Masquerade - Bloodlines")] VampireTheMasqueradeBloodlines = 2600,
 
         /// <summary>
         ///     Garry's Mod
@@ -255,8 +241,7 @@ namespace QueryMaster
         /// <summary>
         ///     Pirates, Vikings, and Knights II
         /// </summary>
-        [Description("Pirates, Vikings, & Knights II")]
-        PiratesVikingsAndKnightsIi = 17570,
+        [Description("Pirates, Vikings, & Knights II")] PiratesVikingsAndKnightsIi = 17570,
 
         /// <summary>
         ///     Dystopia
@@ -266,8 +251,7 @@ namespace QueryMaster
         /// <summary>
         ///     Insurgency: Modern Infantry Combat
         /// </summary>
-        [Description("Insurgency: Modern Infantry Combat")]
-        InsurgencyModernInfantryCombat = 17700,
+        [Description("Insurgency: Modern Infantry Combat")] InsurgencyModernInfantryCombat = 17700,
 
         /// <summary>
         ///     Nuclear Dawn
@@ -307,8 +291,7 @@ namespace QueryMaster
         /// <summary>
         ///     Arma 2: Operation Arrowhead
         /// </summary>
-        [Description("Arma 2: Operation Arrowhead")]
-        Arma2OperationArrowhead = 33930,
+        [Description("Arma 2: Operation Arrowhead")] Arma2OperationArrowhead = 33930,
 
         /// <summary>
         ///     Arma 3
@@ -348,13 +331,11 @@ namespace QueryMaster
         /// <summary>
         ///     Red Orchestra: Ostfront 41-45
         /// </summary>
-        [Description("Red Orchestra: Ostfront 41-45")]
-        RedOrchestraOstfront = 1200,
+        [Description("Red Orchestra: Ostfront 41-45")] RedOrchestraOstfront = 1200,
 
         /// <summary>
         ///     Rising Storm/Red Orchestra 2 Multiplayer
         /// </summary>
-        [Description("Rising Storm/Red Orchestra 2 Multiplayer")]
-        RedOrchestra2 = 35450
+        [Description("Rising Storm/Red Orchestra 2 Multiplayer")] RedOrchestra2 = 35450
     }
 }

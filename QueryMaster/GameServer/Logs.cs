@@ -52,9 +52,9 @@ namespace QueryMaster.GameServer
         private readonly int _headerSize;
         private readonly int _port;
         private readonly byte[] _recvData;
+        private Socket _udpSocket;
         internal LogCallback Callback;
         internal IPEndPoint ServerEndPoint;
-        private Socket _udpSocket;
 
         internal Logs(EngineType type, int port, IPEndPoint serverEndPoint)
         {

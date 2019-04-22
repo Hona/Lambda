@@ -57,9 +57,7 @@ namespace QueryMaster
         ///     Disposes all the resources used by this instance.
         /// </summary>
         /// <param name="disposing"></param>
-        protected virtual void Dispose(bool disposing)
-        {
-        }
+        protected virtual void Dispose(bool disposing) { }
 
         /// <summary>
         ///     Throw <see cref="ObjectDisposedException" /> if this instance is already disposed.

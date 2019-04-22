@@ -46,9 +46,7 @@ namespace QueryMaster
         /// </summary>
         /// <param name="collection"></param>
         public QueryMasterCollection(IList<T> collection)
-            : base(collection)
-        {
-        }
+            : base(collection) { }
 
         /// <summary>
         ///     Returns Json string.

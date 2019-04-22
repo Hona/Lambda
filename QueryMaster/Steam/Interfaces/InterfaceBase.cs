@@ -52,7 +52,8 @@ namespace QueryMaster.Steam.Interfaces
             return response;
         }
 
-        internal static T ParseResponse<T>(string reply, bool addRootObject = false, params JsonConverter[] jsonConverters)
+        internal static T ParseResponse<T>(string reply, bool addRootObject = false,
+            params JsonConverter[] jsonConverters)
             where T : SteamResponse, new()
         {
             T response = null;
@@ -79,7 +80,8 @@ namespace QueryMaster.Steam.Interfaces
             }
             finally
             {
-                if (response != null) {
+                if (response != null)
+                {
                     response.ReceivedResponse = reply;
                     response.Converters = jsonConverters;
                 }

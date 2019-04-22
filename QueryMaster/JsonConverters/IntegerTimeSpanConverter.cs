@@ -34,10 +34,7 @@ namespace QueryMaster.JsonConverters
 {
     internal class IntegerTimeSpanConverter : JsonConverter
     {
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(TimeSpan);
-        }
+        public override bool CanConvert(Type objectType) => objectType == typeof(TimeSpan);
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
             JsonSerializer serializer)

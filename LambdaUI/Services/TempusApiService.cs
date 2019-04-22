@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Discord;
 using LambdaUI.Data;
 using LambdaUI.Data.Access;
+using LambdaUI.Logging;
 using LambdaUI.Models.Tempus;
 using LambdaUI.Models.Tempus.DetailedMapList;
 using LambdaUI.Utilities;
@@ -49,11 +50,28 @@ namespace LambdaUI.Services
 
         public static Embed GetMapInfoEmbed(DetailedMapOverviewModel map)
         {
-            var builder = new EmbedBuilder();
-            builder.WithTitle($"[{map.Name}]({TempusHelper.GetMapUrl(map.Name)})")
-                .AddField("",
-                    $"Solly : T{map.TierInfo.Soldier} [Showcase]({TempusHelper.GetYoutubeUrl(map.Videos.Soldier)}) | Demo : T{map.TierInfo.Demoman} [Showcase]({TempusHelper.GetYoutubeUrl(map.Videos.Demoman)}");
-            return builder.Build();
+            try
+            {
+                var builder = new EmbedBuilder();
+                builder.WithTitle($"[{map.Name}]({TempusHelper.GetMapUrl(map.Name)})");
+                var teirText = $"Solly : T{map.TierInfo.Soldier}";
+                if (!string.IsNullOrWhiteSpace(map.Videos.Soldier))
+                {
+                    teirText += $" [Showcase]({TempusHelper.GetYoutubeUrl(map.Videos.Soldier)})";
+                }
+                teirText += $" | Demo : T{map.TierInfo.Demoman} ";
+                if (!string.IsNullOrWhiteSpace(map.Videos.Demoman))
+                {
+                    teirText += $"[Showcase]({TempusHelper.GetYoutubeUrl(map.Videos.Demoman)})";
+                }
+                builder.WithDescription(teirText);
+                return builder.Build();
+            }
+            catch (Exception e)
+            {
+                return Logger.LogException(e);
+            }
+
 
         }
     }

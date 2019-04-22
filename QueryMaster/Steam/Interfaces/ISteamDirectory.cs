@@ -37,10 +37,7 @@ namespace QueryMaster.Steam.Interfaces
     /// </summary>
     public class SteamDirectory : InterfaceBase
     {
-        internal SteamDirectory()
-        {
-            Interface = "ISteamDirectory";
-        }
+        internal SteamDirectory() => Interface = "ISteamDirectory";
 
         /// <summary>
         ///     GetCMList web api method(version 1).

@@ -39,9 +39,7 @@ namespace QueryMaster.GameServer
             {0x0a, 0x00, 0x00, 0x00, 0x0A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
         internal TcpQuery(ConnectionInfo conInfo)
-            : base(conInfo, ProtocolType.Tcp)
-        {
-        }
+            : base(conInfo, ProtocolType.Tcp) { }
 
         internal byte[] GetResponse(byte[] msg)
         {

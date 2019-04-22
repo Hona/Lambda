@@ -36,10 +36,7 @@ namespace QueryMaster.Steam.Interfaces
     /// </summary>
     public class SteamWebApiUtil : InterfaceBase
     {
-        internal SteamWebApiUtil()
-        {
-            Interface = "ISteamWebAPIUtil";
-        }
+        internal SteamWebApiUtil() => Interface = "ISteamWebAPIUtil";
 
         /// <summary>
         ///     Gets WebAPI server time and checks server status(GetServerInfo web api method(version 1)).

@@ -1,14 +1,25 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Discord;
+using LambdaUI.Logging;
 
 namespace LambdaUI.Discord.Updaters
 {
     public class UpdaterBase
     {
-        protected async Task DeleteAllMessages(ITextChannel channel)
+        protected static async Task DeleteAllMessages(ITextChannel channel)
         {
-            var messages = await channel.GetMessagesAsync().FlattenAsync();
-            await channel.DeleteMessagesAsync(messages);
+            try
+            {
+                var messages = await channel.GetMessagesAsync().FlattenAsync();
+                await channel.DeleteMessagesAsync(messages);
+
+            }
+            catch (Exception e)
+            {
+                await channel.SendMessageAsync(embed:Logger.LogException(e));
+            }
+
         }
     }
 }

@@ -44,9 +44,7 @@ namespace QueryMaster.GameServer
         private EngineType _type;
 
         internal UdpQuery(ConnectionInfo conInfo)
-            : base(conInfo, ProtocolType.Udp)
-        {
-        }
+            : base(conInfo, ProtocolType.Udp) { }
 
         internal byte[] GetResponse(byte[] msg, EngineType type, bool isMultiPacket = false)
         {
@@ -102,10 +100,7 @@ namespace QueryMaster.GameServer
             return parsedData;
         }
 
-        private static byte[] ParseSinglePkt(IEnumerable<byte> data)
-        {
-            return data.Skip(4).ToArray();
-        }
+        private static byte[] ParseSinglePkt(IEnumerable<byte> data) => data.Skip(4).ToArray();
 
         private byte[] ParseMultiPkt(byte[] data)
         {
@@ -221,9 +216,7 @@ namespace QueryMaster.GameServer
         {
             bool isValid;
             using (var input = new MemoryStream(data))
-            {
                 isValid = checksum == new CRC32().GetCrc32(input);
-            }
 
             return isValid;
         }

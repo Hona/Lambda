@@ -41,10 +41,7 @@ namespace QueryMaster.MasterServer.DataObjects
     [Serializable]
     public class BatchInfo : DataObject
     {
-        internal BatchInfo()
-        {
-            Converters = new JsonConverter[] {new StringIpEndPointConverter()};
-        }
+        internal BatchInfo() => Converters = new JsonConverter[] {new StringIpEndPointConverter()};
 
         /// <summary>
         ///     Master server EndPoint.

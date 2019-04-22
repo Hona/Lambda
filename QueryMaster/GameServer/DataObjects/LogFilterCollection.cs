@@ -54,10 +54,7 @@ namespace QueryMaster.GameServer.DataObjects
             foreach (var i in _filterList) yield return i;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <summary>
         ///     Enables all filters.

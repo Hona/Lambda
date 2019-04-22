@@ -60,10 +60,12 @@ namespace QueryMaster.MasterServer
 
             while (counter != packet.Length)
             {
-                var ip = parser.ReadByte() + "." + parser.ReadByte() + "." + parser.ReadByte() + "." + parser.ReadByte();
+                var ip = parser.ReadByte() + "." + parser.ReadByte() + "." + parser.ReadByte() + "." +
+                         parser.ReadByte();
                 var portByte1 = parser.ReadByte();
                 var portByte2 = parser.ReadByte();
-                int port = BitConverter.ToUInt16(BitConverter.IsLittleEndian ? new[] {portByte2, portByte1} : new[] {portByte1, portByte2}, 0);
+                int port = BitConverter.ToUInt16(
+                    BitConverter.IsLittleEndian ? new[] {portByte2, portByte1} : new[] {portByte1, portByte2}, 0);
                 endPoints.Add(new IPEndPoint(IPAddress.Parse(ip), port));
                 counter += 6;
             }

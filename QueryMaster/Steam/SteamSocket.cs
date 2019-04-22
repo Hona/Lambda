@@ -42,9 +42,7 @@ namespace QueryMaster.Steam
                 var request = (HttpWebRequest) WebRequest.Create(url);
                 using (var response = (HttpWebResponse) request.GetResponse())
                 using (var reader = new StreamReader(response.GetResponseStream()))
-                {
                     responseStr = reader.ReadToEnd();
-                }
 
                 return responseStr;
             }
@@ -55,15 +53,11 @@ namespace QueryMaster.Steam
                 request.Method = "POST";
                 request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
                 using (var writer = new StreamWriter(request.GetRequestStream()))
-                {
                     writer.Write(postData);
-                }
 
                 using (var response = (HttpWebResponse) request.GetResponse())
                 using (var reader = new StreamReader(response.GetResponseStream()))
-                {
                     responseStr = reader.ReadToEnd();
-                }
 
                 return responseStr;
             }

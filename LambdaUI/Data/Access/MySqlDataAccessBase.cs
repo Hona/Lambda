@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using LambdaUI.Logging;
 using MySql.Data.MySqlClient;
 
 namespace LambdaUI.Data.Access
@@ -34,25 +36,52 @@ namespace LambdaUI.Data.Access
 
         protected async Task<List<T>> QueryAsync<T>(string query)
         {
-            await CheckConnectionAsync();
-            var result = (await SqlMapper.QueryAsync<T>(_connection, query)).ToList();
-            CloseAsync();
-            return result;
+            try
+            {
+                await CheckConnectionAsync();
+                var result = (await _connection.QueryAsync<T>(query)).ToList();
+                CloseAsync();
+                return result;
+            }
+            catch (Exception e)
+            {
+                Logger.LogException(e);
+                return null;
+            }
+
         }
 
         protected async Task<List<T>> QueryAsync<T>(string query, object param)
         {
-            await CheckConnectionAsync();
-            var result = (await SqlMapper.QueryAsync<T>(_connection, query, param)).ToList();
-            CloseAsync();
-            return result;
+            try
+            {
+                await CheckConnectionAsync();
+                var result = (await _connection.QueryAsync<T>(query, param)).ToList();
+                CloseAsync();
+                return result;
+            }
+            catch (Exception e)
+            {
+                Logger.LogException(e);
+                return null;
+            }
+
         }
 
         protected async Task ExecuteAsync(string query, object param)
         {
-            await CheckConnectionAsync();
-            await SqlMapper.ExecuteAsync(_connection, query, param);
-            CloseAsync();
+            try
+            {
+                await CheckConnectionAsync();
+                await _connection.ExecuteAsync(query, param);
+                CloseAsync();
+            }
+            catch (Exception e)
+            { 
+                Logger.LogException(e);
+            }
+
+
         }
     }
 }

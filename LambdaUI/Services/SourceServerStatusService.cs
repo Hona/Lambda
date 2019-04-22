@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using LambdaUI.Constants;
+using LambdaUI.Logging;
 using LambdaUI.Minecraft;
 using QueryMaster;
 using QueryMaster.GameServer;
@@ -14,69 +15,100 @@ namespace LambdaUI.Services
 {
     public static class SourceServerStatusService
     {
-        public static EmbedBuilder JustJumpEmbed => GetEmbedBuilder(ServerConstants.JustJumpServerIpAddress,
+        public static Embed JustJumpEmbed => GetEmbed(ServerConstants.JustJumpServerIpAddress,
             ServerConstants.JustJumpServerPort,
             Game.TeamFortress2);
 
-        public static EmbedBuilder HightowerEmbed => GetEmbedBuilder(ServerConstants.HightowerServerIpAddress,
+        public static Embed HightowerEmbed => GetEmbed(ServerConstants.HightowerServerIpAddress,
             ServerConstants.HightowerServerPort,
             Game.TeamFortress2);
-        public static EmbedBuilder JumpAcademyEmbed => GetEmbedBuilder(ServerConstants.JumpAcademyServerIpAddress,
+        public static Embed JumpAcademyEmbed => GetEmbed(ServerConstants.JumpAcademyServerIpAddress,
             ServerConstants.JumpAcademyServerPort,
             Game.TeamFortress2);
 
 
-        public static EmbedBuilder SourceEmbed(string ip, ushort port) => GetEmbedBuilder(ip, port, Game.TeamFortress2);
+        public static Embed SourceEmbed(string ip, ushort port) => GetEmbed(ip, port, Game.TeamFortress2);
 
-        public static async Task<EmbedBuilder> GetMinecraftEmbed()
+        public static async Task<Embed> GetMinecraftEmbed()
         {
-            var ping = await ServerPing.Ping();
-            var builder = new EmbedBuilder();
-
-            if (ping.Motd.Contains('§'))
+            try
             {
-                var split = ping.Motd.Split('§');
-                for (var i = 1; i < split.Length; i++) split[i] = string.Join(string.Empty, split[i].Skip(1));
+                var ping = await ServerPing.Ping();
+                var builder = new EmbedBuilder();
 
-                ping.Motd = string.Join(string.Empty, split);
+                if (ping.Motd.Contains('§'))
+                {
+                    var split = ping.Motd.Split('§');
+                    for (var i = 1; i < split.Length; i++) split[i] = string.Join(string.Empty, split[i].Skip(1));
+
+                    ping.Motd = string.Join(string.Empty, split);
+                }
+
+                builder.WithTitle($"**{ping.Motd}**");
+                builder.AddField("Players Online", $"{ping.PlayersOnline}/{ping.PlayersMax}")
+                    .AddField("IP", ServerConstants.MinecraftServerIpAddress)
+                    .WithColor(ColorConstants.InfoColor);
+                if (ping.OnlinePlayerList != null) builder.AddField("Players", string.Join(", ", ping.OnlinePlayerList));
+                return builder.Build();
+            }
+            catch (Exception e)
+            {
+                return Logger.LogException(e);
+            }
+        }
+        internal static Embed GetEmbed(string ip, ushort port)
+        {
+            try
+            {
+                var server = ServerQuery.GetServerInstance(EngineType.Source, ip, port, sendTimeout: 1000,
+                    receiveTimeout: 1000, throwExceptions: true);
+                return GetSourceServerReplyEmbed(server);
+            }
+            catch (Exception e)
+            {
+                return Logger.LogException(e);
             }
 
-            builder.WithTitle($"**{ping.Motd}**");
-            builder.AddField("Players Online", $"{ping.PlayersOnline}/{ping.PlayersMax}")
-                .AddField("IP", ServerConstants.MinecraftServerIpAddress)
-                .WithColor(ColorConstants.InfoColor);
-            if (ping.OnlinePlayerList != null) builder.AddField("Players", string.Join(", ", ping.OnlinePlayerList));
-            return builder;
-        }
-        internal static EmbedBuilder GetEmbedBuilder(string ip, ushort port)
-        {
-            var server = ServerQuery.GetServerInstance(EngineType.Source, ip, port, sendTimeout: 1000,
-                receiveTimeout: 1000, throwExceptions: true);
-            return GetSourceServerReplyEmbed(server);
         }
 
-        internal static EmbedBuilder GetEmbedBuilder(string ip, ushort port, Game game)
+        private static Embed GetEmbed(string ip, ushort port, Game game)
         {
-            var server = ServerQuery.GetServerInstance(game, ip, port, receiveTimeout: 1000, throwExceptions: true);
-            return GetSourceServerReplyEmbed(server);
+            try
+            {
+                var server = ServerQuery.GetServerInstance(game, ip, port, receiveTimeout: 1000, throwExceptions: true);
+                return GetSourceServerReplyEmbed(server);
+            }
+            catch (Exception e)
+            {
+                return Logger.LogException(e);
+            }
+
         }
 
-        private static EmbedBuilder GetSourceServerReplyEmbed(Server server)
+        private static Embed GetSourceServerReplyEmbed(Server server)
         {
-            var info = server.GetInfo();
-            var builder = new EmbedBuilder { Title = $"**{info.Name}**" };
-            builder.AddField("Description", info.Description)
-                .AddField("IP", $"[{info.Address}](http://103.1.206.66/tf/redirect/server.php?IP={info.Address})")
-                .AddField("Map", info.Map)
-                .AddField("Ping", info.Ping)
-                .AddField("Players Online", info.Players + "/" + info.MaxPlayers)
-                .WithColor(ColorConstants.InfoColor);
-            if (server.GetPlayers().Any())
-                builder.AddField("Player List",
-                    server.GetPlayers().OrderBy(x => x.Name).Aggregate("",
-                            (currentString, nextPlayer) => currentString + "**" + nextPlayer.Name + "**" + ", ")
-                        .TrimEnd(',', ' '));
-            return builder;
+            try
+            {
+                var info = server.GetInfo();
+                var builder = new EmbedBuilder { Title = $"**{info.Name}**" };
+                builder.AddField("Description", info.Description)
+                    .AddField("IP", $"[{info.Address}](http://103.1.206.66/tf/redirect/server.php?IP={info.Address})")
+                    .AddField("Map", info.Map)
+                    .AddField("Ping", info.Ping)
+                    .AddField("Players Online", info.Players + "/" + info.MaxPlayers)
+                    .WithColor(ColorConstants.InfoColor);
+                if (server.GetPlayers().Any())
+                    builder.AddField("Player List",
+                        server.GetPlayers().OrderBy(x => x.Name).Aggregate("",
+                                (currentString, nextPlayer) => currentString + "**" + nextPlayer.Name + "**" + ", ")
+                            .TrimEnd(',', ' '));
+                return builder.Build();
+            }
+            catch (Exception e)
+            {
+                return Logger.LogException(e);
+            }
+
         }
     }
 }

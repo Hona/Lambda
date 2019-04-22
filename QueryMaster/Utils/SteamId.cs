@@ -46,9 +46,7 @@ namespace QueryMaster.Utils
 
         private static readonly Regex SteamId3Regex = new Regex(@"^\[?([IUMGAPCgTcLa])?:([0-4]):(\d+)(:(\d+))?\]?$");
 
-        private SteamId()
-        {
-        }
+        private SteamId() { }
 
         /// <summary>
         ///     Create Steam id from account id,accounttype,universe and optioanl instance.
@@ -266,10 +264,8 @@ namespace QueryMaster.Utils
         ///     Converts to format : STEAM_X:Y:Z.
         /// </summary>
         /// <returns>Returns steam id in the format : STEAM_X:Y:Z.</returns>
-        public string ToLegacyFormat()
-        {
-            return string.Format(CultureInfo.InvariantCulture, "STEAM_0:{0}:{1}", AccountId & 1, AccountId >> 1);
-        }
+        public string ToLegacyFormat() => string.Format(CultureInfo.InvariantCulture, "STEAM_0:{0}:{1}", AccountId & 1,
+            AccountId >> 1);
 
         /// <summary>
         ///     Converts to its ID3 format :'[C:U:A]' or '[C:U:A:I]'

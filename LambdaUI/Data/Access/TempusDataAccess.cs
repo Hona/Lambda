@@ -17,8 +17,19 @@ namespace LambdaUI.Data.Access
     public class TempusDataAccess
     {
         private static readonly Stopwatch Stopwatch = new Stopwatch();
+        private List<DetailedMapOverviewModel> _mapList;
 
-        public List<DetailedMapOverviewModel> MapList { get; set; }
+        public List<DetailedMapOverviewModel> MapList
+        {
+            get
+            {
+                if (_mapList != null) return _mapList;
+                UpdateMapListAsync().GetAwaiter().GetResult();
+                return MapList;
+            }
+            private set => _mapList = value;
+        }
+
         public List<string> MapNameList { get; set; }
 
         private static HttpWebRequest CreateWebRequest(string path) => (HttpWebRequest) WebRequest.Create(
@@ -36,30 +47,38 @@ namespace LambdaUI.Data.Access
         private static async Task<T> GetResponseAsync<T>(string request)
         {
             Stopwatch.Restart();
-            object stringValue;
-            using (var response = (HttpWebResponse) await BuildWebRequest(request).GetResponseAsync())
-            {
-                using (var stream = response.GetResponseStream())
+            try {
+                object stringValue;
+                using (var response = (HttpWebResponse)await BuildWebRequest(request).GetResponseAsync())
                 {
-                    stringValue = null;
-                    if (stream != null)
+                    using (var stream = response.GetResponseStream())
                     {
-                        using (var sr = new StreamReader(stream, Encoding.UTF8))
+                        stringValue = null;
+                        if (stream != null)
                         {
-                            stringValue = sr.ReadToEnd();
-                            sr.Close();
+                            using (var sr = new StreamReader(stream, Encoding.UTF8))
+                            {
+                                stringValue = sr.ReadToEnd();
+                                sr.Close();
+                            }
+                            stream.Close();
                         }
-                        stream.Close();
                     }
+                    response.Close();
                 }
-                response.Close();
+                Stopwatch.Stop();
+                Logger.LogInfo("Tempus", "/api" + request + " " + Stopwatch.ElapsedMilliseconds + "ms");
+                // If T is a string, don't deserialise
+                return typeof(T) == typeof(string)
+                    ? (T)stringValue
+                    : JsonConvert.DeserializeObject<T>((string)stringValue);
             }
-            Stopwatch.Stop();
-            Logger.LogInfo("Tempus", "/api" + request + " " + Stopwatch.ElapsedMilliseconds + "ms");
-            // If T is a string, don't deserialise
-            return typeof(T) == typeof(string)
-                ? (T) stringValue
-                : JsonConvert.DeserializeObject<T>((string) stringValue);
+            catch (Exception e)
+            {
+                Logger.LogException(e);
+                return default(T);
+            }
+            
         }
 
         public async Task<MapFullOverviewModel> GetFullMapOverViewAsync(string map) => await
@@ -97,7 +116,8 @@ namespace LambdaUI.Data.Access
         public async Task UpdateMapListAsync()
         {
             var maps = await GetDetailedMapListAsync();
-            MapNameList = maps.ConvertAll(x=>x.Name);
+            MapList = maps;
+            MapNameList = maps.ConvertAll(x=>x.Name).Where(x=>!string.IsNullOrWhiteSpace(x)).ToList();
         }
     }
 }

@@ -38,10 +38,7 @@ namespace QueryMaster.Steam.Interfaces
     /// </summary>
     public class PlayerService : InterfaceBase
     {
-        internal PlayerService()
-        {
-            Interface = "IPlayerService";
-        }
+        internal PlayerService() => Interface = "IPlayerService";
 
         /// <summary>
         ///     Gets information about a player's recently played games(GetRecentlyPlayedGames web api method(version 1)).

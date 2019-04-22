@@ -42,10 +42,7 @@ namespace QueryMaster.Steam
         internal static readonly string BaseUrl = "http://api.steampowered.com";
         private bool _appendKey;
 
-        public SteamUrl()
-        {
-            Parameters = new List<Parameter>();
-        }
+        public SteamUrl() => Parameters = new List<Parameter>();
 
         /// <summary>
         ///     Name of interface.

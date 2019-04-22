@@ -231,9 +231,7 @@ namespace QueryMaster.MasterServer
                     _cts.Token.ThrowIfCancellationRequested();
                 }
             }
-            catch (OperationCanceledException)
-            {
-            }
+            catch (OperationCanceledException) { }
             catch (Exception ex)
             {
                 _errorCallback?.Invoke(ex);

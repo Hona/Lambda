@@ -37,10 +37,7 @@ namespace QueryMaster.Steam.Interfaces
     /// </summary>
     public class SteamUserStats : InterfaceBase
     {
-        internal SteamUserStats()
-        {
-            Interface = "ISteamUserStats";
-        }
+        internal SteamUserStats() => Interface = "ISteamUserStats";
 
         /// <summary>
         ///     Statistics showing how much of the player base have unlocked various

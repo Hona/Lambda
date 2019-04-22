@@ -6,6 +6,7 @@ using Discord.WebSocket;
 using LambdaUI.Data;
 using LambdaUI.Data.Access;
 using LambdaUI.Data.Access.Bot;
+using LambdaUI.Logging;
 using LambdaUI.Services;
 
 namespace LambdaUI.Discord.Updaters
@@ -26,18 +27,35 @@ namespace LambdaUI.Discord.Updaters
 
         public async Task UpdateServers()
         {
-            var updateChannel = (await _configDataAccess.GetConfigAsync("tempusUpdateChannel")).First().Value;
-            if (_client.GetChannel(Convert.ToUInt64(updateChannel)) is ITextChannel channel)
+            var updateChannels = await _configDataAccess.GetConfigAsync("tempusUpdateChannel");
+            if (updateChannels == null || updateChannels.Count == 0) return;
+            foreach (var updateChannel in updateChannels)
+            {
+                await UpdateChannel(updateChannel.Value);
+            }
+
+        }
+
+        private async Task UpdateChannel(string updateChannel)
+        {
+            if (!(_client.GetChannel(Convert.ToUInt64(updateChannel)) is ITextChannel channel)) return;
+            try
             {
                 await DeleteAllMessages(channel);
                 var serverInfo = await _tempusDataAccess.GetServerStatusAsync();
                 for (var i = 0; i < serverInfo.Count; i++)
                 {
+                    // Prevent rate limiting
                     if (i != 0 && i % 5 == 0)
                         await Task.Delay(4200);
                     await TempusServerStatusService.SendServerStatusAsync(serverInfo[i], channel);
                 }
             }
+            catch (Exception e)
+            {
+                await channel.SendMessageAsync(embed: Logger.LogException(e));
+            }
+
         }
     }
 }

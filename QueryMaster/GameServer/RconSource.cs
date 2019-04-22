@@ -38,33 +38,30 @@ namespace QueryMaster.GameServer
         private readonly ConnectionInfo _conInfo;
         internal TcpQuery Socket;
 
-        private RconSource(ConnectionInfo conInfo)
-        {
-            _conInfo = conInfo;
-        }
+        private RconSource(ConnectionInfo conInfo) => _conInfo = conInfo;
 
         internal static Rcon Authorize(ConnectionInfo conInfo, string msg)
         {
             return new QueryMasterBase().Invoke<Rcon>(() =>
+            {
+                var obj = new RconSource(conInfo) {Socket = new TcpQuery(conInfo)};
+                var recvData = new byte[50];
+                var packet = new RconSrcPacket
+                    {Body = msg, Id = (int) PacketId.ExecCmd, Type = (int) PacketType.Auth};
+                recvData = obj.Socket.GetResponse(RconUtil.GetBytes(packet));
+                int header;
+                try
                 {
-                    var obj = new RconSource(conInfo) {Socket = new TcpQuery(conInfo)};
-                    var recvData = new byte[50];
-                    var packet = new RconSrcPacket
-                        {Body = msg, Id = (int) PacketId.ExecCmd, Type = (int) PacketType.Auth};
-                    recvData = obj.Socket.GetResponse(RconUtil.GetBytes(packet));
-                    int header;
-                    try
-                    {
-                        header = BitConverter.ToInt32(recvData, 4);
-                    }
-                    catch (Exception e)
-                    {
-                        e.Data.Add("ReceivedData", recvData ?? new byte[1]);
-                        throw;
-                    }
+                    header = BitConverter.ToInt32(recvData, 4);
+                }
+                catch (Exception e)
+                {
+                    e.Data.Add("ReceivedData", recvData ?? new byte[1]);
+                    throw;
+                }
 
-                    return obj;
-                }, conInfo.Retries + 1, null, conInfo.ThrowExceptions);
+                return obj;
+            }, conInfo.Retries + 1, null, conInfo.ThrowExceptions);
         }
 
         public override string SendCommand(string command, bool isMultipacketResponse = false)

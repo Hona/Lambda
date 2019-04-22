@@ -38,10 +38,7 @@ namespace QueryMaster.Steam.Interfaces
     /// </summary>
     public class SteamApps : InterfaceBase
     {
-        internal SteamApps()
-        {
-            Interface = "ISteamApps";
-        }
+        internal SteamApps() => Interface = "ISteamApps";
 
         /// <summary>
         ///     Full list of every publicly facing program in the store/library(GetAppList web api method(version 2)).

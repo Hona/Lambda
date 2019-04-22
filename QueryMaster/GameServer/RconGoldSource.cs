@@ -106,23 +106,23 @@ namespace QueryMaster.GameServer
         private string GetChallengeId()
         {
             return Invoke(() =>
+            {
+                byte[] recvData = null;
+                var challengeId = string.Empty;
+                try
                 {
-                    byte[] recvData = null;
-                    var challengeId = string.Empty;
-                    try
-                    {
-                        recvData = Socket.GetResponse(RconChIdQuery, EngineType.GoldSource);
-                        var parser = new Parser(recvData);
-                        challengeId = parser.ReadString().Split(' ')[2].Trim();
-                    }
-                    catch (Exception e)
-                    {
-                        e.Data.Add("ReceivedData", recvData ?? new byte[1]);
-                        throw;
-                    }
+                    recvData = Socket.GetResponse(RconChIdQuery, EngineType.GoldSource);
+                    var parser = new Parser(recvData);
+                    challengeId = parser.ReadString().Split(' ')[2].Trim();
+                }
+                catch (Exception e)
+                {
+                    e.Data.Add("ReceivedData", recvData ?? new byte[1]);
+                    throw;
+                }
 
-                    return challengeId;
-                }, _conInfo.Retries + 1, null, _conInfo.ThrowExceptions);
+                return challengeId;
+            }, _conInfo.Retries + 1, null, _conInfo.ThrowExceptions);
         }
 
         public override void AddlogAddress(string ip, ushort port)

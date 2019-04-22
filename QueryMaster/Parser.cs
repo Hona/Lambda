@@ -152,9 +152,6 @@ namespace QueryMaster
                 throw new ParseException("skip count was outside the bounds of the byte array.");
         }
 
-        internal byte[] GetUnParsedBytes()
-        {
-            return _data.Skip(_currentPosition + 1).ToArray();
-        }
+        internal byte[] GetUnParsedBytes() => _data.Skip(_currentPosition + 1).ToArray();
     }
 }

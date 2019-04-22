@@ -43,9 +43,6 @@ namespace QueryMaster.GameServer.DataObjects
         ///     Regex filter pattern.
         /// </summary>
         /// <returns>Regex filter pattern.</returns>
-        public override string ToString()
-        {
-            return RegexPattern;
-        }
+        public override string ToString() => RegexPattern;
     }
 }

@@ -54,10 +54,7 @@ namespace QueryMaster.Steam
         ///     Initializes Steam's web api interface.
         /// </summary>
         /// <param name="apiKey">Api key.</param>
-        public SteamQuery(string apiKey = "")
-        {
-            ApiKey = apiKey;
-        }
+        public SteamQuery(string apiKey = "") => ApiKey = apiKey;
 
         /// <summary>
         ///     Api key.

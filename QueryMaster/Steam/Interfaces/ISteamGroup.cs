@@ -41,10 +41,7 @@ namespace QueryMaster.Steam.Interfaces
     {
         private readonly XmlDocument _doc = new XmlDocument();
 
-        internal SteamGroup()
-        {
-            Interface = "ISteamGroup";
-        }
+        internal SteamGroup() => Interface = "ISteamGroup";
 
         /// <summary>
         ///     Gets group details.

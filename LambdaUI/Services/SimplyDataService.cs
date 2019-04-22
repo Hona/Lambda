@@ -8,6 +8,7 @@ using Discord;
 using LambdaUI.Constants;
 using LambdaUI.Data;
 using LambdaUI.Data.Access.Simply;
+using LambdaUI.Logging;
 using LambdaUI.Models.Simply;
 using LambdaUI.Utilities;
 
@@ -25,54 +26,78 @@ namespace LambdaUI.Services
 
         public async Task<Embed> GetHightowerRankEmbedAsync()
         {
-            var topPlayers = await _simplyHightowerDataAccess.GetTopHightowerRank(15);
-            var topHightowerScoreString = "";
+            try
+            {
+                var topPlayers = await _simplyHightowerDataAccess.GetTopHightowerRank(15);
+                var topHightowerScoreString = "";
 
-            for (var i = 0; i < topPlayers.Count; i++)
-                topHightowerScoreString +=
-                    $"**__#{i + 1}__** | **__{topPlayers[i].Nickname}__** {Math.Round(topPlayers[i].Points)} points, **{topPlayers[i].Kills} kills**, {topPlayers[i].Deaths} deaths, **{Math.Round((double)topPlayers[i].Kills / topPlayers[i].Deaths, 1)} K/D**, {topPlayers[i].Headshots} headshots, **{Math.Round((decimal)topPlayers[i].PlayTime / 60 / 60)} hours**{Environment.NewLine}";
+                for (var i = 0; i < topPlayers.Count; i++)
+                    topHightowerScoreString +=
+                        $"**__#{i + 1}__** | **__{topPlayers[i].Nickname}__** {Math.Round(topPlayers[i].Points)} points, **{topPlayers[i].Kills} kills**, {topPlayers[i].Deaths} deaths, **{Math.Round((double) topPlayers[i].Kills / topPlayers[i].Deaths, 1)} K/D**, {topPlayers[i].Headshots} headshots, **{Math.Round((decimal) topPlayers[i].PlayTime / 60 / 60)} hours**{Environment.NewLine}";
 
-            var builder = new EmbedBuilder { Title = "**Top Ranked Hightower Players**" };
+                var builder = new EmbedBuilder {Title = "**Top Ranked Hightower Players**"};
 
-            builder.WithDescription(topHightowerScoreString)
-                .WithColor(ColorConstants.InfoColor)
-                .WithFooter("Updated " + DateTime.Now.ToShortTimeString());
-            return builder.Build();
+                builder.WithDescription(topHightowerScoreString)
+                    .WithColor(ColorConstants.InfoColor)
+                    .WithFooter("Updated " + DateTime.Now.ToShortTimeString());
+
+                return builder.Build();
+            }
+            catch (Exception e)
+            {
+                return Logger.LogException(e);
+            }
+
+
         }
         public async Task<Embed> GetRecentRecordEmbedAsync()
         {
-            var recentRecords = await _justJumpDataAccess.GetRecentRecords(10);
-            var recentRecordsString = recentRecords.Aggregate("",
-                (currentString, nextHighscore) => currentString +
-                                                  $"{SimplyHelper.ClassToShortString(nextHighscore.Class)} | **__{TempusHelper.TimeSpanToFormattedTime(SimplyHelper.GetTimeSpan(nextHighscore.RunTime))}__** | **{nextHighscore.Map}** | **{nextHighscore.Name}**" +
-                                                  Environment.NewLine);
+            try {
+                var recentRecords = await _justJumpDataAccess.GetRecentRecords(10);
+                var recentRecordsString = recentRecords.Aggregate("",
+                    (currentString, nextHighscore) => currentString +
+                                                      $"{SimplyHelper.ClassToShortString(nextHighscore.Class)} | **__{TempusHelper.TimeSpanToFormattedTime(SimplyHelper.GetTimeSpan(nextHighscore.RunTime))}__** | **{nextHighscore.Map}** | **{nextHighscore.Name}**" +
+                                                      Environment.NewLine);
 
-            var builder = new EmbedBuilder { Title = "**Recent Map Records**" };
+                var builder = new EmbedBuilder { Title = "**Recent Map Records**" };
 
-            builder.WithDescription(recentRecordsString)
-                .WithColor(ColorConstants.InfoColor)
-                .WithFooter("Updated " + DateTime.Now.ToShortTimeString());
-            return builder.Build();
+                builder.WithDescription(recentRecordsString)
+                    .WithColor(ColorConstants.InfoColor)
+                    .WithFooter("Updated " + DateTime.Now.ToShortTimeString());
+                return builder.Build();
+            }
+            catch (Exception e)
+            {
+                return Logger.LogException(e);
+            }
+            
         }
         public async Task<Embed> GetTopPlayersEmbedAsync()
         {
-            var overallTopString = await GetOverallTopString();
-            var soldierTopString = await GetSoldierTopString();
-            var demomanTopString = await GetDemomanTopString();
-            var concTopString = await GetConcTopString();
-            var engiTopString = await GetEngiTopString();
-            var pyroTopString = await GetPyroTopString();
+            try {
+                var overallTopString = await GetOverallTopString();
+                var soldierTopString = await GetSoldierTopString();
+                var demomanTopString = await GetDemomanTopString();
+                var concTopString = await GetConcTopString();
+                var engiTopString = await GetEngiTopString();
+                var pyroTopString = await GetPyroTopString();
 
-            var builder = new EmbedBuilder { Title = "**Top Ranked Jumpers**" };
-            builder.AddField("Overall", overallTopString)
-                .AddField("Soldier", soldierTopString)
-                .AddField("Demoman", demomanTopString)
-                .AddField("Engineer", engiTopString)
-                .AddField("Pyro", pyroTopString)
-                .AddField("Conc", concTopString)
-                .WithColor(ColorConstants.InfoColor)
-                .WithFooter("Updated " + DateTime.Now.ToShortTimeString());
-            return builder.Build();
+                var builder = new EmbedBuilder { Title = "**Top Ranked Jumpers**" };
+                builder.AddField("Overall", overallTopString)
+                    .AddField("Soldier", soldierTopString)
+                    .AddField("Demoman", demomanTopString)
+                    .AddField("Engineer", engiTopString)
+                    .AddField("Pyro", pyroTopString)
+                    .AddField("Conc", concTopString)
+                    .WithColor(ColorConstants.InfoColor)
+                    .WithFooter("Updated " + DateTime.Now.ToShortTimeString());
+                return builder.Build();
+            }
+            catch (Exception e)
+            {
+                return Logger.LogException(e);
+            }
+            
         }
         private async Task<string> GetPyroTopString()
         {
@@ -110,20 +135,20 @@ namespace LambdaUI.Services
             return TopRankToString(soldierTop, "Soldier");
         }
 
-        private string TopRankToString(List<JumpRankModel> list, string property)
+        private static string TopRankToString(IReadOnlyList<JumpRankModel> list, string property)
         {
             var outputString = "";
             for (var i = 0; i < list.Count; i++) outputString += FormatLine(list, i, property);
             return outputString;
         }
 
-        private string FormatLine(List<JumpRankModel> list, int index, string property)
+        private static string FormatLine(IReadOnlyList<JumpRankModel> list, int index, string property)
         {
             return
                 $"**#{index + 1}**: **{list[index].Name}** - {GetPropValue(list[index], property)} points{Environment.NewLine}";
         }
 
-        public static object GetPropValue(object src, string propName)
+        private static object GetPropValue(object src, string propName)
         {
             return src.GetType().GetProperty(propName).GetValue(src, null);
         }

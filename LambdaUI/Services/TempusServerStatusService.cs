@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using LambdaUI.Constants;
+using LambdaUI.Logging;
 using LambdaUI.Models.Tempus.Responses;
 using LambdaUI.Utilities;
 
@@ -15,15 +16,15 @@ namespace LambdaUI.Services
         {
             try
             {
-                var builder = GetServerEmbed(server);
-                if (builder == null) return;
+                var embed = GetServerEmbed(server);
+                if (embed == null) return;
 
 
-                await channel.SendMessageAsync(embed: builder.Build());
+                await channel.SendMessageAsync(embed: embed);
             }
             catch (Exception e)
             {
-                await channel.SendMessageAsync(e.Message);
+                await channel.SendMessageAsync(embed:Logger.LogException(e));
             }
         }
 
@@ -44,11 +45,11 @@ namespace LambdaUI.Services
             }
             catch (Exception e)
             {
-                await channel.SendMessageAsync(e.Message);
+                await channel.SendMessageAsync(embed: Logger.LogException(e));
             }
         }
 
-        private static EmbedBuilder GetServerEmbed(ServerStatusModel server)
+        private static Embed GetServerEmbed(ServerStatusModel server)
         {
             if (server?.ServerInfo == null || server.GameInfo == null || server.ServerInfo.Hidden ||
                 server.GameInfo.PlayerCount == 0)
@@ -68,7 +69,7 @@ namespace LambdaUI.Services
                     server.GameInfo.Users.OrderBy(x => x.Name).Aggregate("",
                             (currentString, nextPlayer) => currentString + "**" + nextPlayer.Name + "**" + ", ")
                         .TrimEnd(',', ' '));
-            return builder;
+            return builder.Build();
         }
     }
 }

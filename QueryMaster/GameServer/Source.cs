@@ -32,9 +32,7 @@ namespace QueryMaster.GameServer
     internal class Source : Server
     {
         internal Source(ConnectionInfo conInfo)
-            : base(conInfo, EngineType.Source, false)
-        {
-        }
+            : base(conInfo, EngineType.Source, false) { }
 
         public override bool GetControl(string pass)
         {

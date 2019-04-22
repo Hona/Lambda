@@ -32,9 +32,7 @@ namespace QueryMaster.GameServer
     internal class GoldSource : Server
     {
         internal GoldSource(ConnectionInfo conInfo, bool? isObsolete)
-            : base(conInfo, EngineType.GoldSource, isObsolete)
-        {
-        }
+            : base(conInfo, EngineType.GoldSource, isObsolete) { }
 
         public override bool GetControl(string pass)
         {

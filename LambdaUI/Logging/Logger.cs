@@ -26,6 +26,15 @@ namespace LambdaUI.Logging
         internal static void LogInfo(string source, string message) => Log(new LogMessage(LogSeverity.Info, source,
             message));
 
+        internal static Embed LogException(Exception e)
+        {
+            var logMessage = new LogMessage(LogSeverity.Error,
+                new System.Diagnostics.StackTrace(e, true).GetFrame(0).GetMethod().ReflectedType?.FullName,
+                e.ToString());
+            Log(logMessage);
+            return GetLogEmbed(logMessage);
+        }
+
         internal static void LogError(string source, string message) => Log(new LogMessage(LogSeverity.Error, source,
             message));
 
@@ -40,38 +49,11 @@ namespace LambdaUI.Logging
                 logMessage = new LogMessage(logMessage.Severity, "", logMessage.Message, logMessage.Exception);
             if (_logToChannel)
             {
-                Color color;
-                switch (logMessage.Severity)
-                {
-                    case LogSeverity.Critical:
-                    case LogSeverity.Error:
-                        color = Color.Red;
-                        break;
-                    case LogSeverity.Warning:
-                        color = Color.Orange;
-                        break;
-                    case LogSeverity.Info:
-                    case LogSeverity.Verbose:
-                    case LogSeverity.Debug:
-                        color = Color.Blue;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-                var text = "";
-                var embed = new EmbedBuilder().AddField(logMessage.Source, logMessage.Message).WithColor(color).WithFooter(DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString());
-                if (logMessage.Exception != null)
-                {
-                    embed.AddField("Exception", logMessage.Exception);
-                }
-                if (logMessage.Severity != LogSeverity.Info && logMessage.Severity != LogSeverity.Verbose && logMessage.Severity != LogSeverity.Debug)
-                {
-                    text = "<@115349553770659841>";
-                }
+
+
+                var embed = GetLogEmbed(logMessage);
                     
-                    
-                    
-                _channel.SendMessageAsync(text, embed: embed.Build());
+                _channel.SendMessageAsync(embed: embed);
             }
             switch (logMessage.Severity)
             {
@@ -96,6 +78,38 @@ namespace LambdaUI.Logging
 
             Console.ForegroundColor = ColorConstants.InfoLogColor;
             return Task.CompletedTask;
+        }
+
+        private static Embed GetLogEmbed(LogMessage logMessage)
+        {
+            Color color;
+            switch (logMessage.Severity)
+            {
+                case LogSeverity.Critical:
+                case LogSeverity.Error:
+                    color = Color.Red;
+                    break;
+                case LogSeverity.Warning:
+                    color = Color.Orange;
+                    break;
+                case LogSeverity.Info:
+                case LogSeverity.Verbose:
+                case LogSeverity.Debug:
+                    color = Color.Blue;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            var embed = new EmbedBuilder().AddField(logMessage.Source, logMessage.Message).WithColor(color).WithFooter(DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString());
+            if (logMessage.Exception != null)
+            {
+                embed.AddField("Exception", logMessage.Exception);
+            }
+            if (logMessage.Severity != LogSeverity.Info && logMessage.Severity != LogSeverity.Verbose && logMessage.Severity != LogSeverity.Debug)
+            {
+                embed.WithDescription("<@115349553770659841>");
+            }
+            return embed.Build();
         }
     }
 }

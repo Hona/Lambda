@@ -73,20 +73,12 @@ namespace QueryMaster
             return id;
         }
 
-        internal static string BytesToString(byte[] bytes)
-        {
-            return Encoding.UTF8.GetString(bytes);
-        }
+        internal static string BytesToString(byte[] bytes) => Encoding.UTF8.GetString(bytes);
 
-        internal static string BytesToString(byte[] bytes, int index, int count)
-        {
-            return Encoding.UTF8.GetString(bytes, index, count);
-        }
+        internal static string BytesToString(byte[] bytes, int index, int count) => Encoding.UTF8.GetString(bytes,
+            index, count);
 
-        internal static byte[] StringToBytes(string str)
-        {
-            return Encoding.UTF8.GetBytes(str);
-        }
+        internal static byte[] StringToBytes(string str) => Encoding.UTF8.GetBytes(str);
 
         internal static byte[] MergeByteArrays(byte[] array1, byte[] array2)
         {

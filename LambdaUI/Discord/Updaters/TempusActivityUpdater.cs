@@ -6,6 +6,7 @@ using Discord.WebSocket;
 using LambdaUI.Data;
 using LambdaUI.Data.Access;
 using LambdaUI.Data.Access.Bot;
+using LambdaUI.Logging;
 using LambdaUI.Services;
 
 namespace LambdaUI.Discord.Updaters
@@ -27,9 +28,18 @@ namespace LambdaUI.Discord.Updaters
         public async Task UpdateActivity()
         {
             var updateChannels = await _configDataAccess.GetConfigAsync("tempusActivityChannel");
-            foreach (var updateChannel in updateChannels.Select(x => x.Value))
+            if (updateChannels == null || updateChannels.Count == 0) return;
+            foreach (var updateChannel in updateChannels)
             {
-                if (!(_client.GetChannel(Convert.ToUInt64(updateChannel)) is ITextChannel channel)) continue;
+                await UpdateChannel(updateChannel.Value);
+            }
+        }
+
+        private async Task UpdateChannel(string updateChannel)
+        {
+            if (!(_client.GetChannel(Convert.ToUInt64(updateChannel)) is ITextChannel channel)) return;
+            try
+            {
                 await DeleteAllMessages(channel);
                 var activity = await _tempusDataAccess.GetRecentActivityAsync();
                 await TempusUpdaterService.SendMapRecords(activity.MapRecords, channel);
@@ -37,6 +47,11 @@ namespace LambdaUI.Discord.Updaters
                 await TempusUpdaterService.SendCourseRecords(activity.CourseRecords, channel);
                 await TempusUpdaterService.SendBonusRecords(activity.BonusRecords, channel);
             }
+            catch (Exception e)
+            {
+                await channel.SendMessageAsync(embed: Logger.LogException(e));
+            }
+
         }
     }
 }

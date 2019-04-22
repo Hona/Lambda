@@ -39,10 +39,7 @@ namespace QueryMaster.Steam.Interfaces
     /// </summary>
     public class SteamUser : InterfaceBase
     {
-        internal SteamUser()
-        {
-            Interface = "ISteamUser";
-        }
+        internal SteamUser() => Interface = "ISteamUser";
 
         /// <summary>
         ///     Gets the friend list (GetFriendList web api method(version 1)).

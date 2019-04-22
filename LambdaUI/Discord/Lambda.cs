@@ -87,7 +87,7 @@ namespace LambdaUI.Discord
 
         private void InitializeVariables()
         {
-            _client = new DiscordSocketClient(new DiscordSocketConfig {AlwaysDownloadUsers = true});
+            _client = new DiscordSocketClient(new DiscordSocketConfig {AlwaysDownloadUsers = true, MessageCacheSize = 50});
             _commands = new CommandService(new CommandServiceConfig {DefaultRunMode = RunMode.Async});
 
             var connectionStrings = File.ReadAllLines(DiscordConstants.DatabaseInfoPath);

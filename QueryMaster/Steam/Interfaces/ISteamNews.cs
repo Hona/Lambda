@@ -37,10 +37,7 @@ namespace QueryMaster.Steam.Interfaces
     /// </summary>
     public class SteamNews : InterfaceBase
     {
-        internal SteamNews()
-        {
-            Interface = "ISteamNews";
-        }
+        internal SteamNews() => Interface = "ISteamNews";
 
         /// <summary>
         ///     Calls GetNewsForApp web api method(version 2).
