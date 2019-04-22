@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -9,9 +10,10 @@ namespace LambdaUI.Logging
 {
     internal static class Logger
     {
-        private static bool _logToChannel = false;
+        private static bool _logToChannel;
         private static DiscordSocketClient _client;
         private static ITextChannel _channel;
+
         public static void StartLoggingToChannel(DiscordSocketClient client, ITextChannel channel)
         {
             _client = client;
@@ -23,13 +25,14 @@ namespace LambdaUI.Logging
         {
             _logToChannel = false;
         }
+
         internal static void LogInfo(string source, string message) => Log(new LogMessage(LogSeverity.Info, source,
             message));
 
         internal static Embed LogException(Exception e)
         {
             var logMessage = new LogMessage(LogSeverity.Error,
-                new System.Diagnostics.StackTrace(e, true).GetFrame(0).GetMethod().ReflectedType?.FullName,
+                new StackTrace(e, true).GetFrame(0).GetMethod().ReflectedType?.FullName,
                 e.ToString());
             Log(logMessage);
             return GetLogEmbed(logMessage);
@@ -49,10 +52,8 @@ namespace LambdaUI.Logging
                 logMessage = new LogMessage(logMessage.Severity, "", logMessage.Message, logMessage.Exception);
             if (_logToChannel)
             {
-
-
                 var embed = GetLogEmbed(logMessage);
-                    
+
                 _channel.SendMessageAsync(embed: embed);
             }
             switch (logMessage.Severity)
@@ -100,15 +101,13 @@ namespace LambdaUI.Logging
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            var embed = new EmbedBuilder().AddField(logMessage.Source, logMessage.Message).WithColor(color).WithFooter(DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString());
+            var embed = new EmbedBuilder().AddField(logMessage.Source, logMessage.Message).WithColor(color)
+                .WithFooter(DateTimeHelper.ShortDateTimeNowString);
             if (logMessage.Exception != null)
-            {
                 embed.AddField("Exception", logMessage.Exception);
-            }
-            if (logMessage.Severity != LogSeverity.Info && logMessage.Severity != LogSeverity.Verbose && logMessage.Severity != LogSeverity.Debug)
-            {
+            if (logMessage.Severity != LogSeverity.Info && logMessage.Severity != LogSeverity.Verbose &&
+                logMessage.Severity != LogSeverity.Debug)
                 embed.WithDescription("<@115349553770659841>");
-            }
             return embed.Build();
         }
     }

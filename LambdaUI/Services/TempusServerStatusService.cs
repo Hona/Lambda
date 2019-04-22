@@ -24,7 +24,7 @@ namespace LambdaUI.Services
             }
             catch (Exception e)
             {
-                await channel.SendMessageAsync(embed:Logger.LogException(e));
+                await channel.SendMessageAsync(embed: Logger.LogException(e));
             }
         }
 
@@ -40,8 +40,10 @@ namespace LambdaUI.Services
                                                    $"[{nextServer.ServerInfo.Name}](https://tempus.xyz/servers/{nextServer.ServerInfo.Id}) " +
                                                    " | (" + nextServer.GameInfo.PlayerCount + "/" +
                                                    nextServer.GameInfo.MaxPlayers + ")" + Environment.NewLine);
-                var embed = EmbedHelper.CreateEmbed(lines, false);
-                await channel.SendMessageAsync(embed: embed);
+                var builder = new EmbedBuilder {Description = lines}
+                .WithFooter(DateTimeHelper.ShortDateTimeNowString)
+                    .WithColor(ColorConstants.InfoColor);
+                await channel.SendMessageAsync(embed: builder.Build());
             }
             catch (Exception e)
             {

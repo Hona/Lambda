@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
-using LambdaUI.Data;
 using LambdaUI.Data.Access;
 using LambdaUI.Services;
 using LambdaUI.Utilities;
@@ -96,6 +95,7 @@ namespace LambdaUI.Discord.Modules
             await TempusServerStatusService.SendServersStatusOverviewAsync(
                 await TempusDataAccess.GetServerStatusAsync(), Context.Channel);
         }
+
         [Alias("m")]
         [Command("mapinfo")]
         public async Task MapInfo(string mapName)
@@ -117,12 +117,12 @@ namespace LambdaUI.Discord.Modules
                 await ReplyNewEmbed(TempusHelper.TicksToFormattedTime(ticks));
             }
         }
+
         [Command("maplist")]
         public async Task GetMapList(int tier = 0)
         {
             var maps = await TempusDataAccess.GetMapListAsync();
-                await ReplyNewEmbed(string.Join(", ", maps));
-
+            await ReplyNewEmbed(string.Join(", ", maps));
         }
     }
 }

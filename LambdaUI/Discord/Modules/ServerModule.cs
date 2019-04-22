@@ -1,13 +1,6 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Discord;
+﻿using System.Threading.Tasks;
 using Discord.Commands;
-using LambdaUI.Constants;
-using LambdaUI.Minecraft;
 using LambdaUI.Services;
-using QueryMaster;
-using QueryMaster.GameServer;
-using Game = QueryMaster.Game;
 
 namespace LambdaUI.Discord.Modules
 {
@@ -39,7 +32,6 @@ namespace LambdaUI.Discord.Modules
         }
 
 
-
         [Alias("jj")]
         [Command("justjump")]
         [Summary("JustJust server info")]
@@ -55,8 +47,5 @@ namespace LambdaUI.Discord.Modules
         {
             await ReplyEmbed(SourceServerStatusService.HightowerEmbed);
         }
-
-
-        
     }
 }

@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using LambdaUI.Constants;
-using LambdaUI.Data;
 using LambdaUI.Data.Access.Simply;
 using LambdaUI.Logging;
 using LambdaUI.Models.Simply;
@@ -16,9 +13,11 @@ namespace LambdaUI.Services
 {
     public class SimplyDataService
     {
-        private readonly SimplyHightowerDataAccess _simplyHightowerDataAccess;
         private readonly JustJumpDataAccess _justJumpDataAccess;
-        public SimplyDataService(SimplyHightowerDataAccess simplyHightowerDataAccess, JustJumpDataAccess justJumpDataAccess)
+        private readonly SimplyHightowerDataAccess _simplyHightowerDataAccess;
+
+        public SimplyDataService(SimplyHightowerDataAccess simplyHightowerDataAccess,
+            JustJumpDataAccess justJumpDataAccess)
         {
             _simplyHightowerDataAccess = simplyHightowerDataAccess;
             _justJumpDataAccess = justJumpDataAccess;
@@ -47,19 +46,19 @@ namespace LambdaUI.Services
             {
                 return Logger.LogException(e);
             }
-
-
         }
+
         public async Task<Embed> GetRecentRecordEmbedAsync()
         {
-            try {
+            try
+            {
                 var recentRecords = await _justJumpDataAccess.GetRecentRecords(10);
                 var recentRecordsString = recentRecords.Aggregate("",
                     (currentString, nextHighscore) => currentString +
                                                       $"{SimplyHelper.ClassToShortString(nextHighscore.Class)} | **__{TempusHelper.TimeSpanToFormattedTime(SimplyHelper.GetTimeSpan(nextHighscore.RunTime))}__** | **{nextHighscore.Map}** | **{nextHighscore.Name}**" +
                                                       Environment.NewLine);
 
-                var builder = new EmbedBuilder { Title = "**Recent Map Records**" };
+                var builder = new EmbedBuilder {Title = "**Recent Map Records**"};
 
                 builder.WithDescription(recentRecordsString)
                     .WithColor(ColorConstants.InfoColor)
@@ -70,11 +69,12 @@ namespace LambdaUI.Services
             {
                 return Logger.LogException(e);
             }
-            
         }
+
         public async Task<Embed> GetTopPlayersEmbedAsync()
         {
-            try {
+            try
+            {
                 var overallTopString = await GetOverallTopString();
                 var soldierTopString = await GetSoldierTopString();
                 var demomanTopString = await GetDemomanTopString();
@@ -82,7 +82,7 @@ namespace LambdaUI.Services
                 var engiTopString = await GetEngiTopString();
                 var pyroTopString = await GetPyroTopString();
 
-                var builder = new EmbedBuilder { Title = "**Top Ranked Jumpers**" };
+                var builder = new EmbedBuilder {Title = "**Top Ranked Jumpers**"};
                 builder.AddField("Overall", overallTopString)
                     .AddField("Soldier", soldierTopString)
                     .AddField("Demoman", demomanTopString)
@@ -97,8 +97,8 @@ namespace LambdaUI.Services
             {
                 return Logger.LogException(e);
             }
-            
         }
+
         private async Task<string> GetPyroTopString()
         {
             var pyroTop = await _justJumpDataAccess.GetTopPyro(SimplyConstants.TopRankCount);
@@ -142,15 +142,10 @@ namespace LambdaUI.Services
             return outputString;
         }
 
-        private static string FormatLine(IReadOnlyList<JumpRankModel> list, int index, string property)
-        {
-            return
-                $"**#{index + 1}**: **{list[index].Name}** - {GetPropValue(list[index], property)} points{Environment.NewLine}";
-        }
+        private static string FormatLine(IReadOnlyList<JumpRankModel> list, int index, string property) =>
+            $"**#{index + 1}**: **{list[index].Name}** - {GetPropValue(list[index], property)} points{Environment.NewLine}";
 
-        private static object GetPropValue(object src, string propName)
-        {
-            return src.GetType().GetProperty(propName).GetValue(src, null);
-        }
+        private static object GetPropValue(object src, string propName) => src.GetType().GetProperty(propName)
+            .GetValue(src, null);
     }
 }

@@ -16,7 +16,7 @@ namespace LambdaUI.Services
         {
             try
             {
-                var builder = new EmbedBuilder { Title = "**Map Top Times**" };
+                var builder = new EmbedBuilder {Title = "**Map Top Times**"};
                 var quickRecords = new MapTop[topTimes.Count];
                 topTimes.CopyTo(quickRecords);
                 var description = FormatTopTimes(topTimes.Take(TempusConstants.RecordPerPage));
@@ -28,14 +28,13 @@ namespace LambdaUI.Services
             {
                 await channel.SendMessageAsync(embed: Logger.LogException(e));
             }
-
         }
 
         internal static async Task SendMapRecords(List<MapWr> records, IMessageChannel channel)
         {
             try
             {
-                var builder = new EmbedBuilder { Title = "**Map Records**" };
+                var builder = new EmbedBuilder {Title = "**Map Records**"};
                 var quickRecords = new MapWr[records.Count];
                 records.CopyTo(quickRecords);
                 var description = FormatRecords(records.Take(TempusConstants.RecordPerPage));
@@ -47,14 +46,13 @@ namespace LambdaUI.Services
             {
                 await channel.SendMessageAsync(embed: Logger.LogException(e));
             }
-
-
         }
 
         internal static async Task SendCourseRecords(List<CourseWr> records, IMessageChannel channel)
         {
-            try {
-                var builder = new EmbedBuilder { Title = "**Course Records**" };
+            try
+            {
+                var builder = new EmbedBuilder {Title = "**Course Records**"};
                 var quickRecords = new CourseWr[records.Count];
                 records.CopyTo(quickRecords);
                 var description = FormatCourseRecords(records.Take(TempusConstants.RecordPerPage));
@@ -66,13 +64,13 @@ namespace LambdaUI.Services
             {
                 await channel.SendMessageAsync(embed: Logger.LogException(e));
             }
-            
         }
 
         internal static async Task SendBonusRecords(List<BonusWr> records, IMessageChannel channel)
         {
-            try {
-                var builder = new EmbedBuilder { Title = "**Bonus Records**" };
+            try
+            {
+                var builder = new EmbedBuilder {Title = "**Bonus Records**"};
                 var quickRecords = new BonusWr[records.Count];
                 records.CopyTo(quickRecords);
                 var description = FormatBonusRecords(records.Take(TempusConstants.RecordPerPage));
@@ -84,9 +82,6 @@ namespace LambdaUI.Services
             {
                 await channel.SendMessageAsync(embed: Logger.LogException(e));
             }
-
-
-            
         }
 
         private static string FormattedDuration(double duration) => new TimeSpan(0, 0, (int) Math.Truncate(duration),

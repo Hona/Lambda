@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using LambdaUI.Utilities;
+﻿using LambdaUI.Utilities;
 
 namespace LambdaUI.Models.Simply
 {
-    class JustJumpMapTimeModel
+    internal class JustJumpMapTimeModel
     {
         public int UniqueId { get; set; }
         public string SteamId { get; set; }
@@ -14,9 +11,8 @@ namespace LambdaUI.Models.Simply
         public double RunTime { get; set; }
         public int Class { get; set; }
         public double TimeStamp { get; set; }
-        public override string ToString()
-        {
-            return $"{SimplyHelper.ClassToShortString(Class)} | {Name} | {TempusHelper.TimeSpanToFormattedTime(SimplyHelper.GetTimeSpan(RunTime))}";
-        }
+
+        public override string ToString() =>
+            $"{SimplyHelper.ClassToShortString(Class)} | {Name} | {TempusHelper.TimeSpanToFormattedTime(SimplyHelper.GetTimeSpan(RunTime))}";
     }
 }

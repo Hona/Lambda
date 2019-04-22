@@ -10,10 +10,8 @@ namespace LambdaUI.Discord.Modules
     {
         public async Task ReplyNewEmbed(string text, bool escape = true)
         {
-            if (escape )
-            {
+            if (escape)
                 text = text.EscapeDiscordChars();
-            }
             var parts = text.SplitInParts(2000);
             foreach (var part in parts)
             {
@@ -25,9 +23,7 @@ namespace LambdaUI.Discord.Modules
         public async Task ReplyNewEmbed(string title, string text, bool escape = true)
         {
             if (escape)
-            {
                 text = text.EscapeDiscordChars();
-            }
             var parts = text.SplitInParts(2000);
             foreach (var part in parts)
             {

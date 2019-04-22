@@ -9,7 +9,6 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using LambdaUI.Constants;
-using LambdaUI.Data;
 using LambdaUI.Data.Access;
 using LambdaUI.Data.Access.Bot;
 using LambdaUI.Data.Access.Simply;
@@ -28,7 +27,12 @@ namespace LambdaUI.Discord
         private ConfigDataAccess _configDataAccess;
 
         private Timer _intervalFunctionTimer;
+        private JustJumpDataAccess _justJumpDataAccess;
         private IServiceProvider _services;
+        private SimplyDataUpdater _simplyDataUpdater;
+        private SimplyHightowerDataAccess _simplyHightowerDataAccess;
+
+        private SimplyTFServerUpdater _simplyTFServerUpdater;
 
         private DateTime _startDateTime;
         private TempusActivityUpdater _tempusActivityUpdater;
@@ -37,11 +41,6 @@ namespace LambdaUI.Discord
 
         private TempusServerUpdater _tempusServerUpdater;
         private TodoDataAccess _todoDataAccess;
-
-        private SimplyTFServerUpdater _simplyTFServerUpdater;
-        private SimplyDataUpdater _simplyDataUpdater;
-        private SimplyHightowerDataAccess _simplyHightowerDataAccess;
-        private JustJumpDataAccess _justJumpDataAccess;
 
         private static int FromMinutes(int minutes) => 1000 * 60 * minutes;
 
@@ -87,7 +86,8 @@ namespace LambdaUI.Discord
 
         private void InitializeVariables()
         {
-            _client = new DiscordSocketClient(new DiscordSocketConfig {AlwaysDownloadUsers = true, MessageCacheSize = 50});
+            _client = new DiscordSocketClient(
+                new DiscordSocketConfig {AlwaysDownloadUsers = true, MessageCacheSize = 50});
             _commands = new CommandService(new CommandServiceConfig {DefaultRunMode = RunMode.Async});
 
             var connectionStrings = File.ReadAllLines(DiscordConstants.DatabaseInfoPath);
@@ -100,7 +100,8 @@ namespace LambdaUI.Discord
             _tempusServerUpdater = new TempusServerUpdater(_client, _configDataAccess, _tempusDataAccess);
             _tempusActivityUpdater = new TempusActivityUpdater(_client, _configDataAccess, _tempusDataAccess);
             _simplyTFServerUpdater = new SimplyTFServerUpdater(_client, _configDataAccess);
-            _simplyDataUpdater = new SimplyDataUpdater(_client, _configDataAccess, new SimplyDataService( _simplyHightowerDataAccess, _justJumpDataAccess));
+            _simplyDataUpdater = new SimplyDataUpdater(_client, _configDataAccess,
+                new SimplyDataService(_simplyHightowerDataAccess, _justJumpDataAccess));
         }
 
         private void AddClientEvents()
@@ -153,7 +154,9 @@ namespace LambdaUI.Discord
 
         private async Task Ready()
         {
-            if (_client.GetChannel(Convert.ToUInt64((await _configDataAccess.GetConfigAsync("logChannel")).First().Value)) is ITextChannel channel)
+            if (_client.GetChannel(
+                Convert.ToUInt64((await _configDataAccess.GetConfigAsync("logChannel")).First()
+                    .Value)) is ITextChannel channel)
                 Logger.StartLoggingToChannel(_client, channel);
             Logger.LogInfo("Lambda",
                 $"Time elapsed since startup {(DateTime.Now - _startDateTime).TotalMilliseconds}ms");
@@ -170,12 +173,13 @@ namespace LambdaUI.Discord
             {
                 _tempusDataAccess.UpdateMapListAsync(),
                 _tempusServerUpdater.UpdateServers(),
+                _tempusServerUpdater.UpdateOverviewsAsync(),
                 _tempusActivityUpdater.UpdateActivity(),
                 _simplyTFServerUpdater.UpdateServers(),
                 _simplyDataUpdater.UpdateData()
             };
             await Task.WhenAll(tasks);
-            
+
             Logger.LogInfo("Lambda", $"Interval functions took {(DateTime.Now - startDateTime).TotalMilliseconds}ms");
         }
 

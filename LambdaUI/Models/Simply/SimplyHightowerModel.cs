@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace LambdaUI.Models.Simply
+﻿namespace LambdaUI.Models.Simply
 {
     public class SimplyHightowerModel
     {
@@ -34,8 +30,5 @@ namespace LambdaUI.Models.Simply
 
         public int Deflects { get; set; }
         public int Streak { get; set; }
-
-
-
     }
 }

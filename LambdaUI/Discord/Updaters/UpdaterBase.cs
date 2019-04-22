@@ -13,13 +13,11 @@ namespace LambdaUI.Discord.Updaters
             {
                 var messages = await channel.GetMessagesAsync().FlattenAsync();
                 await channel.DeleteMessagesAsync(messages);
-
             }
             catch (Exception e)
             {
-                await channel.SendMessageAsync(embed:Logger.LogException(e));
+                await channel.SendMessageAsync(embed: Logger.LogException(e));
             }
-
         }
     }
 }

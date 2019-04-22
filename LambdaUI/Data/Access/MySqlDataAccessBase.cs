@@ -48,7 +48,6 @@ namespace LambdaUI.Data.Access
                 Logger.LogException(e);
                 return null;
             }
-
         }
 
         protected async Task<List<T>> QueryAsync<T>(string query, object param)
@@ -65,7 +64,6 @@ namespace LambdaUI.Data.Access
                 Logger.LogException(e);
                 return null;
             }
-
         }
 
         protected async Task ExecuteAsync(string query, object param)
@@ -77,11 +75,9 @@ namespace LambdaUI.Data.Access
                 CloseAsync();
             }
             catch (Exception e)
-            { 
+            {
                 Logger.LogException(e);
             }
-
-
         }
     }
 }

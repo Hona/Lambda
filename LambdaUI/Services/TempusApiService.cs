@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
-using LambdaUI.Data;
+using LambdaUI.Constants;
 using LambdaUI.Data.Access;
 using LambdaUI.Logging;
 using LambdaUI.Models.Tempus;
@@ -20,7 +20,7 @@ namespace LambdaUI.Services
             var users = servers.Where(x => x.GameInfo != null &&
                                            (x.GameInfo != null || x.ServerInfo != null || x.GameInfo.Users != null) &&
                                            x.GameInfo.Users.Count != 0)
-                .SelectMany(x => x.GameInfo.Users).ToArray();
+                .SelectMany(x => x.GameInfo.Users).Where(x=>x?.Id != null).ToArray();
             var rankedUsers = new Dictionary<ServerPlayerModel, int>();
 
             foreach (var user in users)
@@ -28,7 +28,7 @@ namespace LambdaUI.Services
                 if (user?.Id == null) continue;
                 var rank = await tempusDataAccess.GetUserRank(user.Id.ToString());
                 rankedUsers.Add(user,
-                    rank.ClassRankInfo.DemoRank.Rank >= rank.ClassRankInfo.SoldierRank.Rank
+                    rank.ClassRankInfo.DemoRank.Rank <= rank.ClassRankInfo.SoldierRank.Rank
                         ? rank.ClassRankInfo.DemoRank.Rank
                         : rank.ClassRankInfo.SoldierRank.Rank);
             }
@@ -36,16 +36,17 @@ namespace LambdaUI.Services
             var rankedLines = "";
             foreach (var pair in output)
             {
-                if (pair.Key == null) continue;
-                var serverString = servers
-                    .First(x => x.GameInfo?.Users.Count(z => z.Id.HasValue && z.Id == pair.Key.Id) != 0)
-                    .ServerInfo?.Name;
+                if (pair.Key == null || pair.Value > 100) continue;
+                var server = servers
+                    .FirstOrDefault(x => x.GameInfo?.Users != null && x.GameInfo.Users.Count(z => z.Id.HasValue && z.Id == pair.Key.Id) != 0);
+                if (server == null || pair.Key.Id == null) continue;
                 rankedLines +=
-                    $"Rank {pair.Value} - {pair.Key.Name.EscapeDiscordChars()} on {serverString}{Environment.NewLine}";
+                    $"Rank {pair.Value} - [{pair.Key.Name.EscapeDiscordChars()}]({TempusHelper.GetPlayerUrl(pair.Key.Id.Value)}) on [{server.GameInfo.CurrentMap.EscapeDiscordChars()}]({TempusHelper.GetServerUrl(server.ServerInfo.Id)}) ({server.ServerInfo.Shortname}){Environment.NewLine}";
             }
-
-            await channel.SendMessageAsync(
-                embed: EmbedHelper.CreateEmbed("**Highest Ranked Players Online**", rankedLines, false));
+            var builder =
+                new EmbedBuilder {Title = "**Highest Ranked Players Online** (Top 100)", Description = rankedLines}
+                    .WithFooter(DateTimeHelper.ShortDateTimeNowString).WithColor(ColorConstants.InfoColor);
+            await channel.SendMessageAsync(embed:builder.Build());
         }
 
         public static Embed GetMapInfoEmbed(DetailedMapOverviewModel map)
@@ -56,14 +57,10 @@ namespace LambdaUI.Services
                 builder.WithTitle($"[{map.Name}]({TempusHelper.GetMapUrl(map.Name)})");
                 var teirText = $"Solly : T{map.TierInfo.Soldier}";
                 if (!string.IsNullOrWhiteSpace(map.Videos.Soldier))
-                {
                     teirText += $" [Showcase]({TempusHelper.GetYoutubeUrl(map.Videos.Soldier)})";
-                }
                 teirText += $" | Demo : T{map.TierInfo.Demoman} ";
                 if (!string.IsNullOrWhiteSpace(map.Videos.Demoman))
-                {
                     teirText += $"[Showcase]({TempusHelper.GetYoutubeUrl(map.Videos.Demoman)})";
-                }
                 builder.WithDescription(teirText);
                 return builder.Build();
             }
@@ -71,8 +68,6 @@ namespace LambdaUI.Services
             {
                 return Logger.LogException(e);
             }
-
-
         }
     }
 }

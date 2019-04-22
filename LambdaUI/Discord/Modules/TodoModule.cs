@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.Commands;
-using LambdaUI.Data;
 using LambdaUI.Data.Access.Bot;
 
 namespace LambdaUI.Discord.Modules

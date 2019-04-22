@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using LambdaUI.Data;
 using LambdaUI.Data.Access.Bot;
 using LambdaUI.Logging;
 using LambdaUI.Services;
@@ -31,9 +27,7 @@ namespace LambdaUI.Discord.Updaters
             var updateChannels = await _configDataAccess.GetConfigAsync("simplyRankUpdateChannel");
             if (updateChannels == null || updateChannels.Count == 0) return;
             foreach (var channel in updateChannels)
-            {
                 UpdateChannel(channel.Value);
-            }
         }
 
         private async void UpdateChannel(string updateChannel)
@@ -50,7 +44,6 @@ namespace LambdaUI.Discord.Updaters
             {
                 await channel.SendMessageAsync(embed: Logger.LogException(e));
             }
-
         }
     }
 }

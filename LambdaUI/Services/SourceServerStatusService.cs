@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using LambdaUI.Constants;
@@ -22,6 +20,7 @@ namespace LambdaUI.Services
         public static Embed HightowerEmbed => GetEmbed(ServerConstants.HightowerServerIpAddress,
             ServerConstants.HightowerServerPort,
             Game.TeamFortress2);
+
         public static Embed JumpAcademyEmbed => GetEmbed(ServerConstants.JumpAcademyServerIpAddress,
             ServerConstants.JumpAcademyServerPort,
             Game.TeamFortress2);
@@ -48,7 +47,8 @@ namespace LambdaUI.Services
                 builder.AddField("Players Online", $"{ping.PlayersOnline}/{ping.PlayersMax}")
                     .AddField("IP", ServerConstants.MinecraftServerIpAddress)
                     .WithColor(ColorConstants.InfoColor);
-                if (ping.OnlinePlayerList != null) builder.AddField("Players", string.Join(", ", ping.OnlinePlayerList));
+                if (ping.OnlinePlayerList != null)
+                    builder.AddField("Players", string.Join(", ", ping.OnlinePlayerList));
                 return builder.Build();
             }
             catch (Exception e)
@@ -56,6 +56,7 @@ namespace LambdaUI.Services
                 return Logger.LogException(e);
             }
         }
+
         internal static Embed GetEmbed(string ip, ushort port)
         {
             try
@@ -68,7 +69,6 @@ namespace LambdaUI.Services
             {
                 return Logger.LogException(e);
             }
-
         }
 
         private static Embed GetEmbed(string ip, ushort port, Game game)
@@ -82,7 +82,6 @@ namespace LambdaUI.Services
             {
                 return Logger.LogException(e);
             }
-
         }
 
         private static Embed GetSourceServerReplyEmbed(Server server)
@@ -90,7 +89,7 @@ namespace LambdaUI.Services
             try
             {
                 var info = server.GetInfo();
-                var builder = new EmbedBuilder { Title = $"**{info.Name}**" };
+                var builder = new EmbedBuilder {Title = $"**{info.Name}**"};
                 builder.AddField("Description", info.Description)
                     .AddField("IP", $"[{info.Address}](http://103.1.206.66/tf/redirect/server.php?IP={info.Address})")
                     .AddField("Map", info.Map)
@@ -108,7 +107,6 @@ namespace LambdaUI.Services
             {
                 return Logger.LogException(e);
             }
-
         }
     }
 }

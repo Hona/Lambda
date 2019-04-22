@@ -47,9 +47,10 @@ namespace LambdaUI.Data.Access
         private static async Task<T> GetResponseAsync<T>(string request)
         {
             Stopwatch.Restart();
-            try {
+            try
+            {
                 object stringValue;
-                using (var response = (HttpWebResponse)await BuildWebRequest(request).GetResponseAsync())
+                using (var response = (HttpWebResponse) await BuildWebRequest(request).GetResponseAsync())
                 {
                     using (var stream = response.GetResponseStream())
                     {
@@ -70,15 +71,14 @@ namespace LambdaUI.Data.Access
                 Logger.LogInfo("Tempus", "/api" + request + " " + Stopwatch.ElapsedMilliseconds + "ms");
                 // If T is a string, don't deserialise
                 return typeof(T) == typeof(string)
-                    ? (T)stringValue
-                    : JsonConvert.DeserializeObject<T>((string)stringValue);
+                    ? (T) stringValue
+                    : JsonConvert.DeserializeObject<T>((string) stringValue);
             }
             catch (Exception e)
             {
                 Logger.LogException(e);
                 return default(T);
             }
-            
         }
 
         public async Task<MapFullOverviewModel> GetFullMapOverViewAsync(string map) => await
@@ -117,7 +117,7 @@ namespace LambdaUI.Data.Access
         {
             var maps = await GetDetailedMapListAsync();
             MapList = maps;
-            MapNameList = maps.ConvertAll(x=>x.Name).Where(x=>!string.IsNullOrWhiteSpace(x)).ToList();
+            MapNameList = maps.ConvertAll(x => x.Name).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
         }
     }
 }

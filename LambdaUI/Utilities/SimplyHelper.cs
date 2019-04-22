@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LambdaUI.Utilities
 {
@@ -8,7 +6,6 @@ namespace LambdaUI.Utilities
     {
         public static TimeSpan GetTimeSpan(double runTime) => new TimeSpan(0, 0, (int) Math.Truncate(runTime),
             (int) (runTime - (int) Math.Truncate(runTime)));
-
 
 
         internal static string ClassToString(int value)
@@ -23,10 +20,7 @@ namespace LambdaUI.Utilities
                 default: return "Unknown";
             }
         }
-        internal static string ClassToShortString(int value)
-        {
-            return ClassToString(value)[0].ToString();
-        }
 
+        internal static string ClassToShortString(int value) => ClassToString(value)[0].ToString();
     }
 }

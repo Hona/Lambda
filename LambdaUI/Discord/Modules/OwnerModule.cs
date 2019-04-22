@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using LambdaUI.Data;
 using LambdaUI.Data.Access;
 using LambdaUI.Data.Access.Bot;
 using LambdaUI.Data.Access.Simply;
@@ -22,6 +21,7 @@ namespace LambdaUI.Discord.Modules
         public Lambda Lambda { get; set; }
         public ConfigDataAccess ConfigDataAccess { get; set; }
         public JustJumpDataAccess JustJumpDataAccess { get; set; }
+
         [Command("embed")]
         public async Task Embed([Remainder] string text)
         {
@@ -67,6 +67,7 @@ namespace LambdaUI.Discord.Modules
         {
             await Logger.Log(new LogMessage(severity, "Command", message));
         }
+
         [Command("clearmessages")]
         public async Task ClearMessages()
         {

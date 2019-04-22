@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using LambdaUI.Data;
 using LambdaUI.Data.Access;
 using LambdaUI.Data.Access.Bot;
 using LambdaUI.Logging;
@@ -30,9 +28,7 @@ namespace LambdaUI.Discord.Updaters
             var updateChannels = await _configDataAccess.GetConfigAsync("tempusActivityChannel");
             if (updateChannels == null || updateChannels.Count == 0) return;
             foreach (var updateChannel in updateChannels)
-            {
                 await UpdateChannel(updateChannel.Value);
-            }
         }
 
         private async Task UpdateChannel(string updateChannel)
@@ -51,7 +47,6 @@ namespace LambdaUI.Discord.Updaters
             {
                 await channel.SendMessageAsync(embed: Logger.LogException(e));
             }
-
         }
     }
 }

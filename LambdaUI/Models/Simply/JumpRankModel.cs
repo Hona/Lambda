@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace LambdaUI.Models.Simply
+﻿namespace LambdaUI.Models.Simply
 {
     public class JumpRankModel
     {
@@ -15,6 +11,5 @@ namespace LambdaUI.Models.Simply
         public int Conc { get; set; }
         public int Engi { get; set; }
         public int Pyro { get; set; }
-
     }
 }

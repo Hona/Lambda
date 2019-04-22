@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using LambdaUI.Data;
 using LambdaUI.Data.Access;
 using LambdaUI.Data.Access.Bot;
 using LambdaUI.Logging;
@@ -25,15 +23,36 @@ namespace LambdaUI.Discord.Updaters
             _tempusDataAccess = tempusDataAccess;
         }
 
+        public async Task UpdateOverviewsAsync()
+        {
+            var updateChannels = await _configDataAccess.GetConfigAsync("tempusOverviewChannel");
+            if (updateChannels == null || updateChannels.Count == 0) return;
+            foreach (var updateChannel in updateChannels)
+                await UpdateChannelOverviewAsync(updateChannel.Value);
+        }
+
+        private async Task UpdateChannelOverviewAsync(string updateChannel)
+        {
+            if (!(_client.GetChannel(Convert.ToUInt64(updateChannel)) is ITextChannel channel)) return;
+            try
+            {
+                await DeleteAllMessages(channel);
+                await TempusServerStatusService.SendServersStatusOverviewAsync(
+                    await _tempusDataAccess.GetServerStatusAsync(), channel);
+                await TempusApiService.SendStalkTopEmbedAsync(_tempusDataAccess, channel);
+            }
+            catch (Exception e)
+            {
+                await channel.SendMessageAsync(embed: Logger.LogException(e));
+            }
+        }
+
         public async Task UpdateServers()
         {
             var updateChannels = await _configDataAccess.GetConfigAsync("tempusUpdateChannel");
             if (updateChannels == null || updateChannels.Count == 0) return;
             foreach (var updateChannel in updateChannels)
-            {
                 await UpdateChannel(updateChannel.Value);
-            }
-
         }
 
         private async Task UpdateChannel(string updateChannel)
@@ -55,7 +74,6 @@ namespace LambdaUI.Discord.Updaters
             {
                 await channel.SendMessageAsync(embed: Logger.LogException(e));
             }
-
         }
     }
 }
