@@ -48,7 +48,7 @@ namespace LambdaUI.Services
                     .AddField("IP", ServerConstants.MinecraftServerIpAddress)
                     .WithColor(ColorConstants.InfoColor);
                 if (ping.OnlinePlayerList != null)
-                    builder.AddField("Players", string.Join(", ", ping.OnlinePlayerList));
+                    builder.WithDescription("Players: " + string.Join(", ", ping.OnlinePlayerList));
                 return builder.Build();
             }
             catch (Exception e)

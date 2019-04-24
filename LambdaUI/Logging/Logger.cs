@@ -101,13 +101,10 @@ namespace LambdaUI.Logging
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            var embed = new EmbedBuilder().AddField(logMessage.Source, logMessage.Message).WithColor(color)
+            var embed = new EmbedBuilder().WithDescription($"**{logMessage.Source}**" + Environment.NewLine + logMessage.Message).WithColor(color)
                 .WithFooter(DateTimeHelper.ShortDateTimeNowString);
             if (logMessage.Exception != null)
                 embed.AddField("Exception", logMessage.Exception);
-            if (logMessage.Severity != LogSeverity.Info && logMessage.Severity != LogSeverity.Verbose &&
-                logMessage.Severity != LogSeverity.Debug)
-                embed.WithDescription("<@115349553770659841>");
             return embed.Build();
         }
     }
