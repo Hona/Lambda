@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -36,10 +38,18 @@ namespace LambdaUI.Discord.Updaters
             if (!(_client.GetChannel(Convert.ToUInt64(updateChannel)) is ITextChannel channel)) return;
             try
             {
+
+                var embeds = new List<Embed>
+                {
+                    TempusServerStatusService.GetServerStatusOverviewEmbed(
+                        await _tempusDataAccess.GetServerStatusAsync()),
+                    await TempusApiService.GetStalkTopEmbed(_tempusDataAccess)
+                };
                 await DeleteAllMessages(channel);
-                await TempusServerStatusService.SendServersStatusOverviewAsync(
-                    await _tempusDataAccess.GetServerStatusAsync(), channel);
-                await TempusApiService.SendStalkTopEmbedAsync(_tempusDataAccess, channel);
+                foreach (var embed in embeds)
+                {
+                    await channel.SendMessageAsync(embed: embed);
+                }
             }
             catch (Exception e)
             {
@@ -60,15 +70,17 @@ namespace LambdaUI.Discord.Updaters
             if (!(_client.GetChannel(Convert.ToUInt64(updateChannel)) is ITextChannel channel)) return;
             try
             {
-                await DeleteAllMessages(channel);
                 var serverInfo = await _tempusDataAccess.GetServerStatusAsync();
-                for (var i = 0; i < serverInfo.Count; i++)
+                var embeds = serverInfo.Select(TempusServerStatusService.GetServerStatusAsync).Where(x=>x != null).ToList();
+                await DeleteAllMessages(channel);
+                for (var i = 0; i < embeds.Count; i++)
                 {
                     // Prevent rate limiting
                     if (i != 0 && i % 5 == 0)
                         await Task.Delay(4200);
-                    await TempusServerStatusService.SendServerStatusAsync(serverInfo[i], channel);
+                    await channel.SendMessageAsync(embed:embeds[i]);
                 }
+
             }
             catch (Exception e)
             {

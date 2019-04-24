@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -36,12 +37,19 @@ namespace LambdaUI.Discord.Updaters
             if (!(_client.GetChannel(Convert.ToUInt64(updateChannel)) is ITextChannel channel)) return;
             try
             {
-                await DeleteAllMessages(channel);
                 var activity = await _tempusDataAccess.GetRecentActivityAsync();
-                await TempusUpdaterService.SendMapRecords(activity.MapRecords, channel);
-                await TempusUpdaterService.SendMapTopTimes(activity.MapTopTimes, channel);
-                await TempusUpdaterService.SendCourseRecords(activity.CourseRecords, channel);
-                await TempusUpdaterService.SendBonusRecords(activity.BonusRecords, channel);
+                var embeds = new List<Embed>
+                {
+                    TempusUpdaterService.GetMapRecordsEmbed(activity.MapRecords),
+                    TempusUpdaterService.GetMapTopTimesEmbed(activity.MapTopTimes),
+                    TempusUpdaterService.GetCourseRecordsEmbed(activity.CourseRecords),
+                    TempusUpdaterService.GetBonusRecordsEmbed(activity.BonusRecords)
+                };
+                await DeleteAllMessages(channel);
+                foreach (var embed in embeds)
+                {
+                    await channel.SendMessageAsync(embed:embed);
+                }
             }
             catch (Exception e)
             {

@@ -168,19 +168,27 @@ namespace LambdaUI.Discord
 
         internal async void IntervalFunctions(object state)
         {
-            var startDateTime = DateTime.Now;
-            var tasks = new List<Task>
+            try
             {
-                _tempusDataAccess.UpdateMapListAsync(),
-                _tempusServerUpdater.UpdateServers(),
-                _tempusServerUpdater.UpdateOverviewsAsync(),
-                _tempusActivityUpdater.UpdateActivity(),
-                _simplyTFServerUpdater.UpdateServers(),
-                _simplyDataUpdater.UpdateData()
-            };
-            await Task.WhenAll(tasks);
+                var startDateTime = DateTime.Now;
+                var tasks = new List<Task>
+                {
+                    _tempusDataAccess.UpdateMapListAsync(),
+                    _tempusServerUpdater.UpdateServers(),
+                    _tempusServerUpdater.UpdateOverviewsAsync(),
+                    _tempusActivityUpdater.UpdateActivity(),
+                    _simplyTFServerUpdater.UpdateServers(),
+                    _simplyDataUpdater.UpdateData()
+                };
+                await Task.WhenAll(tasks);
 
-            Logger.LogInfo("Lambda", $"Interval functions took {(DateTime.Now - startDateTime).TotalMilliseconds}ms");
+                Logger.LogInfo("Lambda", $"Interval functions took {(DateTime.Now - startDateTime).TotalMilliseconds}ms");
+            }
+            catch (Exception e)
+            {
+                Logger.LogException(e);
+            }
+            
         }
 
         private void BuildServiceProvider()

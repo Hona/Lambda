@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 using LambdaUI.Logging;
@@ -19,5 +20,6 @@ namespace LambdaUI.Discord.Updaters
                 await channel.SendMessageAsync(embed: Logger.LogException(e));
             }
         }
+
     }
 }

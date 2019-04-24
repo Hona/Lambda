@@ -50,7 +50,7 @@ namespace LambdaUI.Logging
                 logMessage = new LogMessage(logMessage.Severity, logMessage.Source, "", logMessage.Exception);
             if (logMessage.Source == null)
                 logMessage = new LogMessage(logMessage.Severity, "", logMessage.Message, logMessage.Exception);
-            if (_logToChannel)
+            if (_logToChannel && logMessage.Severity == LogSeverity.Error || logMessage.Severity == LogSeverity.Critical || logMessage.Severity == LogSeverity.Warning)
             {
                 var embed = GetLogEmbed(logMessage);
 

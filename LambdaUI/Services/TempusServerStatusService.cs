@@ -12,24 +12,20 @@ namespace LambdaUI.Services
 {
     internal static class TempusServerStatusService
     {
-        internal static async Task SendServerStatusAsync(ServerStatusModel server, ITextChannel channel)
+        internal static Embed GetServerStatusAsync(ServerStatusModel server)
         {
             try
             {
                 var embed = GetServerEmbed(server);
-                if (embed == null) return;
-
-
-                await channel.SendMessageAsync(embed: embed);
+                return embed;
             }
             catch (Exception e)
             {
-                await channel.SendMessageAsync(embed: Logger.LogException(e));
+                return Logger.LogException(e);
             }
         }
 
-        internal static async Task SendServersStatusOverviewAsync(IEnumerable<ServerStatusModel> servers,
-            IMessageChannel channel)
+        internal static Embed GetServerStatusOverviewEmbed(IEnumerable<ServerStatusModel> servers)
         {
             try
             {
@@ -43,11 +39,11 @@ namespace LambdaUI.Services
                 var builder = new EmbedBuilder {Description = lines}
                 .WithFooter(DateTimeHelper.ShortDateTimeNowString)
                     .WithColor(ColorConstants.InfoColor);
-                await channel.SendMessageAsync(embed: builder.Build());
+                return builder.Build();
             }
             catch (Exception e)
             {
-                await channel.SendMessageAsync(embed: Logger.LogException(e));
+                return Logger.LogException(e);
             }
         }
 

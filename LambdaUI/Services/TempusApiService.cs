@@ -14,39 +14,47 @@ namespace LambdaUI.Services
 {
     public static class TempusApiService
     {
-        public static async Task SendStalkTopEmbedAsync(TempusDataAccess tempusDataAccess, IMessageChannel channel)
+        public static async Task<Embed> GetStalkTopEmbed(TempusDataAccess tempusDataAccess)
         {
-            var servers = (await tempusDataAccess.GetServerStatusAsync()).Where(x => x != null).ToArray();
-            var users = servers.Where(x => x.GameInfo != null &&
-                                           (x.GameInfo != null || x.ServerInfo != null || x.GameInfo.Users != null) &&
-                                           x.GameInfo.Users.Count != 0)
-                .SelectMany(x => x.GameInfo.Users).Where(x=>x?.Id != null).ToArray();
-            var rankedUsers = new Dictionary<ServerPlayerModel, int>();
+            try
+            {
+                var servers = (await tempusDataAccess.GetServerStatusAsync()).Where(x => x != null).ToArray();
+                var users = servers.Where(x => x.GameInfo != null &&
+                                               (x.GameInfo != null || x.ServerInfo != null || x.GameInfo.Users != null) &&
+                                               x.GameInfo.Users.Count != 0)
+                    .SelectMany(x => x.GameInfo.Users).Where(x => x?.Id != null).ToArray();
+                var rankedUsers = new Dictionary<ServerPlayerModel, int>();
 
-            foreach (var user in users)
-            {
-                if (user?.Id == null) continue;
-                var rank = await tempusDataAccess.GetUserRank(user.Id.ToString());
-                rankedUsers.Add(user,
-                    rank.ClassRankInfo.DemoRank.Rank <= rank.ClassRankInfo.SoldierRank.Rank
-                        ? rank.ClassRankInfo.DemoRank.Rank
-                        : rank.ClassRankInfo.SoldierRank.Rank);
+                foreach (var user in users)
+                {
+                    if (user?.Id == null) continue;
+                    var rank = await tempusDataAccess.GetUserRank(user.Id.ToString());
+                    rankedUsers.Add(user,
+                        rank.ClassRankInfo.DemoRank.Rank <= rank.ClassRankInfo.SoldierRank.Rank
+                            ? rank.ClassRankInfo.DemoRank.Rank
+                            : rank.ClassRankInfo.SoldierRank.Rank);
+                }
+                var output = rankedUsers.OrderBy(x => x.Value).Take(7);
+                var rankedLines = "";
+                foreach (var pair in output)
+                {
+                    if (pair.Key == null || pair.Value > 100) continue;
+                    var server = servers
+                        .FirstOrDefault(x => x.GameInfo?.Users != null && x.GameInfo.Users.Count(z => z.Id.HasValue && z.Id == pair.Key.Id) != 0);
+                    if (server == null || pair.Key.Id == null) continue;
+                    rankedLines +=
+                        $"Rank {pair.Value} - [{pair.Key.Name.EscapeDiscordChars()}]({TempusHelper.GetPlayerUrl(pair.Key.Id.Value)}) on [{server.GameInfo.CurrentMap.EscapeDiscordChars()}]({TempusHelper.GetServerUrl(server.ServerInfo.Id)}) ({server.ServerInfo.Shortname}){Environment.NewLine}";
+                }
+                var builder =
+                    new EmbedBuilder { Title = "**Highest Ranked Players Online** (Top 100)", Description = rankedLines }
+                        .WithFooter(DateTimeHelper.ShortDateTimeNowString).WithColor(ColorConstants.InfoColor);
+                return builder.Build();
             }
-            var output = rankedUsers.OrderBy(x => x.Value);
-            var rankedLines = "";
-            foreach (var pair in output)
+            catch (Exception e)
             {
-                if (pair.Key == null || pair.Value > 100) continue;
-                var server = servers
-                    .FirstOrDefault(x => x.GameInfo?.Users != null && x.GameInfo.Users.Count(z => z.Id.HasValue && z.Id == pair.Key.Id) != 0);
-                if (server == null || pair.Key.Id == null) continue;
-                rankedLines +=
-                    $"Rank {pair.Value} - [{pair.Key.Name.EscapeDiscordChars()}]({TempusHelper.GetPlayerUrl(pair.Key.Id.Value)}) on [{server.GameInfo.CurrentMap.EscapeDiscordChars()}]({TempusHelper.GetServerUrl(server.ServerInfo.Id)}) ({server.ServerInfo.Shortname}){Environment.NewLine}";
+                return Logger.LogException(e);
             }
-            var builder =
-                new EmbedBuilder {Title = "**Highest Ranked Players Online** (Top 100)", Description = rankedLines}
-                    .WithFooter(DateTimeHelper.ShortDateTimeNowString).WithColor(ColorConstants.InfoColor);
-            await channel.SendMessageAsync(embed:builder.Build());
+            
         }
 
         public static Embed GetMapInfoEmbed(DetailedMapOverviewModel map)

@@ -15,28 +15,28 @@ namespace LambdaUI.Discord.Modules
         public async Task GetRecentRecords()
         {
             var activity = await TempusDataAccess.GetRecentActivityAsync();
-            await TempusUpdaterService.SendMapRecords(activity.MapRecords, Context.Channel);
+            await ReplyEmbed(TempusUpdaterService.GetMapRecordsEmbed(activity.MapRecords));
         }
 
         [Command("rrtt")]
         public async Task GetRecentTopTimes()
         {
             var activity = await TempusDataAccess.GetRecentActivityAsync();
-            await TempusUpdaterService.SendMapTopTimes(activity.MapTopTimes, Context.Channel);
+            await ReplyEmbed(TempusUpdaterService.GetMapTopTimesEmbed(activity.MapTopTimes));
         }
 
         [Command("rrc")]
         public async Task GetRecentCourseRecords()
         {
             var activity = await TempusDataAccess.GetRecentActivityAsync();
-            await TempusUpdaterService.SendCourseRecords(activity.CourseRecords, Context.Channel);
+            await ReplyEmbed(TempusUpdaterService.GetCourseRecordsEmbed(activity.CourseRecords));
         }
 
         [Command("rrb")]
         public async Task GetRecentBonusRecords()
         {
             var activity = await TempusDataAccess.GetRecentActivityAsync();
-            await TempusUpdaterService.SendBonusRecords(activity.BonusRecords, Context.Channel);
+            await ReplyEmbed(TempusUpdaterService.GetBonusRecordsEmbed(activity.BonusRecords));
         }
 
         [Command("dwr")]
@@ -86,14 +86,13 @@ namespace LambdaUI.Discord.Modules
         [Command("stalktop")]
         public async Task StalkTop()
         {
-            await TempusApiService.SendStalkTopEmbedAsync(TempusDataAccess, Context.Channel);
+            await ReplyEmbed( await TempusApiService.GetStalkTopEmbed(TempusDataAccess));
         }
 
         [Command("servers")]
         public async Task ServerOverview()
         {
-            await TempusServerStatusService.SendServersStatusOverviewAsync(
-                await TempusDataAccess.GetServerStatusAsync(), Context.Channel);
+            await ReplyEmbed(TempusServerStatusService.GetServerStatusOverviewEmbed(await TempusDataAccess.GetServerStatusAsync()));
         }
 
         [Alias("m")]

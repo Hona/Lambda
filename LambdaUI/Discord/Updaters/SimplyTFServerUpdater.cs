@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -32,11 +33,19 @@ namespace LambdaUI.Discord.Updaters
             if (!(_client.GetChannel(Convert.ToUInt64(updateChannel)) is ITextChannel channel)) return;
             try
             {
+                var embeds = new List<Embed>
+                {
+                    SourceServerStatusService.JustJumpEmbed,
+                    SourceServerStatusService.HightowerEmbed,
+                    await SourceServerStatusService.GetMinecraftEmbed(),
+                    SourceServerStatusService.JumpAcademyEmbed
+                };
+                
                 await DeleteAllMessages(channel);
-                await channel.SendMessageAsync(embed: SourceServerStatusService.JustJumpEmbed);
-                await channel.SendMessageAsync(embed: SourceServerStatusService.HightowerEmbed);
-                await channel.SendMessageAsync(embed: await SourceServerStatusService.GetMinecraftEmbed());
-                await channel.SendMessageAsync(embed: SourceServerStatusService.JumpAcademyEmbed);
+                foreach (var embed in embeds)
+                {
+                    await channel.SendMessageAsync(embed: embed);
+                }
             }
             catch (Exception e)
             {

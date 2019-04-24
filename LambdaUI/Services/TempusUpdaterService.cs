@@ -12,75 +12,75 @@ namespace LambdaUI.Services
 {
     internal static class TempusUpdaterService
     {
-        internal static async Task SendMapTopTimes(List<MapTop> topTimes, IMessageChannel channel)
+        internal static Embed GetMapTopTimesEmbed(List<MapTop> topTimes)
         {
             try
             {
-                var builder = new EmbedBuilder {Title = "**Map Top Times**"};
+                var builder = new EmbedBuilder { Title = "**Map Top Times**" };
                 var quickRecords = new MapTop[topTimes.Count];
                 topTimes.CopyTo(quickRecords);
                 var description = FormatTopTimes(topTimes.Take(TempusConstants.RecordPerPage));
                 builder.WithDescription(description).WithColor(Color.Blue)
                     .WithFooter($"Showing records 1-{TempusConstants.RecordPerPage} | {DateTime.Now:t}");
-                await channel.SendMessageAsync(embed: builder.Build());
+                return builder.Build();
             }
             catch (Exception e)
             {
-                await channel.SendMessageAsync(embed: Logger.LogException(e));
+                return Logger.LogException(e);
             }
         }
 
-        internal static async Task SendMapRecords(List<MapWr> records, IMessageChannel channel)
+        internal static Embed GetMapRecordsEmbed(List<MapWr> records)
         {
             try
             {
-                var builder = new EmbedBuilder {Title = "**Map Records**"};
+                var builder = new EmbedBuilder { Title = "**Map Records**" };
                 var quickRecords = new MapWr[records.Count];
                 records.CopyTo(quickRecords);
                 var description = FormatRecords(records.Take(TempusConstants.RecordPerPage));
                 builder.WithDescription(description).WithColor(Color.Blue)
                     .WithFooter($"Showing records 1-{TempusConstants.RecordPerPage} | {DateTime.Now:t}");
-                await channel.SendMessageAsync(embed: builder.Build());
+                return builder.Build();
             }
             catch (Exception e)
             {
-                await channel.SendMessageAsync(embed: Logger.LogException(e));
+                return Logger.LogException(e);
             }
         }
 
-        internal static async Task SendCourseRecords(List<CourseWr> records, IMessageChannel channel)
+        internal static Embed GetCourseRecordsEmbed(List<CourseWr> records)
         {
             try
             {
-                var builder = new EmbedBuilder {Title = "**Course Records**"};
+                var builder = new EmbedBuilder { Title = "**Course Records**" };
                 var quickRecords = new CourseWr[records.Count];
                 records.CopyTo(quickRecords);
                 var description = FormatCourseRecords(records.Take(TempusConstants.RecordPerPage));
                 builder.WithDescription(description).WithColor(Color.Blue)
                     .WithFooter($"Showing records 1-{TempusConstants.RecordPerPage} | {DateTime.Now:t}");
-                await channel.SendMessageAsync(embed: builder.Build());
+                return builder.Build();
             }
             catch (Exception e)
             {
-                await channel.SendMessageAsync(embed: Logger.LogException(e));
+                return Logger.LogException(e);
             }
         }
 
-        internal static async Task SendBonusRecords(List<BonusWr> records, IMessageChannel channel)
+        internal static Embed GetBonusRecordsEmbed(List<BonusWr> records)
         {
             try
             {
-                var builder = new EmbedBuilder {Title = "**Bonus Records**"};
+                var builder = new EmbedBuilder { Title = "**Bonus Records**" };
                 var quickRecords = new BonusWr[records.Count];
                 records.CopyTo(quickRecords);
                 var description = FormatBonusRecords(records.Take(TempusConstants.RecordPerPage));
                 builder.WithDescription(description).WithColor(Color.Blue)
                     .WithFooter($"Showing records 1-{TempusConstants.RecordPerPage} | {DateTime.Now:t}");
-                await channel.SendMessageAsync(embed: builder.Build());
+                return builder.Build();
             }
             catch (Exception e)
             {
-                await channel.SendMessageAsync(embed: Logger.LogException(e));
+                return Logger.LogException(e);
             }
         }
 

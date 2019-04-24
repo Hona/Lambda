@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -35,10 +36,18 @@ namespace LambdaUI.Discord.Updaters
             if (!(_client.GetChannel(Convert.ToUInt64(updateChannel)) is ITextChannel channel)) return;
             try
             {
+                var tasks = new List<Task<Embed>>
+                {
+                    _simplyDataService.GetHightowerRankEmbedAsync(),
+                    _simplyDataService.GetRecentRecordEmbedAsync(),
+                    _simplyDataService.GetTopPlayersEmbedAsync()
+                };
+                var embeds = await Task.WhenAll(tasks);
                 await DeleteAllMessages(channel);
-                await channel.SendMessageAsync(embed: await _simplyDataService.GetHightowerRankEmbedAsync());
-                await channel.SendMessageAsync(embed: await _simplyDataService.GetRecentRecordEmbedAsync());
-                await channel.SendMessageAsync(embed: await _simplyDataService.GetTopPlayersEmbedAsync());
+                foreach (var embed in embeds)
+                {
+                    await channel.SendMessageAsync(embed: embed);
+                }
             }
             catch (Exception e)
             {
