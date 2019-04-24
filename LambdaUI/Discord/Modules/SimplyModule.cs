@@ -7,6 +7,7 @@ using LambdaUI.Data.Access.Simply;
 
 namespace LambdaUI.Discord.Modules
 {
+    [ModuleId(4)]
     [Group("jj")]
     public class SimplyModule : ExtraModuleBase
     {

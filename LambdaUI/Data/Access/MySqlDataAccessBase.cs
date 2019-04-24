@@ -29,9 +29,13 @@ namespace LambdaUI.Data.Access
                 await OpenConnectionAsync();
         }
 
-        private async void CloseAsync()
+        private async Task CloseAsync()
         {
-            if (_connection != null) await _connection.CloseAsync();
+            if (_connection == null) return;
+            await _connection.CloseAsync();
+            await _connection.ClearAllPoolsAsync();
+            _connection.Dispose();
+            _connection = null;
         }
 
         protected async Task<List<T>> QueryAsync<T>(string query)
@@ -40,7 +44,7 @@ namespace LambdaUI.Data.Access
             {
                 await CheckConnectionAsync();
                 var result = (await _connection.QueryAsync<T>(query)).ToList();
-                CloseAsync();
+                await CloseAsync();
                 return result;
             }
             catch (Exception e)
@@ -56,7 +60,7 @@ namespace LambdaUI.Data.Access
             {
                 await CheckConnectionAsync();
                 var result = (await _connection.QueryAsync<T>(query, param)).ToList();
-                CloseAsync();
+                await CloseAsync();
                 return result;
             }
             catch (Exception e)
@@ -72,7 +76,7 @@ namespace LambdaUI.Data.Access
             {
                 await CheckConnectionAsync();
                 await _connection.ExecuteAsync(query, param);
-                CloseAsync();
+                await CloseAsync();
             }
             catch (Exception e)
             {

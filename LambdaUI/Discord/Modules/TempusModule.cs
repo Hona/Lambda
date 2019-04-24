@@ -7,6 +7,7 @@ using LambdaUI.Utilities;
 
 namespace LambdaUI.Discord.Modules
 {
+    [ModuleId(5)]
     public class TempusModule : ExtraModuleBase
     {
         public TempusDataAccess TempusDataAccess { get; set; }

@@ -12,6 +12,7 @@ using LambdaUI.Utilities;
 
 namespace LambdaUI.Discord.Modules
 {
+    [ModuleId(2)]
     [Summary("Commands that you you'll never need")]
     [RequireOwner]
     public class OwnerModule : ExtraModuleBase
@@ -76,6 +77,30 @@ namespace LambdaUI.Discord.Modules
                 var messages = await channel.GetMessagesAsync().FlattenAsync();
                 await channel.DeleteMessagesAsync(messages);
             }
+        }
+
+        [Command("addconfig")]
+        public async Task AddConfigEntry(string key, [Remainder] string value)
+        {
+            await ConfigDataAccess.CreateNewConfigEntryAsync(key, value);
+            await ReplyNewEmbed($"Added Key '{key}' and Value '{value}' to config db");
+        }
+
+        [Command("deleteconfig")]
+        public async Task DeleteConfigEntry(string key, [Remainder] string value)
+        {
+            await ConfigDataAccess.DeleteConfigEntryAsync(key, value);
+            await ReplyNewEmbed($"Deleted Key '{key}' and Value '{value}' from config db");
+        }
+        [Command("getconfig")]
+        public async Task GetAllConfig(string key, [Remainder] string value)
+        {
+            await ReplyNewEmbed(string.Join(Environment.NewLine, await ConfigDataAccess.GetAllConfigAsync()));
+        }
+        [Command("bash")]
+        public async Task GetAllConfig([Remainder] string command)
+        {
+            await ReplyNewEmbed(command.Bash());
         }
     }
 }

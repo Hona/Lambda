@@ -4,6 +4,7 @@ using LambdaUI.Services;
 
 namespace LambdaUI.Discord.Modules
 {
+    [ModuleId(3)]
     [Summary("Gets server info")]
     public class ServerModule : ExtraModuleBase
     {

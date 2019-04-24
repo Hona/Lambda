@@ -11,6 +11,7 @@ using LambdaUI.Utilities;
 
 namespace LambdaUI.Discord.Modules
 {
+    [ModuleId(1)]
     [Summary("General commands that don't belong in a group")]
     public class MiscModule : ExtraModuleBase
     {

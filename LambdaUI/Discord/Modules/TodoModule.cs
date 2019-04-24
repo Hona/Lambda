@@ -6,7 +6,9 @@ using LambdaUI.Data.Access.Bot;
 
 namespace LambdaUI.Discord.Modules
 {
-    internal class TodoModule : ExtraModuleBase
+    [ModuleId(6)]
+    [RequireOwner]
+    public class TodoModule : ExtraModuleBase
     {
         public TodoDataAccess TodoDataAccess { get; set; }
 

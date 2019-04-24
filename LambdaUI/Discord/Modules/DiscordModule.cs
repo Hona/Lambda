@@ -7,6 +7,7 @@ using LambdaUI.Constants;
 
 namespace LambdaUI.Discord.Modules
 {
+    [ModuleId(0)]
     public class DiscordModule : ExtraModuleBase
     {
         [Command("roleinfo")]

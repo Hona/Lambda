@@ -47,5 +47,18 @@ namespace LambdaUI.Data.Access.Bot
 
             await ExecuteAsync(query, param);
         }
+        internal async Task DeleteConfigEntryAsync(string key, string value)
+        {
+            var query =
+                @"DELETE FROM `config` where `key`=@Key and `value`=@Value";
+
+            var param = new
+            {
+                Key = key,
+                Value = value
+            };
+
+            await ExecuteAsync(query, param);
+        }
     }
 }
