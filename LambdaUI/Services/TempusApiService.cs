@@ -49,6 +49,7 @@ namespace LambdaUI.Services
                 var builder =
                     new EmbedBuilder { Title = "**Highest Ranked Players Online** (Top 100)", Description = rankedLines }
                         .WithFooter(DateTimeHelper.ShortDateTimeNowString).WithColor(ColorConstants.InfoColor);
+                CachedStalkTopEmbed = builder.Build();
                 return builder.Build();
             }
             catch (Exception e)
