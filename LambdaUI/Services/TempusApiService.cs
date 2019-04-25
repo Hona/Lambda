@@ -14,7 +14,8 @@ namespace LambdaUI.Services
 {
     public static class TempusApiService
     {
-        public static async Task<Embed> GetStalkTopEmbed(TempusDataAccess tempusDataAccess)
+        public static Embed CachedStalkTopEmbed { get; private set; }
+        public static async Task<Embed> UpdateStalkTopEmbed(TempusDataAccess tempusDataAccess)
         {
             try
             {
@@ -49,6 +50,22 @@ namespace LambdaUI.Services
                     new EmbedBuilder { Title = "**Highest Ranked Players Online** (Top 100)", Description = rankedLines }
                         .WithFooter(DateTimeHelper.ShortDateTimeNowString).WithColor(ColorConstants.InfoColor);
                 return builder.Build();
+            }
+            catch (Exception e)
+            {
+                return Logger.LogException(e);
+            }
+
+        }
+        public static async Task<Embed> GetStalkTopEmbed(TempusDataAccess tempusDataAccess)
+        {
+            try
+            {
+                if (CachedStalkTopEmbed == null)
+                {
+                    return await UpdateStalkTopEmbed(tempusDataAccess);
+                }
+                return CachedStalkTopEmbed;
             }
             catch (Exception e)
             {

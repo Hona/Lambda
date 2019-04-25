@@ -43,7 +43,7 @@ namespace LambdaUI.Discord.Updaters
                 {
                     TempusServerStatusService.GetServerStatusOverviewEmbed(
                         await _tempusDataAccess.GetServerStatusAsync()),
-                    await TempusApiService.GetStalkTopEmbed(_tempusDataAccess)
+                    await TempusApiService.UpdateStalkTopEmbed(_tempusDataAccess)
                 };
                 await DeleteAllMessages(channel);
                 foreach (var embed in embeds)
