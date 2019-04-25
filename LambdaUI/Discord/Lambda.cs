@@ -46,6 +46,8 @@ namespace LambdaUI.Discord
 
         internal async Task StartAsync()
         {
+            ClearLogFile();
+
             _startDateTime = DateTime.Now;
 
             PrintDisplay();
@@ -66,6 +68,18 @@ namespace LambdaUI.Discord
             await Task.Delay(-1);
         }
 
+        private static void ClearLogFile()
+        {
+            // Clear the log
+            if (File.Exists(DiscordConstants.LogFilePath))
+            {
+                File.Delete(DiscordConstants.LogFilePath);
+            }
+            else
+            {
+                File.Create(DiscordConstants.LogFilePath);
+            }
+        }
         private static void PrintDisplay()
         {
             Console.ForegroundColor = ConsoleColor.DarkBlue;

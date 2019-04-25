@@ -43,7 +43,7 @@ namespace LambdaUI.Services
                         .FirstOrDefault(x => x.GameInfo?.Users != null && x.GameInfo.Users.Count(z => z.Id.HasValue && z.Id == pair.Key.Id) != 0);
                     if (server == null || pair.Key.Id == null) continue;
                     rankedLines +=
-                        $"Rank {pair.Value} - [{pair.Key.Name.EscapeDiscordChars()}]({TempusHelper.GetPlayerUrl(pair.Key.Id.Value)}) on [{server.GameInfo.CurrentMap.EscapeDiscordChars()}]({TempusHelper.GetServerUrl(server.ServerInfo.Id)}) ({server.ServerInfo.Shortname}){Environment.NewLine}";
+                        $"Rank {pair.Value} - [{pair.Key.Name.EscapeDiscordChars()}]({TempusHelper.GetPlayerUrl(pair.Key.Id.Value)}) on [{server.GameInfo.CurrentMap.EscapeDiscordChars()}]({TempusHelper.GetMapUrl(server.GameInfo.CurrentMap)}) ([{server.ServerInfo.Shortname}]({TempusHelper.GetServerUrl(server.ServerInfo.Id)})){Environment.NewLine}";
                 }
                 var builder =
                     new EmbedBuilder { Title = "**Highest Ranked Players Online** (Top 100)", Description = rankedLines }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -76,11 +77,13 @@ namespace LambdaUI.Logging
 
             Console.WriteLine(
                 $"{logMessage.Severity.ToString().PadRight(DiscordConstants.LogPaddingLength)}    {logMessage.Source.PadRight(DiscordConstants.LogPaddingLength)}    {logMessage.Message.PadRight(DiscordConstants.LogPaddingLength)}    {logMessage.Exception}");
-
+            LogToFile(logMessage);
             Console.ForegroundColor = ColorConstants.InfoLogColor;
             return Task.CompletedTask;
         }
 
+        private static string FormatLogMessage(LogMessage logMessage) =>
+            $"{logMessage.Severity.ToString().PadRight(DiscordConstants.LogPaddingLength)}    {logMessage.Source.PadRight(DiscordConstants.LogPaddingLength)}    {logMessage.Message.PadRight(DiscordConstants.LogPaddingLength)}    {logMessage.Exception}";
         private static Embed GetLogEmbed(LogMessage logMessage)
         {
             Color color;
@@ -107,5 +110,7 @@ namespace LambdaUI.Logging
                 embed.AddField("Exception", logMessage.Exception);
             return embed.Build();
         }
+
+        private static async void LogToFile(LogMessage logMessage) => await File.AppendAllTextAsync(DiscordConstants.LogFilePath, FormatLogMessage(logMessage));
     }
 }

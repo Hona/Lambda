@@ -8,6 +8,7 @@ using LambdaUI.Data.Access;
 using LambdaUI.Data.Access.Bot;
 using LambdaUI.Data.Access.Simply;
 using LambdaUI.Logging;
+using LambdaUI.Services;
 using LambdaUI.Utilities;
 
 namespace LambdaUI.Discord.Modules
@@ -101,6 +102,11 @@ namespace LambdaUI.Discord.Modules
         public async Task GetAllConfig([Remainder] string command)
         {
             await ReplyNewEmbed(command.Bash());
+        }
+        [Command("discordid")]
+        public async Task GetAllConfig(ulong id)
+        {
+            await ReplyEmbed(await DiscordService.GetDiscordObjectEmbed(Client, id));
         }
     }
 }

@@ -46,6 +46,7 @@ namespace LambdaUI.Services
                 builder.WithTitle($"**{ping.Motd}**");
                 builder.AddField("Players Online", $"{ping.PlayersOnline}/{ping.PlayersMax}")
                     .AddField("IP", ServerConstants.MinecraftServerIpAddress)
+                    .AddField("Version", ping.Version)
                     .WithColor(ColorConstants.InfoColor);
                 if (ping.OnlinePlayerList != null)
                     builder.WithDescription("Players: " + string.Join(", ", ping.OnlinePlayerList));
