@@ -28,11 +28,11 @@ namespace LambdaUI.Services
 
         public static Embed SourceEmbed(string ip, ushort port) => GetEmbed(ip, port, Game.TeamFortress2);
 
-        public static async Task<Embed> GetMinecraftEmbed()
+        public static async Task<Embed> GetMinecraftEmbedAsync()
         {
             try
             {
-                var ping = await ServerPing.Ping();
+                var ping = await ServerPing.PingAsync();
                 var builder = new EmbedBuilder();
 
                 if (ping.Motd.Contains('§'))

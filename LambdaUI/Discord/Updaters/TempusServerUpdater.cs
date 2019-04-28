@@ -43,9 +43,9 @@ namespace LambdaUI.Discord.Updaters
                 {
                     TempusServerStatusService.GetServerStatusOverviewEmbed(
                         await _tempusDataAccess.GetServerStatusAsync()),
-                    await TempusApiService.UpdateStalkTopEmbed(_tempusDataAccess)
+                    await TempusApiService.UpdateStalkTopEmbedAsync(_tempusDataAccess)
                 };
-                await DeleteAllMessages(channel);
+                await DeleteAllMessagesAsync(channel);
                 foreach (var embed in embeds)
                 {
                     await channel.SendMessageAsync(embed: embed);
@@ -57,22 +57,22 @@ namespace LambdaUI.Discord.Updaters
             }
         }
 
-        public async Task UpdateServers()
+        public async Task UpdateServersAsync()
         {
             var updateChannels = await _configDataAccess.GetConfigAsync("tempusUpdateChannel");
             if (updateChannels == null || updateChannels.Count == 0) return;
             foreach (var updateChannel in updateChannels)
-                await UpdateChannel(updateChannel.Value);
+                await UpdateChannelAsync(updateChannel.Value);
         }
 
-        private async Task UpdateChannel(string updateChannel)
+        private async Task UpdateChannelAsync(string updateChannel)
         {
             if (!(_client.GetChannel(Convert.ToUInt64(updateChannel)) is ITextChannel channel)) return;
             try
             {
                 var serverInfo = await _tempusDataAccess.GetServerStatusAsync();
                 var embeds = serverInfo.Select(TempusServerStatusService.GetServerStatusAsync).Where(x=>x != null).ToList();
-                await DeleteAllMessages(channel);
+                await DeleteAllMessagesAsync(channel);
                 for (var i = 0; i < embeds.Count; i++)
                 {
                     // Prevent rate limiting

@@ -8,7 +8,7 @@ namespace LambdaUI.Discord.Updaters
 {
     public class UpdaterBase
     {
-        protected static async Task DeleteAllMessages(ITextChannel channel)
+        protected static async Task DeleteAllMessagesAsync(ITextChannel channel)
         {
             try
             {

@@ -96,7 +96,7 @@ namespace LambdaUI.Data.Access
         public async Task<List<DetailedMapOverviewModel>> GetDetailedMapListAsync() =>
             await GetResponseAsync<List<DetailedMapOverviewModel>>("/maps/detailedList");
 
-        public async Task<Rank> GetUserRank(string id) => await GetResponseAsync<Rank>($"/players/id/{id}/rank");
+        public async Task<Rank> GetUserRankAsync(string id) => await GetResponseAsync<Rank>($"/players/id/{id}/rank");
 
 
         private string ParseMapName(string map)

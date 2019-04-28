@@ -20,15 +20,15 @@ namespace LambdaUI.Discord.Updaters
             _configDataAccess = configDataAccess;
         }
 
-        public async Task UpdateServers()
+        public async Task UpdateServersAsync()
         {
             var updateChannels = await _configDataAccess.GetConfigAsync("justjumpUpdateChannel");
             if (updateChannels == null || updateChannels.Count == 0) return;
             foreach (var updateChannel in updateChannels)
-                await UpdateChannel(updateChannel.Value);
+                await UpdateChannelAsync(updateChannel.Value);
         }
 
-        private async Task UpdateChannel(string updateChannel)
+        private async Task UpdateChannelAsync(string updateChannel)
         {
             if (!(_client.GetChannel(Convert.ToUInt64(updateChannel)) is ITextChannel channel)) return;
             try
@@ -37,11 +37,11 @@ namespace LambdaUI.Discord.Updaters
                 {
                     SourceServerStatusService.JustJumpEmbed,
                     SourceServerStatusService.HightowerEmbed,
-                    await SourceServerStatusService.GetMinecraftEmbed(),
+                    await SourceServerStatusService.GetMinecraftEmbedAsync(),
                     SourceServerStatusService.JumpAcademyEmbed
                 };
                 
-                await DeleteAllMessages(channel);
+                await DeleteAllMessagesAsync(channel);
                 foreach (var embed in embeds)
                 {
                     await channel.SendMessageAsync(embed: embed);

@@ -77,7 +77,7 @@ namespace LambdaUI.Logging
 
             Console.WriteLine(
                 $"{logMessage.Severity.ToString().PadRight(DiscordConstants.LogPaddingLength)}    {logMessage.Source.PadRight(DiscordConstants.LogPaddingLength)}    {logMessage.Message.PadRight(DiscordConstants.LogPaddingLength)}    {logMessage.Exception}");
-            LogToFile(logMessage);
+            LogToFileAsync(logMessage);
             Console.ForegroundColor = ColorConstants.InfoLogColor;
             return Task.CompletedTask;
         }
@@ -111,6 +111,6 @@ namespace LambdaUI.Logging
             return embed.Build();
         }
 
-        private static async void LogToFile(LogMessage logMessage) => await File.AppendAllTextAsync(DiscordConstants.LogFilePath, FormatLogMessage(logMessage));
+        private static async void LogToFileAsync(LogMessage logMessage) => await File.AppendAllTextAsync(DiscordConstants.LogFilePath, FormatLogMessage(logMessage));
     }
 }

@@ -23,15 +23,15 @@ namespace LambdaUI.Discord.Updaters
             _simplyDataService = simplyDataService;
         }
 
-        public async Task UpdateData()
+        public async Task UpdateDataAsync()
         {
             var updateChannels = await _configDataAccess.GetConfigAsync("simplyRankUpdateChannel");
             if (updateChannels == null || updateChannels.Count == 0) return;
             foreach (var channel in updateChannels)
-                UpdateChannel(channel.Value);
+                UpdateChannelAsync(channel.Value);
         }
 
-        private async void UpdateChannel(string updateChannel)
+        private async void UpdateChannelAsync(string updateChannel)
         {
             if (!(_client.GetChannel(Convert.ToUInt64(updateChannel)) is ITextChannel channel)) return;
             try
@@ -43,7 +43,7 @@ namespace LambdaUI.Discord.Updaters
                     _simplyDataService.GetTopPlayersEmbedAsync()
                 };
                 var embeds = await Task.WhenAll(tasks);
-                await DeleteAllMessages(channel);
+                await DeleteAllMessagesAsync(channel);
                 foreach (var embed in embeds)
                 {
                     await channel.SendMessageAsync(embed: embed);

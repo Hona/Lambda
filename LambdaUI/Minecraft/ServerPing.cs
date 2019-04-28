@@ -18,7 +18,7 @@ namespace LambdaUI.Minecraft
         private static List<byte> _buffer;
         private static int _offset;
 
-        internal static async Task<MinecraftServerModel> Ping()
+        internal static async Task<MinecraftServerModel> PingAsync()
         {
             _stream = null;
             _buffer = null;

@@ -56,11 +56,11 @@ namespace LambdaUI.Discord
 
             AddClientEvents();
 
-            await Login();
+            await LoginAsync();
 
             BuildServiceProvider();
 
-            await InstallCommands();
+            await InstallCommandsAsync();
 
             await _client.StartAsync();
 
@@ -121,12 +121,12 @@ namespace LambdaUI.Discord
         private void AddClientEvents()
         {
             _client.Log += Logger.Log;
-            _client.MessageReceived += MessageReceived;
-            _client.Ready += Ready;
+            _client.MessageReceived += MessageReceivedAsync;
+            _client.Ready += ReadyAsync;
         }
 
 
-        private async Task Login()
+        private async Task LoginAsync()
         {
             try
             {
@@ -142,7 +142,7 @@ namespace LambdaUI.Discord
             }
         }
 
-        private async Task MessageReceived(SocketMessage messageParam)
+        private async Task MessageReceivedAsync(SocketMessage messageParam)
         {
             // Don't process the command if it was a System Message
             if (!(messageParam is SocketUserMessage message)) return;
@@ -166,7 +166,7 @@ namespace LambdaUI.Discord
         }
 
 
-        private async Task Ready()
+        private async Task ReadyAsync()
         {
             if (_client.GetChannel(
                 Convert.ToUInt64((await _configDataAccess.GetConfigAsync("logChannel")).First()
@@ -177,10 +177,10 @@ namespace LambdaUI.Discord
             await _client.SetGameAsync("!help");
 
             // Runs once on startup, make sure it runs when connected
-            _intervalFunctionTimer = new Timer(IntervalFunctions, null, 0, FromMinutes(5));
+            _intervalFunctionTimer = new Timer(IntervalFunctionsAsync, null, 0, FromMinutes(5));
         }
 
-        internal async void IntervalFunctions(object state)
+        internal async void IntervalFunctionsAsync(object state)
         {
             try
             {
@@ -188,11 +188,11 @@ namespace LambdaUI.Discord
                 var tasks = new List<Task>
                 {
                     _tempusDataAccess.UpdateMapListAsync(),
-                    _tempusServerUpdater.UpdateServers(),
+                    _tempusServerUpdater.UpdateServersAsync(),
                     _tempusServerUpdater.UpdateOverviewsAsync(),
-                    _tempusActivityUpdater.UpdateActivity(),
-                    _simplyTFServerUpdater.UpdateServers(),
-                    _simplyDataUpdater.UpdateData()
+                    _tempusActivityUpdater.UpdateActivityAsync(),
+                    _simplyTFServerUpdater.UpdateServersAsync(),
+                    _simplyDataUpdater.UpdateDataAsync()
                 };
                 await Task.WhenAll(tasks);
 
@@ -218,7 +218,7 @@ namespace LambdaUI.Discord
                 .BuildServiceProvider();
         }
 
-        private async Task InstallCommands()
+        private async Task InstallCommandsAsync()
         {
             // Discover all of the commands in this assembly and load them.
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);

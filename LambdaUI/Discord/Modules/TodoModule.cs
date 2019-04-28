@@ -13,18 +13,18 @@ namespace LambdaUI.Discord.Modules
         public TodoDataAccess TodoDataAccess { get; set; }
 
         [Command("todo")]
-        public async Task Embed(string group = "", string value = "")
+        public async Task EmbedAsync(string group = "", string value = "")
         {
             if (group == "" && value == "")
             {
-                await ReplyNewEmbed((await TodoDataAccess.GetTodoItemsAsync()).Aggregate("",
+                await ReplyNewEmbedAsync((await TodoDataAccess.GetTodoItemsAsync()).Aggregate("",
                     (currentString, nextItem) => currentString +
                                                  $"'{nextItem.Group}' | '{nextItem.Item}' | {nextItem.Completeted}" +
                                                  Environment.NewLine));
             }
             else if (group != "" && value == "")
             {
-                await ReplyNewEmbed((await TodoDataAccess.GetTodoItemsAsync(group)).Aggregate("",
+                await ReplyNewEmbedAsync((await TodoDataAccess.GetTodoItemsAsync(group)).Aggregate("",
                     (currentString, nextItem) => currentString +
                                                  $"'{nextItem.Group}' | '{nextItem.Item}' | {nextItem.Completeted}" +
                                                  Environment.NewLine));
@@ -32,7 +32,7 @@ namespace LambdaUI.Discord.Modules
             else
             {
                 await TodoDataAccess.CreateTodoItemAsync(group, value);
-                await ReplyNewEmbed("Done.");
+                await ReplyNewEmbedAsync("Done.");
             }
         }
     }

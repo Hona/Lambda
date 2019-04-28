@@ -25,32 +25,32 @@ namespace LambdaUI.Discord.Modules
         public JustJumpDataAccess JustJumpDataAccess { get; set; }
 
         [Command("embed")]
-        public async Task Embed([Remainder] string text)
+        public async Task EmbedAsync([Remainder] string text)
         {
             var builder = new EmbedBuilder();
             builder.WithTitle(text.EscapeDiscordChars())
                 .WithAuthor(text.EscapeDiscordChars())
                 .WithDescription(text.EscapeDiscordChars())
                 .WithFooter(text.EscapeDiscordChars());
-            await ReplyEmbed(builder.Build());
+            await ReplyEmbedAsync(builder.Build());
         }
 
         [Command("execjj")]
-        public async Task ExecJJ([Remainder] string text)
+        public async Task ExecJJAsync([Remainder] string text)
         {
             var result = await JustJumpDataAccess.QueryAsync(text);
-            await ReplyNewEmbed(string.Join(Environment.NewLine, result));
+            await ReplyNewEmbedAsync(string.Join(Environment.NewLine, result));
         }
 
         [Command("updateStatus")]
-        public async Task UpdateStatus()
+        public async Task UpdateStatusAsync()
         {
-            Lambda.IntervalFunctions(null);
-            await ReplyNewEmbed("Done.");
+            Lambda.IntervalFunctionsAsync(null);
+            await ReplyNewEmbedAsync("Done.");
         }
 
         [Command("giveall")]
-        public async Task GiveAll([Remainder] string roleParam)
+        public async Task GiveAllAsync([Remainder] string roleParam)
         {
             var role = Context.Guild.Roles.First(x => x.Name.ToLower().Contains(roleParam.ToLower()));
             var users = (await Context.Guild.GetUsersAsync()).Where(x => !x.IsBot).ToList();
@@ -61,17 +61,17 @@ namespace LambdaUI.Discord.Modules
                 await user.AddRoleAsync(role);
             }
 
-            await ReplyNewEmbed($"Done adding to {count} non-bot users");
+            await ReplyNewEmbedAsync($"Done adding to {count} non-bot users");
         }
 
         [Command("log")]
-        public async Task UpdateStatus(LogSeverity severity, [Remainder] string message)
+        public async Task LogAsync(LogSeverity severity, [Remainder] string message)
         {
             await Logger.Log(new LogMessage(severity, "Command", message));
         }
 
         [Command("clearmessages")]
-        public async Task ClearMessages()
+        public async Task ClearMessagesAsync()
         {
             if (Context.Channel is ITextChannel channel)
             {
@@ -81,32 +81,32 @@ namespace LambdaUI.Discord.Modules
         }
 
         [Command("addconfig")]
-        public async Task AddConfigEntry(string key, [Remainder] string value)
+        public async Task AddConfigEntryAsync(string key, [Remainder] string value)
         {
             await ConfigDataAccess.CreateNewConfigEntryAsync(key, value);
-            await ReplyNewEmbed($"Added Key '{key}' and Value '{value}' to config db");
+            await ReplyNewEmbedAsync($"Added Key '{key}' and Value '{value}' to config db");
         }
 
         [Command("deleteconfig")]
-        public async Task DeleteConfigEntry(string key, [Remainder] string value)
+        public async Task DeleteConfigEntryAsync(string key, [Remainder] string value)
         {
             await ConfigDataAccess.DeleteConfigEntryAsync(key, value);
-            await ReplyNewEmbed($"Deleted Key '{key}' and Value '{value}' from config db");
+            await ReplyNewEmbedAsync($"Deleted Key '{key}' and Value '{value}' from config db");
         }
         [Command("getconfig")]
-        public async Task GetAllConfig(string key, [Remainder] string value)
+        public async Task GetAllConfigAsync(string key, [Remainder] string value)
         {
-            await ReplyNewEmbed(string.Join(Environment.NewLine, await ConfigDataAccess.GetAllConfigAsync()));
+            await ReplyNewEmbedAsync(string.Join(Environment.NewLine, await ConfigDataAccess.GetAllConfigAsync()));
         }
         [Command("bash")]
-        public async Task GetAllConfig([Remainder] string command)
+        public async Task BashAsync([Remainder] string command)
         {
-            await ReplyNewEmbed(command.Bash());
+            await ReplyNewEmbedAsync(command.Bash());
         }
         [Command("discordid")]
-        public async Task GetAllConfig(ulong id)
+        public async Task GetAllConfigAsync(ulong id)
         {
-            await ReplyEmbed(await DiscordService.GetDiscordObjectEmbed(Client, id));
+            await ReplyEmbedAsync(await DiscordService.GetDiscordObjectEmbedAsync(Client, id));
         }
     }
 }

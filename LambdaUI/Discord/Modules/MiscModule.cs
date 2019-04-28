@@ -26,28 +26,28 @@ namespace LambdaUI.Discord.Modules
 
         [Command("stats")]
         [Summary("Gets various bot-related stats")]
-        public async Task Stats()
+        public async Task StatsAsync()
         {
             var builder = new EmbedBuilder {Title = "**SimplyBot - Stats**"};
             builder.AddField("Uptime", Uptime)
                 .AddField("Memory Usage", MemoryUsage)
                 .AddField("Latency", ((DiscordSocketClient) Context.Client).Latency)
                 .WithFooter($"Discord.Net ({DiscordConfig.Version})");
-            await ReplyEmbed(builder);
+            await ReplyEmbedAsync(builder);
         }
 
         [Command("sloc")]
         [Summary("Counts the lines of code in a github repo")]
-        public async Task SlocCount(string repo)
+        public async Task SlocCountAsync(string repo)
         {
             try
             {
                 var output = $"cloc-git {repo}".Bash();
-                await ReplyNewEmbed("SLOC for repository", output);
+                await ReplyNewEmbedAsync("SLOC for repository", output);
             }
             catch (Exception e)
             {
-                await ReplyEmbed(Logger.LogException(e));
+                await ReplyEmbedAsync(Logger.LogException(e));
             }
 
         }
@@ -56,7 +56,7 @@ namespace LambdaUI.Discord.Modules
 
         [Command("help")]
         [Summary("Displays information about commands")]
-        public async Task Help(string moduleParam = "")
+        public async Task HelpAsync(string moduleParam = "")
         {
             // TODO redo this command
             if (moduleParam == "")
@@ -66,7 +66,7 @@ namespace LambdaUI.Discord.Modules
                     (current, module) =>
                         current +
                         $"  - **{module.Name}** ({module.Summary}), {module.Commands.Count} command/s{Environment.NewLine}  ");
-                await ReplyEmbed(EmbedHelper.CreateEmbed(title, text, false));
+                await ReplyEmbedAsync(EmbedHelper.CreateEmbed(title, text, false));
             }
             else
             {
@@ -76,7 +76,7 @@ namespace LambdaUI.Discord.Modules
                     (current, command) =>
                         current +
                         $"**__{DiscordConstants.CommandPrefix + command.Name}__**{Environment.NewLine}**{command.Summary}**. Parameters: {command.Parameters.Aggregate("", (currentString, nextParameter) => currentString + $"{nextParameter.Name} {GetSummaryString(nextParameter.Summary)}, ").TrimEnd(' ', ',')}{Environment.NewLine}");
-                await ReplyEmbed(EmbedHelper.CreateEmbed(title, text, false));
+                await ReplyEmbedAsync(EmbedHelper.CreateEmbed(title, text, false));
             }
         }
     }

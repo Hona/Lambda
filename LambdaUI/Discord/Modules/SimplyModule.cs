@@ -14,38 +14,38 @@ namespace LambdaUI.Discord.Modules
         public JustJumpDataAccess JustJumpDataAccess { get; set; }
 
         [Command("dtimes")]
-        public async Task GetDemoMapTimes(string mapName)
+        public async Task GetDemoMapTimesAsync(string mapName)
         {
-            await ReplyNewEmbed(string.Join(Environment.NewLine,
-                (await JustJumpDataAccess.GetMapTimes(SimplyConstants.Demoman, mapName)).OrderBy(x => x.RunTime)));
+            await ReplyNewEmbedAsync(string.Join(Environment.NewLine,
+                (await JustJumpDataAccess.GetMapTimesAsync(SimplyConstants.Demoman, mapName)).OrderBy(x => x.RunTime)));
         }
 
         [Command("stimes")]
-        public async Task GetSollyMapTimes(string mapName)
+        public async Task GetSollyMapTimesAsync(string mapName)
         {
-            await ReplyNewEmbed(string.Join(Environment.NewLine,
-                (await JustJumpDataAccess.GetMapTimes(SimplyConstants.Soldier, mapName)).OrderBy(x => x.RunTime)));
+            await ReplyNewEmbedAsync(string.Join(Environment.NewLine,
+                (await JustJumpDataAccess.GetMapTimesAsync(SimplyConstants.Soldier, mapName)).OrderBy(x => x.RunTime)));
         }
 
         [Command("ptimes")]
-        public async Task GetPyroMapTimes(string mapName)
+        public async Task GetPyroMapTimesAsync(string mapName)
         {
-            await ReplyNewEmbed(string.Join(Environment.NewLine,
-                (await JustJumpDataAccess.GetMapTimes(SimplyConstants.Pyro, mapName)).OrderBy(x => x.RunTime)));
+            await ReplyNewEmbedAsync(string.Join(Environment.NewLine,
+                (await JustJumpDataAccess.GetMapTimesAsync(SimplyConstants.Pyro, mapName)).OrderBy(x => x.RunTime)));
         }
 
         [Command("ctimes")]
-        public async Task GetConcMapTimes(string mapName)
+        public async Task GetConcMapTimesAsync(string mapName)
         {
-            await ReplyNewEmbed(string.Join(Environment.NewLine,
-                (await JustJumpDataAccess.GetMapTimes(SimplyConstants.Conc, mapName)).OrderBy(x => x.RunTime)));
+            await ReplyNewEmbedAsync(string.Join(Environment.NewLine,
+                (await JustJumpDataAccess.GetMapTimesAsync(SimplyConstants.Conc, mapName)).OrderBy(x => x.RunTime)));
         }
 
         [Command("etimes")]
-        public async Task GetEngiMapTimes(string mapName)
+        public async Task GetEngiMapTimesAsync(string mapName)
         {
-            await ReplyNewEmbed(string.Join(Environment.NewLine,
-                (await JustJumpDataAccess.GetMapTimes(SimplyConstants.Engineer, mapName)).OrderBy(x => x.RunTime)));
+            await ReplyNewEmbedAsync(string.Join(Environment.NewLine,
+                (await JustJumpDataAccess.GetMapTimesAsync(SimplyConstants.Engineer, mapName)).OrderBy(x => x.RunTime)));
         }
     }
 }

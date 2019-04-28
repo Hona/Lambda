@@ -14,7 +14,7 @@ namespace LambdaUI.Data.Access.Simply
             FluentMapper.Initialize(config => { config.AddMap(new SimplyHightowerMap()); });
         }
 
-        internal async Task<List<SimplyHightowerModel>> GetTopHightowerRank(int count)
+        internal async Task<List<SimplyHightowerModel>> GetTopHightowerRankAsync(int count)
         {
             var query = $@"select * from players order by points desc limit {count}";
 

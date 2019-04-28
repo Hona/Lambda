@@ -13,116 +13,116 @@ namespace LambdaUI.Discord.Modules
         public TempusDataAccess TempusDataAccess { get; set; }
 
         [Command("rr")]
-        public async Task GetRecentRecords()
+        public async Task GetRecentRecordsAsync()
         {
             var activity = await TempusDataAccess.GetRecentActivityAsync();
-            await ReplyEmbed(TempusUpdaterService.GetMapRecordsEmbed(activity.MapRecords));
+            await ReplyEmbedAsync(TempusUpdaterService.GetMapRecordsEmbed(activity.MapRecords));
         }
 
         [Command("rrtt")]
-        public async Task GetRecentTopTimes()
+        public async Task GetRecentTopTimesAsync()
         {
             var activity = await TempusDataAccess.GetRecentActivityAsync();
-            await ReplyEmbed(TempusUpdaterService.GetMapTopTimesEmbed(activity.MapTopTimes));
+            await ReplyEmbedAsync(TempusUpdaterService.GetMapTopTimesEmbed(activity.MapTopTimes));
         }
 
         [Command("rrc")]
-        public async Task GetRecentCourseRecords()
+        public async Task GetRecentCourseRecordsAsync()
         {
             var activity = await TempusDataAccess.GetRecentActivityAsync();
-            await ReplyEmbed(TempusUpdaterService.GetCourseRecordsEmbed(activity.CourseRecords));
+            await ReplyEmbedAsync(TempusUpdaterService.GetCourseRecordsEmbed(activity.CourseRecords));
         }
 
         [Command("rrb")]
-        public async Task GetRecentBonusRecords()
+        public async Task GetRecentBonusRecordsAsync()
         {
             var activity = await TempusDataAccess.GetRecentActivityAsync();
-            await ReplyEmbed(TempusUpdaterService.GetBonusRecordsEmbed(activity.BonusRecords));
+            await ReplyEmbedAsync(TempusUpdaterService.GetBonusRecordsEmbed(activity.BonusRecords));
         }
 
         [Command("dwr")]
-        public async Task GetDemoRecord(string map)
+        public async Task GetDemoRecordAsync(string map)
         {
             var result = await TempusDataAccess.GetFullMapOverViewAsync(map);
             var demoRecord = result.DemomanRuns.OrderBy(x => x.Duration).First();
-            await ReplyNewEmbed(
+            await ReplyNewEmbedAsync(
                 $"**Demo WR** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}", false);
         }
 
         [Command("dtime")]
-        public async Task GetDemoTime(string map, int place)
+        public async Task GetDemoTimeAsync(string map, int place)
         {
             var result = await TempusDataAccess.GetFullMapOverViewAsync(map);
             var demoRecord = result.DemomanRuns.OrderBy(x => x.Duration).Skip(place - 1).First();
             if (demoRecord != null)
-                await ReplyNewEmbed(
+                await ReplyNewEmbedAsync(
                     $"**Demo #{place}** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}",
                     false);
             else
-                await ReplyNewEmbed("Time not found");
+                await ReplyNewEmbedAsync("Time not found");
         }
 
         [Command("swr")]
-        public async Task GetSoldierRecord(string map)
+        public async Task GetSoldierRecordAsync(string map)
         {
             var result = await TempusDataAccess.GetFullMapOverViewAsync(map);
             var demoRecord = result.SoldierRuns.OrderBy(x => x.Duration).First();
-            await ReplyNewEmbed(
+            await ReplyNewEmbedAsync(
                 $"**Solly WR** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}", false);
         }
 
         [Command("stime")]
-        public async Task GetSoldierTime(string map, int place)
+        public async Task GetSoldierTimeAsync(string map, int place)
         {
             var result = await TempusDataAccess.GetFullMapOverViewAsync(map);
             var demoRecord = result.SoldierRuns.OrderBy(x => x.Duration).Skip(place - 1).First();
             if (demoRecord != null)
-                await ReplyNewEmbed(
+                await ReplyNewEmbedAsync(
                     $"**Solly #{place}** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}",
                     false);
             else
-                await ReplyNewEmbed("Time not found");
+                await ReplyNewEmbedAsync("Time not found");
         }
 
         [Command("stalktop")]
-        public async Task StalkTop()
+        public async Task StalkTopAsync()
         {
-            await ReplyEmbed( await TempusApiService.GetStalkTopEmbed(TempusDataAccess));
+            await ReplyEmbedAsync( await TempusApiService.GetStalkTopEmbedAsync(TempusDataAccess));
         }
 
         [Command("servers")]
-        public async Task ServerOverview()
+        public async Task ServerOverviewAsync()
         {
-            await ReplyEmbed(TempusServerStatusService.GetServerStatusOverviewEmbed(await TempusDataAccess.GetServerStatusAsync()));
+            await ReplyEmbedAsync(TempusServerStatusService.GetServerStatusOverviewEmbed(await TempusDataAccess.GetServerStatusAsync()));
         }
 
         [Alias("m")]
         [Command("mapinfo")]
-        public async Task MapInfo(string mapName)
+        public async Task MapInfoAsync(string mapName)
         {
             var map = TempusDataAccess.MapList.First(x => x.Name.Contains(mapName));
             await ReplyAsync(embed: TempusApiService.GetMapInfoEmbed(map));
         }
 
         [Command("ticktime")]
-        public async Task TickTime(int tick1, int tick2 = -1)
+        public async Task TickTimeAsync(int tick1, int tick2 = -1)
         {
             if (tick2 == -1)
             {
-                await ReplyNewEmbed(TempusHelper.TicksToFormattedTime(tick1));
+                await ReplyNewEmbedAsync(TempusHelper.TicksToFormattedTime(tick1));
             }
             else
             {
                 var ticks = tick1 > tick2 ? tick1 - tick2 : tick2 - tick1;
-                await ReplyNewEmbed(TempusHelper.TicksToFormattedTime(ticks));
+                await ReplyNewEmbedAsync(TempusHelper.TicksToFormattedTime(ticks));
             }
         }
 
         [Command("maplist")]
-        public async Task GetMapList(int tier = 0)
+        public async Task GetMapListAsync(int tier = 0)
         {
             var maps = await TempusDataAccess.GetMapListAsync();
-            await ReplyNewEmbed(string.Join(", ", maps));
+            await ReplyNewEmbedAsync(string.Join(", ", maps));
         }
     }
 }

@@ -12,25 +12,25 @@ namespace LambdaUI.Discord.Modules
     public class DiscordModule : ExtraModuleBase
     {
         [Command("roleinfo")]
-        public async Task GetRoleInfo(string roleParam)
+        public async Task GetRoleInfoAsync(string roleParam)
         {
             var embeds = DiscordService.GetRoleEmbeds(roleParam, Context.Guild);
             foreach (var embed in embeds)
             {
-                await ReplyEmbed(embed);
+                await ReplyEmbedAsync(embed);
             }
         }
 
         [Command("userinfo")]
-        public async Task GetUserInfo(SocketGuildUser userParam)
+        public async Task GetUserInfoAsync(SocketGuildUser userParam)
         {
-            await ReplyEmbed(DiscordService.GetGuildUserEmbed(userParam));
+            await ReplyEmbedAsync(DiscordService.GetGuildUserEmbed(userParam));
         }
 
         [Command("serverinfo")]
-        public async Task GetServerInfo()
+        public async Task GetServerInfoAsync()
         {
-            await ReplyEmbed(DiscordService.GetServerEmbed(Context.Guild));
+            await ReplyEmbedAsync(DiscordService.GetServerEmbed(Context.Guild));
         }
 
 

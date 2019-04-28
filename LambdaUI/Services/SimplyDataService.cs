@@ -27,7 +27,7 @@ namespace LambdaUI.Services
         {
             try
             {
-                var topPlayers = await _simplyHightowerDataAccess.GetTopHightowerRank(15);
+                var topPlayers = await _simplyHightowerDataAccess.GetTopHightowerRankAsync(15);
                 var topHightowerScoreString = "";
 
                 for (var i = 0; i < topPlayers.Count; i++)
@@ -52,7 +52,7 @@ namespace LambdaUI.Services
         {
             try
             {
-                var recentRecords = await _justJumpDataAccess.GetRecentRecords(10);
+                var recentRecords = await _justJumpDataAccess.GetRecentRecordsAsync(10);
                 var recentRecordsString = recentRecords.Aggregate("",
                     (currentString, nextHighscore) => currentString +
                                                       $"{SimplyHelper.ClassToShortString(nextHighscore.Class)} | **__{TempusHelper.TimeSpanToFormattedTime(SimplyHelper.GetTimeSpan(nextHighscore.RunTime))}__** | **{nextHighscore.Map}** | **{nextHighscore.Name}**" +
@@ -75,12 +75,12 @@ namespace LambdaUI.Services
         {
             try
             {
-                var overallTopString = await GetOverallTopString();
-                var soldierTopString = await GetSoldierTopString();
-                var demomanTopString = await GetDemomanTopString();
-                var concTopString = await GetConcTopString();
-                var engiTopString = await GetEngiTopString();
-                var pyroTopString = await GetPyroTopString();
+                var overallTopString = await GetOverallTopStringAsync();
+                var soldierTopString = await GetSoldierTopStringAsync();
+                var demomanTopString = await GetDemomanTopStringAsync();
+                var concTopString = await GetConcTopStringAsync();
+                var engiTopString = await GetEngiTopStringAsync();
+                var pyroTopString = await GetPyroTopStringAsync();
 
                 var builder = new EmbedBuilder {Title = "**Top Ranked Jumpers**"};
                 builder.AddField("Overall", overallTopString)
@@ -99,39 +99,39 @@ namespace LambdaUI.Services
             }
         }
 
-        private async Task<string> GetPyroTopString()
+        private async Task<string> GetPyroTopStringAsync()
         {
-            var pyroTop = await _justJumpDataAccess.GetTopPyro(SimplyConstants.TopRankCount);
+            var pyroTop = await _justJumpDataAccess.GetTopPyroAsync(SimplyConstants.TopRankCount);
             return TopRankToString(pyroTop, "Pyro");
         }
 
-        private async Task<string> GetEngiTopString()
+        private async Task<string> GetEngiTopStringAsync()
         {
-            var engiTop = await _justJumpDataAccess.GetTopEngi(SimplyConstants.TopRankCount);
+            var engiTop = await _justJumpDataAccess.GetTopEngiAsync(SimplyConstants.TopRankCount);
             return TopRankToString(engiTop, "Engi");
         }
 
-        private async Task<string> GetConcTopString()
+        private async Task<string> GetConcTopStringAsync()
         {
-            var concTop = await _justJumpDataAccess.GetTopConc(SimplyConstants.TopRankCount);
+            var concTop = await _justJumpDataAccess.GetTopConcAsync(SimplyConstants.TopRankCount);
             return TopRankToString(concTop, "Conc");
         }
 
-        private async Task<string> GetDemomanTopString()
+        private async Task<string> GetDemomanTopStringAsync()
         {
-            var demoTop = await _justJumpDataAccess.GetTopDemo(SimplyConstants.TopRankCount);
+            var demoTop = await _justJumpDataAccess.GetTopDemoAsync(SimplyConstants.TopRankCount);
             return TopRankToString(demoTop, "Demoman");
         }
 
-        private async Task<string> GetOverallTopString()
+        private async Task<string> GetOverallTopStringAsync()
         {
-            var overallTop = await _justJumpDataAccess.GetTopOverall(SimplyConstants.TopRankCount);
+            var overallTop = await _justJumpDataAccess.GetTopOverallAsync(SimplyConstants.TopRankCount);
             return TopRankToString(overallTop, "Overall");
         }
 
-        private async Task<string> GetSoldierTopString()
+        private async Task<string> GetSoldierTopStringAsync()
         {
-            var soldierTop = await _justJumpDataAccess.GetTopSolly(SimplyConstants.TopRankCount);
+            var soldierTop = await _justJumpDataAccess.GetTopSollyAsync(SimplyConstants.TopRankCount);
             return TopRankToString(soldierTop, "Soldier");
         }
 

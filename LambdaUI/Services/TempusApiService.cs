@@ -15,7 +15,7 @@ namespace LambdaUI.Services
     public static class TempusApiService
     {
         public static Embed CachedStalkTopEmbed { get; private set; }
-        public static async Task<Embed> UpdateStalkTopEmbed(TempusDataAccess tempusDataAccess)
+        public static async Task<Embed> UpdateStalkTopEmbedAsync(TempusDataAccess tempusDataAccess)
         {
             try
             {
@@ -29,7 +29,7 @@ namespace LambdaUI.Services
                 foreach (var user in users)
                 {
                     if (user?.Id == null) continue;
-                    var rank = await tempusDataAccess.GetUserRank(user.Id.ToString());
+                    var rank = await tempusDataAccess.GetUserRankAsync(user.Id.ToString());
                     rankedUsers.Add(user,
                         rank.ClassRankInfo.DemoRank.Rank <= rank.ClassRankInfo.SoldierRank.Rank
                             ? rank.ClassRankInfo.DemoRank.Rank
@@ -58,13 +58,13 @@ namespace LambdaUI.Services
             }
 
         }
-        public static async Task<Embed> GetStalkTopEmbed(TempusDataAccess tempusDataAccess)
+        public static async Task<Embed> GetStalkTopEmbedAsync(TempusDataAccess tempusDataAccess)
         {
             try
             {
                 if (CachedStalkTopEmbed == null)
                 {
-                    return await UpdateStalkTopEmbed(tempusDataAccess);
+                    return await UpdateStalkTopEmbedAsync(tempusDataAccess);
                 }
                 return CachedStalkTopEmbed;
             }

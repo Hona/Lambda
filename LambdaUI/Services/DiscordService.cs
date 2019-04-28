@@ -53,7 +53,7 @@ namespace LambdaUI.Services
             return EmbedHelper.CreateEmbed("Guild is not a SocketGuild", false);
         }
 
-        public static async Task<Embed> GetChannelEmbed(IChannel channel)
+        public static async Task<Embed> GetChannelEmbedAsync(IChannel channel)
         {
 
            var builder = new EmbedBuilder {Title = "Channel: " + channel.Name}
@@ -104,7 +104,7 @@ namespace LambdaUI.Services
             builder.WithFooter(user.Id.ToString());
             return builder.Build();
         }
-        public static async Task<Embed> GetDiscordObjectEmbed(DiscordSocketClient client, ulong id)
+        public static async Task<Embed> GetDiscordObjectEmbedAsync(DiscordSocketClient client, ulong id)
         {
             
             var guild = client.GetGuild(id);
@@ -116,7 +116,7 @@ namespace LambdaUI.Services
             var channel = client.GetChannel(id);
             if (channel != null)
             {
-                return await GetChannelEmbed(channel);
+                return await GetChannelEmbedAsync(channel);
             }
 
             var user = await client.Rest.GetUserAsync(id);
