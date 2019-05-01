@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using Dapper.FluentMap;
 using LambdaUI.Logging;
 using MySql.Data.MySqlClient;
 
@@ -82,6 +83,16 @@ namespace LambdaUI.Data.Access
             {
                 Logger.LogException(e);
             }
+        }
+
+        public void Dispose()
+        {
+            if (_connection != null && _connection.State != ConnectionState.Closed)
+            {
+                _connection.Dispose();
+
+            }
+            FluentMapper.EntityMaps.Clear();
         }
     }
 }

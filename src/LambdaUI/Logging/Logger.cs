@@ -111,6 +111,16 @@ namespace LambdaUI.Logging
             return embed.Build();
         }
 
-        private static async void LogToFileAsync(LogMessage logMessage) => await File.AppendAllTextAsync(DiscordConstants.LogFilePath, FormatLogMessage(logMessage));
+        private static async void LogToFileAsync(LogMessage logMessage)
+        {
+            try
+            {
+                await File.AppendAllTextAsync(DiscordConstants.LogFilePath, FormatLogMessage(logMessage));
+            }
+            catch (Exception e)
+            {
+                // TODO IGNORE?
+            }
+        }
     }
 }

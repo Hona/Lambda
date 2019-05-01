@@ -9,5 +9,6 @@ namespace LambdaUI
         {
             new Lambda().StartAsync().GetAwaiter().GetResult();
         }
+
     }
 }

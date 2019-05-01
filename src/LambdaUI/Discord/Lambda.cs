@@ -41,6 +41,7 @@ namespace LambdaUI.Discord
 
         private TempusServerUpdater _tempusServerUpdater;
         private TodoDataAccess _todoDataAccess;
+        internal readonly CancellationTokenSource CancellationTokenSource = new CancellationTokenSource();
 
         private static int FromMinutes(int minutes) => 1000 * 60 * minutes;
 
@@ -56,6 +57,8 @@ namespace LambdaUI.Discord
 
             AddClientEvents();
 
+            Console.CancelKeyPress += (sender, args) => { args.Cancel = true; CancellationTokenSource.Cancel(); };
+
             await LoginAsync();
 
             BuildServiceProvider();
@@ -64,21 +67,28 @@ namespace LambdaUI.Discord
 
             await _client.StartAsync();
 
-            // Block this task until the program is closed.
-            await Task.Delay(-1);
+            // Block this task until the program is closed or cancelled.
+
+            try
+            {
+                await Task.Delay(-1,
+                    CancellationTokenSource.Token);
+            }
+            catch (TaskCanceledException e)
+            {
+                await ShutdownAsync();
+                Logger.LogException(e);
+            }
+            
         }
 
         private static void ClearLogFile()
         {
             // Clear the log
             if (File.Exists(DiscordConstants.LogFilePath))
-            {
                 File.Delete(DiscordConstants.LogFilePath);
-            }
             else
-            {
-                File.Create(DiscordConstants.LogFilePath);
-            }
+                File.Create(DiscordConstants.LogFilePath).Close();
         }
         private static void PrintDisplay()
         {
@@ -222,6 +232,28 @@ namespace LambdaUI.Discord
         {
             // Discover all of the commands in this assembly and load them.
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
+        }
+        internal async Task ShutdownAsync()
+        {
+            if (_client != null)
+            {
+                await _client.SetStatusAsync(UserStatus.Invisible);
+                await _client.LogoutAsync();
+                await _client.StopAsync();
+            }
+            Dispose();
+
+            Environment.Exit(0);
+        }
+
+        public void Dispose()
+        {
+            CancellationTokenSource?.Dispose();
+            _client?.Dispose();
+            _configDataAccess?.Dispose();
+            _justJumpDataAccess?.Dispose();
+            _simplyHightowerDataAccess?.Dispose();
+            _todoDataAccess?.Dispose();
         }
     }
 }
