@@ -7,6 +7,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using LambdaUI.Constants;
 using LambdaUI.Logging;
+using LambdaUI.Services;
 using LambdaUI.Utilities;
 
 namespace LambdaUI.Discord.Modules
@@ -22,7 +23,6 @@ namespace LambdaUI.Discord.Modules
         public string Uptime => 
             $"{(DateTime.Now - Process.GetCurrentProcess().StartTime).Days}d {(DateTime.Now - Process.GetCurrentProcess().StartTime).Hours}h {(DateTime.Now - Process.GetCurrentProcess().StartTime).Minutes}m {(DateTime.Now - Process.GetCurrentProcess().StartTime).Seconds}s";
 
-        public string GetSummaryString(string summary) => string.IsNullOrEmpty(summary) ? "" : $"({summary})";
 
         [Command("stats")]
         [Summary("Gets various bot-related stats")]
@@ -58,26 +58,7 @@ namespace LambdaUI.Discord.Modules
         [Summary("Displays information about commands")]
         public async Task HelpAsync(string moduleParam = "")
         {
-            // TODO redo this command
-            if (moduleParam == "")
-            {
-                var title = $"Help commands: ({DiscordConstants.CommandPrefix}help [module])";
-                var text = CommandService.Modules.Where(x => !x.Name.Contains("ModuleBase")).Aggregate("",
-                    (current, module) =>
-                        current +
-                        $"  - **{module.Name}** ({module.Summary}), {module.Commands.Count} command/s{Environment.NewLine}  ");
-                await ReplyEmbedAsync(EmbedHelper.CreateEmbed(title, text, false));
-            }
-            else
-            {
-                var module = CommandService.Modules.First(x => x.Name.ToLower().Contains(moduleParam.ToLower()));
-                var title = $"Help: **({module.Name})**";
-                var text = module.Commands.Aggregate("",
-                    (current, command) =>
-                        current +
-                        $"**__{DiscordConstants.CommandPrefix + command.Name}__**{Environment.NewLine}**{command.Summary}**. Parameters: {command.Parameters.Aggregate("", (currentString, nextParameter) => currentString + $"{nextParameter.Name} {GetSummaryString(nextParameter.Summary)}, ").TrimEnd(' ', ',')}{Environment.NewLine}");
-                await ReplyEmbedAsync(EmbedHelper.CreateEmbed(title, text, false));
-            }
+            await ReplyEmbedAsync(DiscordService.GetHelpEmbed(moduleParam, CommandService, Context));
         }
     }
 }

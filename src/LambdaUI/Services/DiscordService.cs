@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
+using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
 using LambdaUI.Constants;
@@ -13,6 +14,8 @@ namespace LambdaUI.Services
 {
     public static class DiscordService
     {
+        private static string GetSummaryString(string summary) => string.IsNullOrEmpty(summary) ? "" : $"({summary})";
+
         public static IEnumerable<Embed> GetRoleEmbeds(string roleParam, IGuild guild)
         {
             var roles = guild.Roles.Where(x => x.Name.ToLower().Contains(roleParam.ToLower())).ToArray();
@@ -103,6 +106,30 @@ namespace LambdaUI.Services
 
             builder.WithFooter(user.Id.ToString());
             return builder.Build();
+        }
+
+        public static Embed GetHelpEmbed(string moduleName, CommandService commandService, ICommandContext context)
+        {
+            return moduleName == "" ? GetModulesOverviewEmbed(commandService, context) : GetModuleHelpEmbed(commandService.Modules.First(x => x.Name.ToLower().Contains(moduleName.ToLower())), context);
+        }
+
+        private static Embed GetModuleHelpEmbed(ModuleInfo module, ICommandContext context)
+        {
+            var title = $"Help: **({module.Name})**";
+            var text = module.Commands.Where(x => x.CheckPreconditionsAsync(context).GetAwaiter().GetResult().IsSuccess).Aggregate("",
+                (current, command) =>
+                    current +
+                    $"**__{DiscordConstants.CommandPrefix + command.Name}__**{Environment.NewLine}**{command.Summary}**. Parameters: {command.Parameters.Aggregate("", (currentString, nextParameter) => currentString + $"{nextParameter.Name} {GetSummaryString(nextParameter.Summary)}, ").TrimEnd(' ', ',')}{Environment.NewLine}");
+            return EmbedHelper.CreateEmbed(title, text, false);
+        }
+        private static Embed GetModulesOverviewEmbed(CommandService commandService, ICommandContext context)
+        {
+            var title = $"Per module help commands: ({DiscordConstants.CommandPrefix}help [module])";
+            var text = commandService.Modules.Where(x => !x.Name.Contains("ModuleBase")).Aggregate("",
+                (current, module) =>
+                    current +
+                    $"**{module.Name}** ({module.Summary}), {module.Commands.Count} command/s{Environment.NewLine}  ");
+            return EmbedHelper.CreateEmbed(title, text, false);
         }
         public static async Task<Embed> GetDiscordObjectEmbedAsync(DiscordSocketClient client, ulong id)
         {

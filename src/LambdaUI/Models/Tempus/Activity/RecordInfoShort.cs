@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace LambdaUI.Models.Tempus.Activity
 {
-    public class RecordInfo2
+    public class RecordInfoShort
     {
         [JsonProperty(PropertyName = "server_id")]
         public int ServerId { get; set; }

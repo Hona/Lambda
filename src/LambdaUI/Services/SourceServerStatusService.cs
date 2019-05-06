@@ -76,13 +76,30 @@ namespace LambdaUI.Services
         {
             try
             {
-                var server = ServerQuery.GetServerInstance(game, ip, port, receiveTimeout: 1000, throwExceptions: true);
-                return GetSourceServerReplyEmbed(server);
+                try
+                {
+                    return GetEmbedThrowError(ip, port, game);
+                }
+                catch
+                {
+                    Logger.LogWarning("QueryMaster", "Error querying, retrying");
+                    // Tries two times, in case the data is malformed due to using UDP
+                    return GetEmbedThrowError(ip, port, game);
+                }
+
             }
             catch (Exception e)
             {
                 return Logger.LogException(e);
             }
+        }
+
+        private static Embed GetEmbedThrowError(string ip, ushort port, Game game)
+        {
+
+                var server = ServerQuery.GetServerInstance(game, ip, port, receiveTimeout: 1000, throwExceptions: true);
+                return GetSourceServerReplyEmbed(server);
+
         }
 
         private static Embed GetSourceServerReplyEmbed(Server server)

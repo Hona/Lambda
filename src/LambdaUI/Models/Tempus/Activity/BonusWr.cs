@@ -2,18 +2,8 @@ using Newtonsoft.Json;
 
 namespace LambdaUI.Models.Tempus.Activity
 {
-    public class BonusWr
+    public class BonusWr : TempusRecordBase
     {
-        [JsonProperty(PropertyName = "record_info")]
-        public RecordInfo4 RecordInfo { get; set; }
 
-        [JsonProperty(PropertyName = "zone_info")]
-        public ZoneInfo4 ZoneInfo { get; set; }
-
-        [JsonProperty(PropertyName = "map_info")]
-        public MapInfo MapInfo { get; set; }
-
-        [JsonProperty(PropertyName = "player_info")]
-        public PlayerInfo4 PlayerInfo { get; set; }
     }
 }

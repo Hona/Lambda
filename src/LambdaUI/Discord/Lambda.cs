@@ -178,10 +178,16 @@ namespace LambdaUI.Discord
 
         private async Task ReadyAsync()
         {
-            if (_client.GetChannel(
-                Convert.ToUInt64((await _configDataAccess.GetConfigAsync("logChannel")).First()
-                    .Value)) is ITextChannel channel)
-                Logger.StartLoggingToChannel(_client, channel);
+            var channelStrings = await _configDataAccess.GetConfigAsync("logChannel");
+            var channels = new List<ITextChannel>();
+            foreach (var channelString in channelStrings)
+            {
+                if (!ulong.TryParse(channelString.Value, out var channelParsed)) continue;
+                if (_client.GetChannel(channelParsed) is ITextChannel channel)
+                    channels.Add(channel);
+            }
+
+            Logger.StartLoggingToChannel(_client, channels);
             Logger.LogInfo("Lambda",
                 $"Time elapsed since startup {(DateTime.Now - _startDateTime).TotalMilliseconds}ms");
             await _client.SetGameAsync("!help");
@@ -250,10 +256,13 @@ namespace LambdaUI.Discord
         {
             CancellationTokenSource?.Dispose();
             _client?.Dispose();
+
             _configDataAccess?.Dispose();
             _justJumpDataAccess?.Dispose();
             _simplyHightowerDataAccess?.Dispose();
             _todoDataAccess?.Dispose();
+
+            _intervalFunctionTimer.Dispose();
         }
     }
 }

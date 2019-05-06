@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using Discord.Commands;
 using LambdaUI.Data.Access;
+using LambdaUI.Discord.Updaters;
+using LambdaUI.Models.Tempus.Activity;
 using LambdaUI.Services;
 using LambdaUI.Utilities;
 
@@ -16,28 +18,28 @@ namespace LambdaUI.Discord.Modules
         public async Task GetRecentRecordsAsync()
         {
             var activity = await TempusDataAccess.GetRecentActivityAsync();
-            await ReplyEmbedAsync(TempusUpdaterService.GetMapRecordsEmbed(activity.MapRecords));
+            await ReplyEmbedAsync(TempusActivityService.GetMapRecordsEmbed(activity.MapRecords));
         }
 
         [Command("rrtt")]
         public async Task GetRecentTopTimesAsync()
         {
             var activity = await TempusDataAccess.GetRecentActivityAsync();
-            await ReplyEmbedAsync(TempusUpdaterService.GetMapTopTimesEmbed(activity.MapTopTimes));
+            await ReplyEmbedAsync(TempusActivityService.GetMapTopTimesEmbed(activity.MapTopTimes));
         }
 
         [Command("rrc")]
         public async Task GetRecentCourseRecordsAsync()
         {
             var activity = await TempusDataAccess.GetRecentActivityAsync();
-            await ReplyEmbedAsync(TempusUpdaterService.GetCourseRecordsEmbed(activity.CourseRecords));
+            await ReplyEmbedAsync(TempusActivityService.GetCourseRecordsEmbed(activity.CourseRecords));
         }
 
         [Command("rrb")]
         public async Task GetRecentBonusRecordsAsync()
         {
             var activity = await TempusDataAccess.GetRecentActivityAsync();
-            await ReplyEmbedAsync(TempusUpdaterService.GetBonusRecordsEmbed(activity.BonusRecords));
+            await ReplyEmbedAsync(TempusActivityService.GetBonusRecordsEmbed(activity.BonusRecords));
         }
 
         [Command("dwr")]
@@ -46,18 +48,23 @@ namespace LambdaUI.Discord.Modules
             var result = await TempusDataAccess.GetFullMapOverViewAsync(map);
             var demoRecord = result.DemomanRuns.OrderBy(x => x.Duration).First();
             await ReplyNewEmbedAsync(
-                $"**Demo WR** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}", false);
+                $"**Demo WR**" + TempusActivityService.FormatRecordSuffix(result, demoRecord), false);
         }
 
+        [Command("dtime")]
+        public async Task GetDemoTimeAsync(int place, string map) => await GetDemoTimeAsync(map, place);
         [Command("dtime")]
         public async Task GetDemoTimeAsync(string map, int place)
         {
             var result = await TempusDataAccess.GetFullMapOverViewAsync(map);
             var demoRecord = result.DemomanRuns.OrderBy(x => x.Duration).Skip(place - 1).First();
             if (demoRecord != null)
+            {
+                var text = TempusActivityService.FormatRecordSuffix(result, demoRecord);
                 await ReplyNewEmbedAsync(
-                    $"**Demo #{place}** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}",
+                    $"**Demo #{place}**" + text,
                     false);
+            }
             else
                 await ReplyNewEmbedAsync("Time not found");
         }
@@ -68,8 +75,10 @@ namespace LambdaUI.Discord.Modules
             var result = await TempusDataAccess.GetFullMapOverViewAsync(map);
             var demoRecord = result.SoldierRuns.OrderBy(x => x.Duration).First();
             await ReplyNewEmbedAsync(
-                $"**Solly WR** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}", false);
+                $"**Soldier WR**" + TempusActivityService.FormatRecordSuffix(result,demoRecord), false);
         }
+        [Command("stime")]
+        public async Task GetSoldierTimeAsync(int place, string map) => await GetSoldierTimeAsync(map, place);
 
         [Command("stime")]
         public async Task GetSoldierTimeAsync(string map, int place)
@@ -78,7 +87,7 @@ namespace LambdaUI.Discord.Modules
             var demoRecord = result.SoldierRuns.OrderBy(x => x.Duration).Skip(place - 1).First();
             if (demoRecord != null)
                 await ReplyNewEmbedAsync(
-                    $"**Solly #{place}** - {result.MapInfo.Name} - {demoRecord.Name} - {demoRecord.FormattedDuration}",
+                    $"**Soldier #{place}**" + TempusActivityService.FormatRecordSuffix(result, demoRecord),
                     false);
             else
                 await ReplyNewEmbedAsync("Time not found");
@@ -96,7 +105,7 @@ namespace LambdaUI.Discord.Modules
             await ReplyEmbedAsync(TempusServerStatusService.GetServerStatusOverviewEmbed(await TempusDataAccess.GetServerStatusAsync()));
         }
 
-        [Alias("m")]
+        [Alias("m", "mi", "map")]
         [Command("mapinfo")]
         public async Task MapInfoAsync(string mapName)
         {
@@ -118,11 +127,20 @@ namespace LambdaUI.Discord.Modules
             }
         }
 
+        [Alias("ml")]
         [Command("maplist")]
         public async Task GetMapListAsync(int tier = 0)
         {
             var maps = await TempusDataAccess.GetMapListAsync();
             await ReplyNewEmbedAsync(string.Join(", ", maps));
         }
+        //[Command("swrc")]
+        //public async Task GetSoldierCourseRecordAsync(string map, int course)
+        //{
+        //    var result = await TempusDataAccess.GetFullMapOverViewAsync(map);
+        //    var soldierRecord = result.SoldierRuns.OrderBy(x => x.Duration).First();
+        //    await ReplyNewEmbedAsync(
+        //        $"**Soldier WR**" + TempusActivityService.FormatRecordSuffix(result, soldierRecord), false);
+        //}
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -13,12 +14,12 @@ namespace LambdaUI.Logging
     {
         private static bool _logToChannel;
         private static DiscordSocketClient _client;
-        private static ITextChannel _channel;
+        private static List<ITextChannel> _channels;
 
-        public static void StartLoggingToChannel(DiscordSocketClient client, ITextChannel channel)
+        public static void StartLoggingToChannel(DiscordSocketClient client, List<ITextChannel> channels)
         {
             _client = client;
-            _channel = channel;
+            _channels = channels;
             _logToChannel = true;
         }
 
@@ -55,7 +56,10 @@ namespace LambdaUI.Logging
             {
                 var embed = GetLogEmbed(logMessage);
 
-                _channel.SendMessageAsync(embed: embed);
+                foreach (var channel in _channels)
+                {
+                    channel.SendMessageAsync(embed: embed);
+                }
             }
             switch (logMessage.Severity)
             {

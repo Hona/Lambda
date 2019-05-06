@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using LambdaUI.Constants;
 using LambdaUI.Logging;
 using LambdaUI.Models.Tempus.DetailedMapList;
 using LambdaUI.Models.Tempus.Rank;
@@ -18,6 +19,7 @@ namespace LambdaUI.Data.Access
     {
         private static readonly Stopwatch Stopwatch = new Stopwatch();
         private List<DetailedMapOverviewModel> _mapList;
+        private List<MapFullOverviewModel> _fullOverviewCache = new List<MapFullOverviewModel>(TempusConstants.FullMapOverviewCacheSize);
 
         public List<DetailedMapOverviewModel> MapList
         {
@@ -30,6 +32,14 @@ namespace LambdaUI.Data.Access
             private set => _mapList = value;
         }
 
+        private void AddMapOverviewCacheItem(MapFullOverviewModel fullOverview)
+        {
+            _fullOverviewCache.Insert(0, fullOverview);
+            var countToRemove = _fullOverviewCache.Count - TempusConstants.FullMapOverviewCacheSize;
+            if (countToRemove <= 0) return;
+            _fullOverviewCache.RemoveRange(TempusConstants.FullMapOverviewCacheSize - 1, _fullOverviewCache.Count - TempusConstants.FullMapOverviewCacheSize);
+
+        }
         public List<string> MapNameList { get; set; }
 
         private static HttpWebRequest CreateWebRequest(string path) => (HttpWebRequest) WebRequest.Create(
@@ -81,8 +91,23 @@ namespace LambdaUI.Data.Access
             }
         }
 
-        public async Task<MapFullOverviewModel> GetFullMapOverViewAsync(string map) => await
-            GetResponseAsync<MapFullOverviewModel>($"/maps/name/{ParseMapName(map)}/fullOverview");
+        public async Task<MapFullOverviewModel> GetFullMapOverViewAsync(string map)
+        {
+            try
+            {
+                return _fullOverviewCache.First(x => x.MapInfo.Name == ParseMapName(map));
+            }
+            catch 
+            {
+                // The map isn't in the cache
+                var overview = await
+                    GetResponseAsync<MapFullOverviewModel>($"/maps/name/{ParseMapName(map)}/fullOverview");
+                AddMapOverviewCacheItem(overview);
+                return overview;
+
+            }
+
+        }
 
         public async Task<RecentActivityModel> GetRecentActivityAsync() =>
             await GetResponseAsync<RecentActivityModel>("/activity");

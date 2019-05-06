@@ -40,10 +40,10 @@ namespace LambdaUI.Discord.Updaters
                 var activity = await _tempusDataAccess.GetRecentActivityAsync();
                 var embeds = new List<Embed>
                 {
-                    TempusUpdaterService.GetMapRecordsEmbed(activity.MapRecords),
-                    TempusUpdaterService.GetMapTopTimesEmbed(activity.MapTopTimes),
-                    TempusUpdaterService.GetCourseRecordsEmbed(activity.CourseRecords),
-                    TempusUpdaterService.GetBonusRecordsEmbed(activity.BonusRecords)
+                    TempusActivityService.GetMapRecordsEmbed(activity.MapRecords),
+                    TempusActivityService.GetMapTopTimesEmbed(activity.MapTopTimes),
+                    TempusActivityService.GetCourseRecordsEmbed(activity.CourseRecords),
+                    TempusActivityService.GetBonusRecordsEmbed(activity.BonusRecords)
                 };
                 await DeleteAllMessagesAsync(channel);
                 foreach (var embed in embeds)

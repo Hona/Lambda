@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using Discord;
 using LambdaUI.Constants;
 using LambdaUI.Logging;
+using LambdaUI.Models.Tempus;
 using LambdaUI.Models.Tempus.Activity;
+using LambdaUI.Models.Tempus.Responses;
 using LambdaUI.Utilities;
 
 namespace LambdaUI.Services
 {
-    internal static class TempusUpdaterService
+    internal static class TempusActivityService
     {
         internal static Embed GetMapTopTimesEmbed(List<MapTop> topTimes)
         {
@@ -84,27 +86,40 @@ namespace LambdaUI.Services
             }
         }
 
-        private static string FormattedDuration(double duration) => new TimeSpan(0, 0, (int) Math.Truncate(duration),
-            (int) (duration - (int) Math.Truncate(duration))).ToString("c");
+        private static string FormattedDuration(double duration)
+        {
+            var seconds = (int)Math.Truncate(duration);
+                var milliseconds = (duration - (int)Math.Truncate(duration)) * 1000;
+                var timespan = new TimeSpan(0, 0, 0, seconds, (int)Math.Truncate(milliseconds));
+                return timespan.Days > 0 ? timespan.ToString(@"dd\:hh\:mm\:ss\.ff") : timespan.ToString(timespan.Hours > 0 ? @"hh\:mm\:ss\.ff" : @"mm\:ss\.ff");
+        }
 
         private static string FormatRecords(IEnumerable<MapWr> records) => records.Aggregate("",
             (currentString, nextItem) => currentString +
-                                         $"{TempusHelper.GetClass(nextItem.RecordInfo.Class)}WR | [{nextItem.MapInfo.Name.EscapeDiscordChars()}]({TempusHelper.GetMapUrl(nextItem.MapInfo.Name)}) | [**{FormattedDuration(nextItem.RecordInfo.Duration).EscapeDiscordChars()}**]({TempusHelper.GetRecordUrl(nextItem.RecordInfo.Id)}) | [{nextItem.PlayerInfo.Name.EscapeDiscordChars()}]({TempusHelper.GetPlayerUrl(nextItem.PlayerInfo.Id)})" +
-                                         Environment.NewLine);
+                                         $"{TempusHelper.GetClass(nextItem.RecordInfo.Class)}WR" 
+                                         + FormatRecordSuffix(nextItem.MapInfo, nextItem.RecordInfo, nextItem.PlayerInfo));
 
         private static string FormatTopTimes(IEnumerable<MapTop> records) => records.Aggregate("",
             (currentString, nextItem) => currentString +
-                                         $"{TempusHelper.GetClass(nextItem.RecordInfo.Class)} #{nextItem.RecordInfo.Rank} | [{nextItem.MapInfo.Name.EscapeDiscordChars()}]({TempusHelper.GetMapUrl(nextItem.MapInfo.Name)}) | [**{FormattedDuration(nextItem.RecordInfo.Duration).EscapeDiscordChars()}**]({TempusHelper.GetRecordUrl(nextItem.RecordInfo.Id)}) | [{nextItem.PlayerInfo.Name.EscapeDiscordChars()}]({TempusHelper.GetPlayerUrl(nextItem.PlayerInfo.Id)})" +
-                                         Environment.NewLine);
+                                         $"{TempusHelper.GetClass(nextItem.RecordInfo.Class)} #{nextItem.Rank}" 
+                                         + FormatRecordSuffix(nextItem.MapInfo, nextItem.RecordInfo, nextItem.PlayerInfo));
 
         private static string FormatCourseRecords(IEnumerable<CourseWr> records) => records.Aggregate("",
             (currentString, nextItem) => currentString +
-                                         $"{TempusHelper.GetClass(nextItem.RecordInfo.Class)} C{nextItem.ZoneInfo.Zoneindex} | [{nextItem.MapInfo.Name.EscapeDiscordChars()}]({TempusHelper.GetMapUrl(nextItem.MapInfo.Name)}) | [**{FormattedDuration(nextItem.RecordInfo.Duration).EscapeDiscordChars()}**]({TempusHelper.GetRecordUrl(nextItem.RecordInfo.Id)}) | [{nextItem.PlayerInfo.Name.EscapeDiscordChars()}]({TempusHelper.GetPlayerUrl(nextItem.PlayerInfo.Id)})" +
-                                         Environment.NewLine);
+                                         $"{TempusHelper.GetClass(nextItem.RecordInfo.Class)} C{nextItem.ZoneInfo.Zoneindex}" 
+                                         + FormatRecordSuffix(nextItem.MapInfo, nextItem.RecordInfo, nextItem.PlayerInfo));
 
         private static string FormatBonusRecords(IEnumerable<BonusWr> records) => records.Aggregate("",
             (currentString, nextItem) => currentString +
-                                         $"{TempusHelper.GetClass(nextItem.RecordInfo.Class)} B{nextItem.ZoneInfo.Zoneindex} | [{nextItem.MapInfo.Name.EscapeDiscordChars()}]({TempusHelper.GetMapUrl(nextItem.MapInfo.Name)}) | [**{FormattedDuration(nextItem.RecordInfo.Duration).EscapeDiscordChars()}**]({TempusHelper.GetRecordUrl(nextItem.RecordInfo.Id)}) | [{nextItem.PlayerInfo.Name.EscapeDiscordChars()}]({TempusHelper.GetPlayerUrl(nextItem.PlayerInfo.Id)})" +
-                                         Environment.NewLine);
+                                         $"{TempusHelper.GetClass(nextItem.RecordInfo.Class)} B{nextItem.ZoneInfo.Zoneindex}"
+                                         + FormatRecordSuffix(nextItem.MapInfo, nextItem.RecordInfo, nextItem.PlayerInfo));
+
+        public static string FormatRecordSuffix(MapFullOverviewModel mapOverview, RecordModel record) =>
+            FormatRecordSuffix(new MapInfo {Id = mapOverview.MapInfo.Id, Name = mapOverview.MapInfo.Name, DateAdded = mapOverview.MapInfo.DateAdded},
+                new RecordInfoShort {Duration = record.Duration, Id = record.Id},
+                new PlayerInfo {Id = record.Id, Name = record.Name, Steamid = record.SteamId});
+        public static string FormatRecordSuffix(MapInfo mapInfo, RecordInfoShort recordInfo, PlayerInfo playerInfo) =>
+            $" | {DiscordHelper.FormatUrlMarkdown(mapInfo.Name.EscapeDiscordChars(), TempusHelper.GetMapUrl(mapInfo.Name))} | {DiscordHelper.FormatUrlMarkdown($"**{FormattedDuration(recordInfo.Duration).EscapeDiscordChars()}**", TempusHelper.GetRecordUrl(recordInfo.Id))} | {DiscordHelper.FormatUrlMarkdown(playerInfo.Name.EscapeDiscordChars(), TempusHelper.GetPlayerUrl(playerInfo.Id))}" +
+                Environment.NewLine;
     }
 }

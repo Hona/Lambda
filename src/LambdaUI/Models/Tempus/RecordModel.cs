@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Globalization;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace LambdaUI.Models.Tempus
 {
     public class RecordModel
     {
-        public string FormattedDuration => new TimeSpan(0, 0, (int) Math.Truncate(Duration),
-            (int) (Duration - (int) Math.Truncate(Duration))).ToString("c");
+
 
         [JsonProperty(PropertyName = "id")]
         public int Id { get; set; }
