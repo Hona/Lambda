@@ -171,7 +171,7 @@ namespace LambdaUI.Discord
             // Execute the command. (result does not indicate a return value, 
             // rather an object stating if the command executed successfully)
             var result = await _commands.ExecuteAsync(context, commandPosition, _services);
-            if (!result.IsSuccess)
+            if (result.Error != null && !result.IsSuccess && result.Error.Value != CommandError.UnknownCommand)
                 await context.Channel.SendMessageAsync("", embed: EmbedHelper.CreateEmbed(result.ErrorReason, false));
         }
 

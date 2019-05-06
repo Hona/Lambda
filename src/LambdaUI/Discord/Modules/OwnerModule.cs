@@ -25,14 +25,14 @@ namespace LambdaUI.Discord.Modules
         public JustJumpDataAccess JustJumpDataAccess { get; set; }
 
         [Command("embed")]
-        public async Task EmbedAsync([Remainder] string text)
+        public async Task EmbedAsync(bool escape, [Remainder] string text)
         {
             var builder = new EmbedBuilder();
-            builder.WithTitle(text.EscapeDiscordChars())
-                .WithAuthor(text.EscapeDiscordChars())
-                .WithDescription(text.EscapeDiscordChars())
-                .WithFooter(text.EscapeDiscordChars());
-            await ReplyEmbedAsync(builder.Build());
+            builder.WithTitle(text)
+                .WithAuthor(text)
+                .WithDescription(text)
+                .WithFooter(text);
+            await ReplyEmbedAsync(builder);
         }
 
         [Command("execjj")]
