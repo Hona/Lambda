@@ -29,7 +29,6 @@ namespace LambdaUI.Discord
         private Timer _intervalFunctionTimer;
         private JustJumpDataAccess _justJumpDataAccess;
         private IServiceProvider _services;
-        private SimplyDataUpdater _simplyDataUpdater;
         private SimplyHightowerDataAccess _simplyHightowerDataAccess;
 
         private SimplyTFServerUpdater _simplyTFServerUpdater;
@@ -118,14 +117,12 @@ namespace LambdaUI.Discord
             _tempusDataAccess = new TempusDataAccess();
             _todoDataAccess = new TodoDataAccess(connectionStrings[0]);
             _configDataAccess = new ConfigDataAccess(connectionStrings[0]);
-            _justJumpDataAccess = new JustJumpDataAccess(connectionStrings[1]);
-            _simplyHightowerDataAccess = new SimplyHightowerDataAccess(connectionStrings[2]);
+            //_justJumpDataAccess = new JustJumpDataAccess(connectionStrings[1]);
+            //_simplyHightowerDataAccess = new SimplyHightowerDataAccess(connectionStrings[2]);
 
             _tempusServerUpdater = new TempusServerUpdater(_client, _configDataAccess, _tempusDataAccess);
             _tempusActivityUpdater = new TempusActivityUpdater(_client, _configDataAccess, _tempusDataAccess);
             _simplyTFServerUpdater = new SimplyTFServerUpdater(_client, _configDataAccess);
-            _simplyDataUpdater = new SimplyDataUpdater(_client, _configDataAccess,
-                new SimplyDataService(_simplyHightowerDataAccess, _justJumpDataAccess));
         }
 
         private void AddClientEvents()
@@ -208,7 +205,7 @@ namespace LambdaUI.Discord
                     _tempusServerUpdater.UpdateOverviewsAsync(),
                     _tempusActivityUpdater.UpdateActivityAsync(),
                     _simplyTFServerUpdater.UpdateServersAsync(),
-                    _simplyDataUpdater.UpdateDataAsync()
+                    //_simplyDataUpdater.UpdateDataAsync()
                 };
                 await Task.WhenAll(tasks);
 
@@ -229,7 +226,6 @@ namespace LambdaUI.Discord
                 .AddSingleton(_tempusDataAccess)
                 .AddSingleton(_todoDataAccess)
                 .AddSingleton(_configDataAccess)
-                .AddSingleton(_justJumpDataAccess)
                 .AddSingleton(this)
                 .BuildServiceProvider();
         }

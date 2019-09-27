@@ -22,7 +22,6 @@ namespace LambdaUI.Discord.Modules
         public DiscordSocketClient Client { get; set; }
         public Lambda Lambda { get; set; }
         public ConfigDataAccess ConfigDataAccess { get; set; }
-        public JustJumpDataAccess JustJumpDataAccess { get; set; }
 
         [Command("embed")]
         public async Task EmbedAsync(bool escape, [Remainder] string text)
@@ -35,12 +34,6 @@ namespace LambdaUI.Discord.Modules
             await ReplyEmbedAsync(builder);
         }
 
-        [Command("execjj")]
-        public async Task ExecJJAsync([Remainder] string text)
-        {
-            var result = await JustJumpDataAccess.QueryAsync(text);
-            await ReplyNewEmbedAsync(string.Join(Environment.NewLine, result));
-        }
 
         [Command("updateStatus")]
         public async Task UpdateStatusAsync()

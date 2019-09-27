@@ -35,10 +35,10 @@ namespace LambdaUI.Discord.Updaters
             {
                 var embeds = new List<Embed>
                 {
-                    SourceServerStatusService.JustJumpEmbed,
-                    SourceServerStatusService.HightowerEmbed,
+                    //SourceServerStatusService.JustJumpEmbed,
+                   // SourceServerStatusService.HightowerEmbed,
                     await SourceServerStatusService.GetMinecraftEmbedAsync(),
-                    SourceServerStatusService.JumpAcademyEmbed
+                   // SourceServerStatusService.JumpAcademyEmbed
                 };
                 
                 await DeleteAllMessagesAsync(channel);

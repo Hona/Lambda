@@ -19,7 +19,7 @@ namespace LambdaUI.Utilities
 
         public static string EscapeDiscordChars(this string s)
         {
-            var chars = new List<char> {'*', '_', '~', '`', '@'};
+            var chars = new List<string> {"*", "_", "~", "`", "@", ">", "||"};
             return chars.Aggregate(s, (current, character) => current.Replace($"{character}", $@"\{character}"));
         }
     }
