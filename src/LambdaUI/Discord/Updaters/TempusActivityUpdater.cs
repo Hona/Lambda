@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -30,6 +31,7 @@ namespace LambdaUI.Discord.Updaters
             if (updateChannels == null || updateChannels.Count == 0) return;
             foreach (var updateChannel in updateChannels)
                 await UpdateChannelAsync(updateChannel.Value);
+
         }
 
         private async Task UpdateChannelAsync(string updateChannel)
@@ -45,10 +47,31 @@ namespace LambdaUI.Discord.Updaters
                     TempusActivityService.GetCourseRecordsEmbed(activity.CourseRecords),
                     TempusActivityService.GetBonusRecordsEmbed(activity.BonusRecords)
                 };
-                await DeleteAllMessagesAsync(channel);
+
+                var existingMessages = (await channel.GetMessagesAsync().FlattenAsync()).ToList();
+
                 foreach (var embed in embeds)
                 {
-                    await channel.SendMessageAsync(embed:embed);
+                    var existingMessage = existingMessages.FirstOrDefault(x =>
+                        x.Embeds.Count == 1 && x.Embeds.First().Title == embed.Title);
+
+                    if (existingMessage != null && existingMessage is IUserMessage userMessage)
+                    {
+                        await userMessage.ModifyAsync(message => message.Embed = embed);
+                        existingMessages.Remove(existingMessage);
+                    }
+                    else
+                    {
+                        await channel.SendMessageAsync(embed: embed);
+                    }
+                }
+
+                if (existingMessages.Count > 0)
+                {
+                    foreach (var oldMessage in existingMessages)
+                    {
+                        await oldMessage.DeleteAsync();
+                    }
                 }
             }
             catch (Exception e)

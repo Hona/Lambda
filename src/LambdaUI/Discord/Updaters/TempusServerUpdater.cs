@@ -45,10 +45,30 @@ namespace LambdaUI.Discord.Updaters
                         await _tempusDataAccess.GetServerStatusAsync()),
                     await TempusApiService.UpdateStalkTopEmbedAsync(_tempusDataAccess)
                 };
-                await DeleteAllMessagesAsync(channel);
+
+                var existingMessages = (await channel.GetMessagesAsync().FlattenAsync()).ToList();
+
                 foreach (var embed in embeds)
                 {
-                    await channel.SendMessageAsync(embed: embed);
+                    var existingMessage = existingMessages.FirstOrDefault(x => x.Embeds.Count == 1 && x.Embeds.First().Title == embed.Title);
+
+                    if (existingMessage != null && existingMessage is IUserMessage userMessage)
+                    {
+                        await userMessage.ModifyAsync(message => message.Embed = embed);
+                        existingMessages.Remove(existingMessage);
+                    }
+                    else
+                    {
+                        await channel.SendMessageAsync(embed: embed);
+                    }
+                }
+
+                if (existingMessages.Count > 0)
+                {
+                    foreach (var oldMessage in existingMessages)
+                    {
+                        await oldMessage.DeleteAsync();
+                    }
                 }
             }
             catch (Exception e)
@@ -72,15 +92,41 @@ namespace LambdaUI.Discord.Updaters
             {
                 var serverInfo = await _tempusDataAccess.GetServerStatusAsync();
                 var embeds = serverInfo.Select(TempusServerStatusService.GetServerStatusAsync).Where(x=>x != null).ToList();
-                await DeleteAllMessagesAsync(channel);
-                for (var i = 0; i < embeds.Count; i++)
+
+                var existingMessages = (await channel.GetMessagesAsync().FlattenAsync()).ToList();
+
+                var count = 0;
+                foreach (var embed in embeds)
                 {
-                    // Prevent rate limiting
-                    if (i != 0 && i % 5 == 0)
+                    if (count % 5 == 0)
+                    {
                         await Task.Delay(4200);
-                    await channel.SendMessageAsync(embed:embeds[i]);
+                    }
+                    var existingMessage = existingMessages.FirstOrDefault(x =>
+                        x.Embeds.Count == 1 && x.Embeds.First().Title == embed.Title);
+
+                    if (existingMessage != null && existingMessage is IUserMessage userMessage)
+                    {
+                        await userMessage.ModifyAsync(message => message.Embed = embed);
+                        existingMessages.Remove(existingMessage);
+                    }
+                    else
+                    {
+                        await channel.SendMessageAsync(embed: embed);
+                    }
+
+                    count++;
                 }
 
+                if (existingMessages.Count > 0)
+                {
+                    foreach (var oldMessage in existingMessages)
+                    {
+                        await oldMessage.DeleteAsync();
+                    }
+                }
+
+                
             }
             catch (Exception e)
             {

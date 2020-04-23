@@ -36,7 +36,11 @@ namespace LambdaUI.Services
                                                    $"[{nextServer.ServerInfo.Name}](https://tempus.xyz/servers/{nextServer.ServerInfo.Id}) " +
                                                    " | (" + nextServer.GameInfo.PlayerCount + "/" +
                                                    nextServer.GameInfo.MaxPlayers + ")" + Environment.NewLine);
-                var builder = new EmbedBuilder {Description = lines}
+                var builder = new EmbedBuilder
+                    {
+                        Title = "Server Overview", 
+                        Description = lines
+                    }
                 .WithFooter(DateTimeHelper.ShortDateTimeNowString)
                     .WithColor(ColorConstants.InfoColor);
                 return builder.Build();

@@ -52,7 +52,7 @@ namespace LambdaUI.Logging
                 logMessage = new LogMessage(logMessage.Severity, logMessage.Source, "", logMessage.Exception);
             if (logMessage.Source == null)
                 logMessage = new LogMessage(logMessage.Severity, "", logMessage.Message, logMessage.Exception);
-            if (_logToChannel && logMessage.Severity == LogSeverity.Error || logMessage.Severity == LogSeverity.Critical || logMessage.Severity == LogSeverity.Warning)
+            if (_logToChannel && logMessage.Severity == LogSeverity.Error || logMessage.Severity == LogSeverity.Critical)
             {
                 var embed = GetLogEmbed(logMessage);
 
@@ -119,7 +119,7 @@ namespace LambdaUI.Logging
         {
             try
             {
-                await File.AppendAllTextAsync(DiscordConstants.LogFilePath, FormatLogMessage(logMessage));
+                await File.AppendAllTextAsync(DiscordConstants.LogFilePath, FormatLogMessage(logMessage) + Environment.NewLine);
             }
             catch (Exception e)
             {

@@ -46,39 +46,42 @@ namespace LambdaUI.Discord
 
         internal async Task StartAsync()
         {
-            ClearLogFile();
-
-            _startDateTime = DateTime.Now;
-
-            PrintDisplay();
-
-            InitializeVariables();
-
-            AddClientEvents();
-
-            Console.CancelKeyPress += (sender, args) => { args.Cancel = true; CancellationTokenSource.Cancel(); };
-
-            await LoginAsync();
-
-            BuildServiceProvider();
-
-            await InstallCommandsAsync();
-
-            await _client.StartAsync();
-
-            // Block this task until the program is closed or cancelled.
-
             try
             {
+                ClearLogFile();
+
+                _startDateTime = DateTime.Now;
+
+                PrintDisplay();
+
+                InitializeVariables();
+
+                AddClientEvents();
+
+                Console.CancelKeyPress += (sender, args) =>
+                {
+                    args.Cancel = true;
+                    CancellationTokenSource.Cancel();
+                };
+
+                await LoginAsync();
+
+                BuildServiceProvider();
+
+                await InstallCommandsAsync();
+
+                await _client.StartAsync();
+
+                // Block this task until the program is closed or cancelled.
+
                 await Task.Delay(-1,
                     CancellationTokenSource.Token);
             }
-            catch (TaskCanceledException e)
+            catch (Exception e)
             {
                 await ShutdownAsync();
                 Logger.LogException(e);
             }
-            
         }
 
         private static void ClearLogFile()
@@ -201,12 +204,14 @@ namespace LambdaUI.Discord
                 var tasks = new List<Task>
                 {
                     _tempusDataAccess.UpdateMapListAsync(),
-                    _tempusServerUpdater.UpdateServersAsync(),
-                    _tempusServerUpdater.UpdateOverviewsAsync(),
-                    _tempusActivityUpdater.UpdateActivityAsync(),
                     _simplyTFServerUpdater.UpdateServersAsync(),
                     //_simplyDataUpdater.UpdateDataAsync()
                 };
+
+                await _tempusServerUpdater.UpdateServersAsync();
+                await _tempusServerUpdater.UpdateOverviewsAsync();
+                await _tempusActivityUpdater.UpdateActivityAsync();
+
                 await Task.WhenAll(tasks);
 
                 Logger.LogInfo("Lambda", $"Interval functions took {(DateTime.Now - startDateTime).TotalMilliseconds}ms");
@@ -244,8 +249,6 @@ namespace LambdaUI.Discord
                 await _client.StopAsync();
             }
             Dispose();
-
-            Environment.Exit(0);
         }
 
         public void Dispose()
