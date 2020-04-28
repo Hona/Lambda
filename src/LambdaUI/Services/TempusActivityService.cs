@@ -96,22 +96,22 @@ namespace LambdaUI.Services
 
         private static string FormatRecords(IEnumerable<MapWr> records) => records.Aggregate("",
             (currentString, nextItem) => currentString +
-                                         $"{TempusHelper.GetClass(nextItem.RecordInfo.Class)}WR" 
+                                         $"{TempusHelper.GetClassEmote(nextItem.RecordInfo.Class)}WR" 
                                          + FormatRecordSuffix(nextItem.MapInfo, nextItem.RecordInfo, nextItem.PlayerInfo));
 
         private static string FormatTopTimes(IEnumerable<MapTop> records) => records.Aggregate("",
             (currentString, nextItem) => currentString +
-                                         $"{TempusHelper.GetClass(nextItem.RecordInfo.Class)} #{nextItem.Rank}" 
+                                         $"{TempusHelper.GetClassEmote(nextItem.RecordInfo.Class)} #{nextItem.Rank}" 
                                          + FormatRecordSuffix(nextItem.MapInfo, nextItem.RecordInfo, nextItem.PlayerInfo));
 
         private static string FormatCourseRecords(IEnumerable<CourseWr> records) => records.Aggregate("",
             (currentString, nextItem) => currentString +
-                                         $"{TempusHelper.GetClass(nextItem.RecordInfo.Class)} C{nextItem.ZoneInfo.Zoneindex}" 
+                                         $"{TempusHelper.GetClassEmote(nextItem.RecordInfo.Class)} C{nextItem.ZoneInfo.Zoneindex}" 
                                          + FormatRecordSuffix(nextItem.MapInfo, nextItem.RecordInfo, nextItem.PlayerInfo));
 
         private static string FormatBonusRecords(IEnumerable<BonusWr> records) => records.Aggregate("",
             (currentString, nextItem) => currentString +
-                                         $"{TempusHelper.GetClass(nextItem.RecordInfo.Class)} B{nextItem.ZoneInfo.Zoneindex}"
+                                         $"{TempusHelper.GetClassEmote(nextItem.RecordInfo.Class)} B{nextItem.ZoneInfo.Zoneindex}"
                                          + FormatRecordSuffix(nextItem.MapInfo, nextItem.RecordInfo, nextItem.PlayerInfo));
 
         public static string FormatRecordSuffix(MapFullOverviewModel mapOverview, RecordModel record) =>

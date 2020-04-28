@@ -18,6 +18,13 @@ namespace LambdaUI.Utilities
             }
         }
 
+        public static string GetClassEmote(int id)
+        {
+            var classString = GetClass(id);
+
+            return classString == "S" ? "<:soldier:702841577806233702>" : " <:demoman:702841578259087380>";
+        }
+
         public static string TicksToFormattedTime(long ticks)
         {
             var timeSpan = TicksToTimeSpan(ticks);
