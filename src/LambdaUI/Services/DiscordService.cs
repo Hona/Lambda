@@ -60,7 +60,7 @@ namespace LambdaUI.Services
         {
 
            var builder = new EmbedBuilder {Title = "Channel: " + channel.Name}
-           .AddField("Users", await (channel.GetUsersAsync()).Count())
+           .AddField("Users", (await channel.GetUsersAsync().FlattenAsync()).Count())
            .AddField("Created At", channel.CreatedAt.ToString("g"))
            .WithFooter(channel.Id.ToString());
             return builder.Build();
