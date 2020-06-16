@@ -8,7 +8,7 @@ COPY LambdaUI/LambdaUI.csproj LambdaUI/
 RUN dotnet restore LambdaUI/LambdaUI.csproj
 
 COPY . .
-RUN dotnet publish -c Release -o out
+RUN dotnet publish LambdaUI/ -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/core/runtime:3.1 AS runtime
 WORKDIR /app
