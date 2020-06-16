@@ -10,13 +10,13 @@ namespace LambdaUI.Constants
         internal const int LogPaddingLength = 10;
 
         internal static readonly string DatabaseInfoPath =
-            $"{CurrentDirectory}database.txt";
+            $"{CurrentDirectory}config/database.txt";
 
         internal static readonly string TokenPath =
-            $"{CurrentDirectory}token.txt";
+            $"{CurrentDirectory}config/token.txt";
 
         internal static readonly string LogFilePath =
-            $"{CurrentDirectory}log.txt";
+            $"{CurrentDirectory}config/log.txt";
 
         private static string CurrentDirectory => $"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}";
         
