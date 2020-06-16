@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:3.1-sdk AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /app
 
 COPY LambdaUI.csproj .
@@ -7,7 +7,7 @@ RUN dotnet restore LambdaUI.csproj
 COPY . .
 RUN dotnet publish -c Release -o out
 
-FROM microsoft/dotnet:3.1-runtime AS runtime
+FROM mcr.microsoft.com/dotnet/core/runtime:3.1 AS runtime
 WORKDIR /app
 COPY --from=build /app/out ./
 
