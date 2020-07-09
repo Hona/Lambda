@@ -109,7 +109,7 @@ namespace LambdaUI.Logging
                     throw new ArgumentOutOfRangeException();
             }
             var embed = new EmbedBuilder().WithDescription($"**{logMessage.Source}**" + Environment.NewLine + logMessage.Message).WithColor(color)
-                .WithFooter(DateTimeHelper.ShortDateTimeNowString);
+                .WithCurrentTimestamp();
             if (logMessage.Exception != null)
                 embed.AddField("Exception", logMessage.Exception);
             return embed.Build();

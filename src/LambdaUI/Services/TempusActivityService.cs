@@ -22,8 +22,11 @@ namespace LambdaUI.Services
                 var quickRecords = new MapTop[topTimes.Count];
                 topTimes.CopyTo(quickRecords);
                 var description = FormatTopTimes(topTimes.Take(TempusConstants.RecordPerPage));
-                builder.WithDescription(description).WithColor(Color.Blue)
-                    .WithFooter($"Showing records 1-{TempusConstants.RecordPerPage} | {DateTime.Now:t}");
+                builder
+                    .WithDescription(description)
+                    .WithColor(Color.Blue)
+                    .WithFooter($"Showing records 1-{TempusConstants.RecordPerPage}")
+                    .WithCurrentTimestamp();
                 return builder.Build();
             }
             catch (Exception e)
@@ -40,9 +43,11 @@ namespace LambdaUI.Services
                 var quickRecords = new MapWr[records.Count];
                 records.CopyTo(quickRecords);
                 var description = FormatRecords(records.Take(TempusConstants.RecordPerPage));
-                builder.WithDescription(description).WithColor(Color.Blue)
-                    .WithFooter($"Showing records 1-{TempusConstants.RecordPerPage} | {DateTime.Now:t}");
-                return builder.Build();
+                builder
+                    .WithDescription(description)
+                    .WithColor(Color.Blue)
+                    .WithFooter($"Showing records 1-{TempusConstants.RecordPerPage}")
+                    .WithCurrentTimestamp(); return builder.Build();
             }
             catch (Exception e)
             {
@@ -58,8 +63,11 @@ namespace LambdaUI.Services
                 var quickRecords = new CourseWr[records.Count];
                 records.CopyTo(quickRecords);
                 var description = FormatCourseRecords(records.Take(TempusConstants.RecordPerPage));
-                builder.WithDescription(description).WithColor(Color.Blue)
-                    .WithFooter($"Showing records 1-{TempusConstants.RecordPerPage} | {DateTime.Now:t}");
+                builder
+                    .WithDescription(description)
+                    .WithColor(Color.Blue)
+                    .WithFooter($"Showing records 1-{TempusConstants.RecordPerPage}")
+                    .WithCurrentTimestamp();
                 return builder.Build();
             }
             catch (Exception e)
@@ -76,8 +84,11 @@ namespace LambdaUI.Services
                 var quickRecords = new BonusWr[records.Count];
                 records.CopyTo(quickRecords);
                 var description = FormatBonusRecords(records.Take(TempusConstants.RecordPerPage));
-                builder.WithDescription(description).WithColor(Color.Blue)
-                    .WithFooter($"Showing records 1-{TempusConstants.RecordPerPage} | {DateTime.Now:t}");
+                builder
+                    .WithDescription(description)
+                    .WithColor(Color.Blue)
+                    .WithFooter($"Showing records 1-{TempusConstants.RecordPerPage}")
+                    .WithCurrentTimestamp();
                 return builder.Build();
             }
             catch (Exception e)

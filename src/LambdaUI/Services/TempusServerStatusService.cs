@@ -41,8 +41,8 @@ namespace LambdaUI.Services
                         Title = "Server Overview", 
                         Description = lines
                     }
-                .WithFooter(DateTimeHelper.ShortDateTimeNowString)
-                    .WithColor(ColorConstants.InfoColor);
+                .WithCurrentTimestamp()
+                .WithColor(ColorConstants.InfoColor);
                 return builder.Build();
             }
             catch (Exception e)
