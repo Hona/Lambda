@@ -261,7 +261,7 @@ namespace LambdaUI.Discord
             _simplyHightowerDataAccess?.Dispose();
             _todoDataAccess?.Dispose();
 
-            _intervalFunctionTimer.Dispose();
+            _intervalFunctionTimer?.Dispose();
         }
     }
 }
