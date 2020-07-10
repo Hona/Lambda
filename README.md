@@ -1,3 +1,7 @@
+# Archived, pending total rewrite using [TempusHub API](https://tempushub.xyz/swagger/index.html)
+
+---
+
 # Lambda
 Lambda bot is a discord bot using the [Discord.Net](https://github.com/discord-net/Discord.Net) library. It has several features including general commands, and discord administration. The bot also implements several [Tempus](https://tempus.xyz) API commands, and provides Source server commands (CSGO, TF2, etc). The bot is used in [SimplyTF](https://simplytf.com/) to provide server status' and integration with its databases.
 ## Getting Started
